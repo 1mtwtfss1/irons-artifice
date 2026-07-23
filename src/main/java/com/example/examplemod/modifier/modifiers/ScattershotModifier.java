@@ -1,19 +1,16 @@
 package com.example.examplemod.modifier.modifiers;
 
-import com.example.examplemod.data.ShotComponentMap;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.data.ValueModifier;
-import com.example.examplemod.modifier.GunModifier;
+import com.example.examplemod.modifier.ValueStackModifier;
 
-public final class ScattershotModifier implements GunModifier {
-    private static final double PROJECTILES = 2;
-    private static final double SPREAD = 3.0;
+import java.util.Map;
 
-    @Override
-    public void apply(ShotComponentMap components) {
-        components.getOrCreate(ShotComponents.PROJECTILE_COUNT)
-                .addModifier(new ValueModifier(PROJECTILES, ValueModifier.Operation.ADD));
-        components.getOrCreate(ShotComponents.SPREAD)
-                .addModifier(new ValueModifier(SPREAD, ValueModifier.Operation.ADD));
+public final class ScattershotModifier extends ValueStackModifier {
+    public ScattershotModifier() {
+        super(Map.of(
+                ShotComponents.PROJECTILE_COUNT, new ValueModifier(3, ValueModifier.Operation.ADD, ValueModifier.Type.BENEFICIAL),
+                ShotComponents.SPREAD, new ValueModifier(3, ValueModifier.Operation.ADD, ValueModifier.Type.HARMFUL)
+        ));
     }
 }

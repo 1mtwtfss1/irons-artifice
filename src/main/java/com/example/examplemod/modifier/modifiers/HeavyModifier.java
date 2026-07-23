@@ -1,19 +1,16 @@
 package com.example.examplemod.modifier.modifiers;
 
-import com.example.examplemod.data.ShotComponentMap;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.data.ValueModifier;
-import com.example.examplemod.modifier.GunModifier;
+import com.example.examplemod.modifier.ValueStackModifier;
 
-public final class HeavyModifier implements GunModifier {
-    private static final double SPEED = -2.0;
-    private static final double KNOCKBACK = 0.5;
+import java.util.Map;
 
-    @Override
-    public void apply(ShotComponentMap components) {
-        components.getOrCreate(ShotComponents.BULLET_SPEED)
-                .addModifier(new ValueModifier(SPEED, ValueModifier.Operation.ADD));
-        components.getOrCreate(ShotComponents.KNOCKBACK)
-                .addModifier(new ValueModifier(KNOCKBACK, ValueModifier.Operation.ADD));
+public final class HeavyModifier extends ValueStackModifier {
+    public HeavyModifier() {
+        super(Map.of(
+                ShotComponents.BULLET_SPEED, new ValueModifier(-0.10, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL),
+                ShotComponents.KNOCKBACK, new ValueModifier(0.5, ValueModifier.Operation.ADD, ValueModifier.Type.BENEFICIAL)
+        ));
     }
 }
