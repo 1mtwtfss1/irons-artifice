@@ -1,7 +1,7 @@
-package com.example.examplemod.menu;
+package com.example.examplemod.registry;
 
 import com.example.examplemod.ExampleMod;
-
+import com.example.examplemod.menu.GunMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;

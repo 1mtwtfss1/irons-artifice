@@ -3,7 +3,13 @@
   "block.examplemod.example_block": "Example Block",
   "item.examplemod.example_item": "Example Item",
   "item.examplemod.gun": "Gun",
+  "item.examplemod.bullet": "Bullet",
+  "item.examplemod.heavy_modifier": "Heavy Modifier",
+  "item.examplemod.scattershot_modifier": "Scattershot Modifier",
+  "item.examplemod.trickshot_modifier": "Trickshot Modifier",
+  "item.examplemod.fire_modifier": "Fire Modifier",
   "container.examplemod.gun": "Gun",
+  "key.examplemod.open_modifier_menu": "Open Gun Modifiers",
 
   "examplemod.configuration.title": "Example Mod Configs",
   "examplemod.configuration.section.examplemod.common.toml": "Example Mod Configs",

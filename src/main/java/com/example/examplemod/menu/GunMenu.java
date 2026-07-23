@@ -1,5 +1,6 @@
 package com.example.examplemod.menu;
 
+import com.example.examplemod.registry.MenuRegistry;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -8,9 +9,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-/**
- * Hopper-layout menu (5 slots) for the gun item inventory.
- */
 public class GunMenu extends AbstractContainerMenu {
     private final Container gunInventory;
 

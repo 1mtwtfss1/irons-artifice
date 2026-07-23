@@ -1,7 +1,7 @@
-package com.example.examplemod.entity;
+package com.example.examplemod.registry;
 
 import com.example.examplemod.ExampleMod;
-
+import com.example.examplemod.entity.Bullet;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;

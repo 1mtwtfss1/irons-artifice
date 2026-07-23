@@ -1,12 +1,12 @@
 package com.example.examplemod;
 
-import org.slf4j.Logger;
-
-import com.example.examplemod.entity.EntityRegistry;
-import com.example.examplemod.item.ItemRegistry;
-import com.example.examplemod.menu.MenuRegistry;
+import com.example.examplemod.registry.EntityRegistry;
+import com.example.examplemod.registry.MenuRegistry;
+import com.example.examplemod.network.PayloadRegistry;
+import com.example.examplemod.registry.DataAttachmentRegistry;
+import com.example.examplemod.registry.DataComponentRegistry;
+import com.example.examplemod.registry.ItemRegistry;
 import com.mojang.logging.LogUtils;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -20,9 +20,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -31,6 +31,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(ExampleMod.MODID)
@@ -63,6 +64,11 @@ public class ExampleMod {
             .displayItems((parameters, output) -> {
                 output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ItemRegistry.GUN.get());
+                output.accept(ItemRegistry.BULLET.get());
+                output.accept(ItemRegistry.HEAVY.get());
+                output.accept(ItemRegistry.SCATTERSHOT.get());
+                output.accept(ItemRegistry.TRICKSHOT.get());
+                output.accept(ItemRegistry.FIRE.get());
             }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -76,8 +82,11 @@ public class ExampleMod {
         // Register the Deferred Register to the mod event bus so items get registered
         ITEMS.register(modEventBus);
         ItemRegistry.register(modEventBus);
+        DataComponentRegistry.register(modEventBus);
         EntityRegistry.register(modEventBus);
         MenuRegistry.register(modEventBus);
+        DataAttachmentRegistry.register(modEventBus);
+        modEventBus.addListener(PayloadRegistry::register);
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
 

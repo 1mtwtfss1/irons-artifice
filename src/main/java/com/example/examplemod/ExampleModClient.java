@@ -1,9 +1,9 @@
 package com.example.examplemod;
 
-import com.example.examplemod.entity.EntityRegistry;
+import com.example.examplemod.client.Keybinds;
+import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.menu.GunScreen;
-import com.example.examplemod.menu.MenuRegistry;
-
+import com.example.examplemod.registry.MenuRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.neoforged.api.distmarker.Dist;
@@ -13,6 +13,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -44,5 +45,10 @@ public class ExampleModClient {
     @SubscribeEvent
     static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityRegistry.BULLET.get(), NoopRenderer::new);
+    }
+
+    @SubscribeEvent
+    static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(Keybinds.OPEN_MODIFIER_MENU);
     }
 }

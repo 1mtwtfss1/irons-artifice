@@ -6,9 +6,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 
-/**
- * Five-slot inventory backed by the {@link DataComponents#CONTAINER} data component on a gun stack.
- */
 public class GunContainer extends SimpleContainer {
     public static final int SIZE = 5;
 
@@ -39,7 +36,7 @@ public class GunContainer extends SimpleContainer {
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        // Prevent nesting a gun (and its inventory) inside itself.
-        return !(stack.getItem() instanceof com.example.examplemod.item.GunItem);
+        // Only modifier items belong in a gun's modifier slots.
+        return stack.getItem() instanceof com.example.examplemod.modifier.ModifierItem;
     }
 }
