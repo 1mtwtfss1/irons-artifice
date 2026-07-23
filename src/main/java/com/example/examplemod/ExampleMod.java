@@ -64,6 +64,9 @@ public class ExampleMod {
             .displayItems((parameters, output) -> {
                 output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ItemRegistry.GUN.get());
+                output.accept(ItemRegistry.GUN1.get());
+                output.accept(ItemRegistry.GUN2.get());
+                output.accept(ItemRegistry.GUN3.get());
                 output.accept(ItemRegistry.BULLET.get());
                 output.accept(ItemRegistry.HEAVY.get());
                 output.accept(ItemRegistry.SCATTERSHOT.get());
