@@ -12,7 +12,7 @@ public final class Guns {
             Guns::basicGun,
             6,
             5,
-            9
+            20
     );
 
     public static final GunProfile HAND_CANNON = new GunProfile(
@@ -20,11 +20,12 @@ public final class Guns {
                 var map = basicGun();
                 map.set(ShotComponents.CAMERA_RECOIL, Value.of(25));
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.25));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
                 return map;
             },
             6,
             5,
-            1
+            20
     );
 
     public static final GunProfile SHOTGUN = new GunProfile(
@@ -41,18 +42,19 @@ public final class Guns {
             },
             6,
             5,
-            8
+            20
     );
     public static final GunProfile HIGH_CAP = new GunProfile(
             () -> {
                 var map = basicGun();
                 map.set(ShotComponents.CAMERA_RECOIL, Value.of(5));
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.05));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(2));
                 return map;
             },
             30,
             5,
-            2
+            20
     );
 
     private static ShotComponentMap basicGun() {
@@ -65,6 +67,7 @@ public final class Guns {
         map.set(ShotComponents.KNOCKBACK, Value.of(0.3));
         map.set(ShotComponents.CAMERA_RECOIL, Value.of(10.0));
         map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.0));
+        map.set(ShotComponents.FIRE_DELAY, Value.of(5));
         return map;
     }
 }

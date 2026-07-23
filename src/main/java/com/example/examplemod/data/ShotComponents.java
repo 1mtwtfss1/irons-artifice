@@ -8,6 +8,7 @@ public final class ShotComponents {
     // Shot Mechanics
     public static final ComponentType<Value> PROJECTILE_COUNT = new ComponentType<>("projectile_count", () -> Value.of(1));
     public static final ComponentType<Value> SPREAD = new ComponentType<>("spread", () -> Value.of(0));
+    public static final ComponentType<Value> FIRE_DELAY = new ComponentType<>("fire_delay", () -> Value.of(1));
 
     // Attributes
     public static final ComponentType<Value> DAMAGE = new ComponentType<>("damage", () -> Value.of(0));

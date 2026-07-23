@@ -2,6 +2,7 @@ package com.example.examplemod.registry;
 
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.item.MagazineContents;
+import com.example.examplemod.item.ReloadState;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
@@ -16,6 +17,10 @@ public final class DataComponentRegistry {
             COMPONENTS.registerComponentType("magazine", builder -> builder
                     .persistent(MagazineContents.CODEC)
                     .networkSynchronized(MagazineContents.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ReloadState>> RELOAD_STATE =
+            COMPONENTS.registerComponentType("reload_state", builder -> builder
+                    .persistent(ReloadState.CODEC)
+                    .networkSynchronized(ReloadState.STREAM_CODEC));
 
     public static void register(IEventBus modEventBus) {
         COMPONENTS.register(modEventBus);

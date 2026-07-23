@@ -6,6 +6,7 @@ import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.network.ClientboundBulletTrailPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -138,6 +139,8 @@ public class Bullet extends Projectile {
     protected void onHitBlock(@NonNull BlockHitResult hitResult) {
         super.onHitBlock(hitResult);
         int ricochet = this.entityData.get(DATA_RICOCHET);
+        Vec3 pos = hitResult.getLocation().subtract(this.getDeltaMovement().normalize().scale(0.05));
+        level().addParticle(ParticleTypes.FLAME, true, true, pos.x, pos.y, pos.z, 0, 0, 0);
         if (ricochet > 0) {
             this.entityData.set(DATA_RICOCHET, ricochet - 1);
             reflect(hitResult.getDirection());

@@ -10,13 +10,13 @@ import java.util.function.Supplier;
  * @param baseProfileSupplier supplies innate (autoattack) shot component map
  * @param magazineCapacity    rounds the magazine holds
  * @param modifierSlots       number of modifier slots on the gun
- * @param fireCooldownTicks   fire rate ish
+ * @param reloadTimeTicks     ticks required to reload
  */
 public record GunProfile(
         Supplier<ShotComponentMap> baseProfileSupplier,
         int magazineCapacity,
         int modifierSlots,
-        int fireCooldownTicks
+        int reloadTimeTicks
 ) {
     public ShotComponentMap baseProfile() {
         return baseProfileSupplier.get();

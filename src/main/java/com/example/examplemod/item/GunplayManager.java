@@ -4,12 +4,12 @@ import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.data.ShotComponentMap;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.entity.Bullet;
-import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.gun.GunProfile;
 import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.menu.GunContainer;
 import com.example.examplemod.modifier.ModifierItem;
 import com.example.examplemod.recoil.RecoilState;
+import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.registry.ItemRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +56,7 @@ public final class GunplayManager {
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, player.position());
         applyCharacterRecoil(player, profile);
         RecoilState.addImpulse(player, now, (float) profile.value(ShotComponents.CAMERA_RECOIL), roundIndex);
-        player.getCooldowns().addCooldown(stack, gunProfile.fireCooldownTicks());
+        player.getCooldowns().addCooldown(stack, (int) Math.round(profile.value(ShotComponents.FIRE_DELAY)));
     }
 
     private static void applyCharacterRecoil(ServerPlayer player, ShotProfile profile) {
@@ -104,7 +104,33 @@ public final class GunplayManager {
         return new ShotProfile(components);
     }
 
-    public static ReloadResult reload(Player player, ItemStack gun) {
+    public static ReloadResult attemptFinishReload(Player player, ItemStack gun) {
+        // fixme: lots of duplicated checks with attemptStartReload
+        if (!(gun.getItem() instanceof GunItem gunItem)) {
+            return ReloadResult.NO_AMMO;
+        }
+        int capacity = gunItem.magazineCapacity();
+        MagazineContents magazine = GunItem.getMagazine(gun);
+        int missing = magazine.missing(capacity);
+        if (missing <= 0) {
+            return ReloadResult.ALREADY_FULL;
+        }
+        boolean requiresAmmo = !player.hasInfiniteMaterials();
+        int available = countBullets(player);
+        if (requiresAmmo && available <= 0) {
+            return ReloadResult.NO_AMMO;
+        }
+        int toLoad = Math.min(missing, available);
+        if (requiresAmmo) {
+            consumeBullets(player, toLoad);
+        } else {
+            toLoad = missing;
+        }
+        GunItem.setMagazine(gun, magazine.with(magazine.count() + toLoad));
+        return ReloadResult.FINISHED_RELOAD;
+    }
+
+    public static ReloadResult attemptStartReload(Player player, ItemStack gun) {
         if (!(gun.getItem() instanceof GunItem gunItem)) {
             return ReloadResult.NO_AMMO;
         }
@@ -116,20 +142,14 @@ public final class GunplayManager {
             return ReloadResult.ALREADY_FULL;
         }
 
-        if (player.hasInfiniteMaterials()) {
-            GunItem.setMagazine(gun, magazine.with(capacity));
-            return ReloadResult.LOADED;
-        }
+        boolean requiresAmmo = !player.hasInfiniteMaterials();
 
         int available = countBullets(player);
-        if (available <= 0) {
+        if (requiresAmmo && available <= 0) {
             return ReloadResult.NO_AMMO;
         }
-
-        int toLoad = Math.min(missing, available);
-        consumeBullets(player, toLoad);
-        GunItem.setMagazine(gun, magazine.with(magazine.count() + toLoad));
-        return ReloadResult.LOADED;
+        GunItem.startReload(gun, gunItem.getGunProfile().reloadTimeTicks());
+        return ReloadResult.STARTING_RELOAD;
     }
 
     private static int countBullets(Player player) {

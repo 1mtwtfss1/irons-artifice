@@ -1,7 +1,8 @@
 package com.example.examplemod.data;
 
 public enum ReloadResult {
-    LOADED,
+    FINISHED_RELOAD,
+    STARTING_RELOAD,
     ALREADY_FULL,
     NO_AMMO
 }
