@@ -1,9 +1,11 @@
 package com.example.examplemod;
 
 import com.example.examplemod.client.Keybinds;
+import com.example.examplemod.client.particle.ImpactBlockParticle;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.menu.GunScreen;
 import com.example.examplemod.registry.MenuRegistry;
+import com.example.examplemod.registry.ParticleRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.neoforged.api.distmarker.Dist;
@@ -15,6 +17,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -50,5 +53,10 @@ public class ExampleModClient {
     @SubscribeEvent
     static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(Keybinds.OPEN_MODIFIER_MENU);
+    }
+
+    @SubscribeEvent
+    static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpecial(ParticleRegistry.BLOCK_IMPACT.get(), new ImpactBlockParticle.Provider());
     }
 }

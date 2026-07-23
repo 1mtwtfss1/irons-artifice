@@ -1,0 +1,34 @@
+package com.example.examplemod.registry;
+
+import com.example.examplemod.ExampleMod;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public final class ParticleRegistry {
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
+            DeferredRegister.create(Registries.PARTICLE_TYPE, ExampleMod.MODID);
+
+    public static final DeferredHolder<ParticleType<?>, ParticleType<BlockParticleOption>> BLOCK_IMPACT =
+            PARTICLE_TYPES.register("block_impact", () -> new ParticleType<BlockParticleOption>(false) {
+                @Override
+                public MapCodec<BlockParticleOption> codec() {
+                    return BlockParticleOption.codec(this);
+                }
+
+                @Override
+                public StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> streamCodec() {
+                    return BlockParticleOption.streamCodec(this);
+                }
+            });
+
+    public static void register(IEventBus modEventBus) {
+        PARTICLE_TYPES.register(modEventBus);
+    }
+}

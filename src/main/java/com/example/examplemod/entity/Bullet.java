@@ -3,14 +3,15 @@ package com.example.examplemod.entity;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.OnHitEffect;
 import com.example.examplemod.gun.ShotProfile;
+import com.example.examplemod.network.ClientboundBulletImpactPacket;
 import com.example.examplemod.network.ClientboundBulletTrailPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -95,7 +96,8 @@ public class Bullet extends Projectile {
         }
 
         if (level() instanceof ServerLevel serverLevel && profile != null) {
-            emitTrail(serverLevel, position, destination);
+            Vec3 particleStart = this.tickCount == 1 ? position.subtract(0, 0.25, 0) : position;
+            emitTrail(serverLevel, particleStart, destination);
         }
 
         this.setDeltaMovement(getDeltaMovement().scale(DRAG));
@@ -139,8 +141,10 @@ public class Bullet extends Projectile {
     protected void onHitBlock(@NonNull BlockHitResult hitResult) {
         super.onHitBlock(hitResult);
         int ricochet = this.entityData.get(DATA_RICOCHET);
-        Vec3 pos = hitResult.getLocation().subtract(this.getDeltaMovement().normalize().scale(0.05));
-        level().addParticle(ParticleTypes.FLAME, true, true, pos.x, pos.y, pos.z, 0, 0, 0);
+        level().playSound(null, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()).getSoundType(level(), hitResult.getBlockPos(), null).getBreakSound(), SoundSource.BLOCKS, .75f, 1f);
+        if(level() instanceof ServerLevel serverLevel){
+            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, this.chunkPosition(), new ClientboundBulletImpactPacket(hitResult.getLocation(), this.getDeltaMovement(),hitResult.getDirection().getUnitVec3()));
+        }
         if (ricochet > 0) {
             this.entityData.set(DATA_RICOCHET, ricochet - 1);
             reflect(hitResult.getDirection());

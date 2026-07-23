@@ -25,7 +25,6 @@ public final class CrosshairRenderer {
     private static final int LENGTH = 3;
     private static final float GAP_BASE = 0.0F;
     private static final float GAP_PER_DEGREE = 1.5F;
-    private static final int GAP_MAX = 40;
 
     private static float crosshairGapCursor = 0.0F;
     private static float crosshairGapCursorO = 0.0F;
@@ -55,7 +54,7 @@ public final class CrosshairRenderer {
 
         float partialTick = deltaTracker.getGameTimeDeltaPartialTick(false);
         float degreesSpread = localCrosshairGap(partialTick);
-        float gap = Mth.clamp(GAP_BASE + degreesSpread * GAP_PER_DEGREE, 0, GAP_MAX);
+        float gap = Math.max(GAP_BASE + degreesSpread * GAP_PER_DEGREE, 0);
         graphics.nextStratum();
         Matrix3x2fStack poseStack = graphics.pose();
         poseStack.pushMatrix();
@@ -64,7 +63,7 @@ public final class CrosshairRenderer {
             poseStack.translate(0.5f, 0.5f);
             float f = (reloadAnimationTick - partialTick) / reloadAnimationDuration;
             f = crosshairAnimationInterpolation(f);
-            poseStack.rotate(f * 90 * Mth.DEG_TO_RAD);
+            poseStack.rotate(f * 180 * Mth.DEG_TO_RAD);
             poseStack.translate(-0.5f, -0.5f);
 
         }
@@ -77,7 +76,7 @@ public final class CrosshairRenderer {
     private static float crosshairAnimationInterpolation(float percent) {
 //        return (float) Mth.smoothstep(percent);
         percent = 1 - percent;
-        return 1 - (percent * percent * percent * percent* percent);
+        return 1 - (percent * percent * percent * percent * percent);
     }
 
     private static void updateCrosshairCursor() {

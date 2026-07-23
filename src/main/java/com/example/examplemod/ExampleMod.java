@@ -6,10 +6,12 @@ import com.example.examplemod.network.PayloadRegistry;
 import com.example.examplemod.registry.DataAttachmentRegistry;
 import com.example.examplemod.registry.DataComponentRegistry;
 import com.example.examplemod.registry.ItemRegistry;
+import com.example.examplemod.registry.ParticleRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -89,6 +91,7 @@ public class ExampleMod {
         EntityRegistry.register(modEventBus);
         MenuRegistry.register(modEventBus);
         DataAttachmentRegistry.register(modEventBus);
+        ParticleRegistry.register(modEventBus);
         modEventBus.addListener(PayloadRegistry::register);
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
@@ -103,6 +106,10 @@ public class ExampleMod {
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+    }
+
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

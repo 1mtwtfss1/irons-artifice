@@ -83,7 +83,7 @@ public final class GunplayManager {
             Bullet bullet = new Bullet(EntityRegistry.BULLET.get(), level);
             bullet.setOwner(player);
             bullet.applyProfile(profile);
-            bullet.setPos(player.getEyePosition().subtract(0, 0.25, 0));
+            bullet.setPos(player.getEyePosition());
             bullet.shootFromRotation(
                     player,
                     pitch,
