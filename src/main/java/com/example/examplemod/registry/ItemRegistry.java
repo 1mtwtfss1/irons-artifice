@@ -5,6 +5,7 @@ import com.example.examplemod.gun.Guns;
 import com.example.examplemod.item.GunItem;
 import com.example.examplemod.modifier.ModifierItem;
 import com.example.examplemod.modifier.modifiers.FireModifier;
+import com.example.examplemod.modifier.modifiers.GravityWellModifier;
 import com.example.examplemod.modifier.modifiers.HeavyModifier;
 import com.example.examplemod.modifier.modifiers.ScattershotModifier;
 import com.example.examplemod.modifier.modifiers.TrickshotModifier;
@@ -38,15 +39,14 @@ public final class ItemRegistry {
 
     public static final DeferredItem<ModifierItem> HEAVY = ITEMS.registerItem(
             "heavy_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
-
     public static final DeferredItem<ModifierItem> SCATTERSHOT = ITEMS.registerItem(
             "scattershot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ScattershotModifier()));
-
     public static final DeferredItem<ModifierItem> TRICKSHOT = ITEMS.registerItem(
             "trickshot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new TrickshotModifier()));
-
     public static final DeferredItem<ModifierItem> FIRE = ITEMS.registerItem(
             "fire_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FireModifier()));
+    public static final DeferredItem<ModifierItem> GRAVITY = ITEMS.registerItem(
+            "gravity_well_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GravityWellModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
 

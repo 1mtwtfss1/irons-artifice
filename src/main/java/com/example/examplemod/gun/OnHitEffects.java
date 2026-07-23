@@ -1,10 +1,10 @@
 package com.example.examplemod.gun;
 
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class OnHitEffects {
-    private final Set<OnHitEffect> effects = EnumSet.noneOf(OnHitEffect.class);
+    private final List<OnHitEffect> effects = new ArrayList<>();
 
     public void add(OnHitEffect effect) {
         this.effects.add(effect);
@@ -14,8 +14,8 @@ public final class OnHitEffects {
         return this.effects.contains(effect);
     }
 
-    public Set<OnHitEffect> all() {
-        return Set.copyOf(this.effects);
+    public List<OnHitEffect> all() {
+        return List.copyOf(this.effects);
     }
 
     public boolean isEmpty() {

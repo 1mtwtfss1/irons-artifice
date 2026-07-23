@@ -16,6 +16,7 @@ public final class ShotComponents {
     public static final ComponentType<Value> BULLET_SPEED = new ComponentType<>(ExampleMod.id("bullet_speed"), () -> Value.of(15));
     public static final ComponentType<Value> GRAVITY = new ComponentType<>(ExampleMod.id("gravity"), () -> Value.of(0.05));
     public static final ComponentType<Value> KNOCKBACK = new ComponentType<>(ExampleMod.id("knockback"), () -> Value.of(0));
+    public static final ComponentType<Value> BULLET_DRAG = new ComponentType<>(ExampleMod.id("bullet_drag"), () -> Value.of(.98));
 
     // Bullet Behavior
     public static final ComponentType<Value> PIERCING = new ComponentType<>(ExampleMod.id("piercing"), () -> Value.of(0));

@@ -21,6 +21,9 @@ public final class Guns {
                 map.set(ShotComponents.CAMERA_RECOIL, Value.of(25));
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.25));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
+                map.set(ShotComponents.GUNSHOT_SOUND,
+                        new GunShotSoundStack(PlayableSound.of(SoundEvents.FIREWORK_ROCKET_BLAST, 8f, 0.75f, 0.85f), PlayableSound.of(SoundEvents.DISPENSER_FAIL, 0.75f, 1.4f, 1.6f))
+                );
                 return map;
             },
             6,
@@ -31,6 +34,7 @@ public final class Guns {
     public static final GunProfile SHOTGUN = new GunProfile(
             () -> {
                 var map = basicGun();
+                map.set(ShotComponents.DAMAGE, Value.of(10));
                 map.set(ShotComponents.PROJECTILE_COUNT, Value.of(6));
                 map.set(ShotComponents.SPREAD, Value.of(5));
                 map.set(ShotComponents.CAMERA_RECOIL, Value.of(30));
@@ -47,7 +51,7 @@ public final class Guns {
     public static final GunProfile HIGH_CAP = new GunProfile(
             () -> {
                 var map = basicGun();
-                map.set(ShotComponents.CAMERA_RECOIL, Value.of(5));
+                map.set(ShotComponents.CAMERA_RECOIL, Value.of(10));
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.05));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(2));
                 return map;

@@ -2,6 +2,7 @@ package com.example.examplemod.entity;
 
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.OnHitEffect;
+import com.example.examplemod.gun.OnHitEffects;
 import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.network.ClientboundBulletImpactPacket;
 import com.example.examplemod.network.ClientboundBulletTrailPacket;
@@ -38,12 +39,10 @@ public class Bullet extends Projectile {
             SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_RICOCHET =
             SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> DATA_DRAG =
+            SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
 
-    private static final float DRAG = 0.99F;
     private static final double BOUNCE_RETENTION = 0.8;
-    // todo: not hardcode ignite
-    private static final float IGNITE_SECONDS = 5.0F;
-
     private static final double TRAIL_DENSITY = 1.0;
 
     @Nullable
@@ -57,16 +56,18 @@ public class Bullet extends Projectile {
 
     public void applyProfile(ShotProfile profile) {
         this.profile = profile;
-        this.piercingRemaining = (int) Math.round(profile.value(ShotComponents.PIERCING));
-        // Gravity and ricochet are synced so the client's movement/bounces track the server.
+        this.piercingRemaining = (int) profile.value(ShotComponents.PIERCING);
+        // synced parameters for movement parity
         this.entityData.set(DATA_GRAVITY, (float) profile.value(ShotComponents.GRAVITY));
-        this.entityData.set(DATA_RICOCHET, (int) Math.round(profile.value(ShotComponents.RICOCHET)));
+        this.entityData.set(DATA_RICOCHET, (int) profile.value(ShotComponents.RICOCHET));
+        this.entityData.set(DATA_DRAG, (float) profile.value(ShotComponents.BULLET_DRAG));
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(DATA_GRAVITY, 0.05F);
+        builder.define(DATA_GRAVITY, 0.05f);
         builder.define(DATA_RICOCHET, 0);
+        builder.define(DATA_DRAG, 0.98f);
     }
 
     @Override
@@ -83,26 +84,44 @@ public class Bullet extends Projectile {
         if (blockHit.getType() != HitResult.Type.MISS) {
             destination = blockHit.getLocation();
         }
+        Vec3 particleEnd = destination;
 
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
                 level(), this, position, destination,
-                getBoundingBox().expandTowards(delta).inflate(0.3),
-                this::canHitEntity);
+                getBoundingBox().expandTowards(delta).inflate(1),
+                this::canHitEntity, 0.25f);
 
         if (entityHit != null) {
             onHit(entityHit);
+            if (this.isRemoved()) {
+                // should automatically handle piercing or other effects
+                particleEnd = entityHit.getLocation();
+            }
         } else if (blockHit.getType() != HitResult.Type.MISS) {
             onHit(blockHit);
+            particleEnd = blockHit.getLocation();
         }
 
         if (level() instanceof ServerLevel serverLevel && profile != null) {
             Vec3 particleStart = this.tickCount == 1 ? position.subtract(0, 0.25, 0) : position;
-            emitTrail(serverLevel, particleStart, destination);
+            emitTrail(serverLevel, particleStart, particleEnd);
         }
 
-        this.setDeltaMovement(getDeltaMovement().scale(DRAG));
+        this.setDeltaMovement(getDeltaMovement().scale(getDrag()));
         this.applyGravity();
         this.setPos(destination);
+    }
+
+    @Override
+    protected void onHit(@NonNull HitResult hitResult) {
+        super.onHit(hitResult);
+        if (profile == null) {
+            return;
+        }
+        OnHitEffects onHitEffects = profile.get(ShotComponents.ON_HIT);
+        for (OnHitEffect effect : onHitEffects.all()) {
+            effect.onHit(this, hitResult);
+        }
     }
 
     @Override
@@ -118,12 +137,10 @@ public class Bullet extends Projectile {
         }
 
         Entity owner = getOwner();
+        float damage = (float) profile.value(ShotComponents.DAMAGE) / (int) profile.value(ShotComponents.PROJECTILE_COUNT);
         DamageSource source = damageSources().mobProjectile(this, owner instanceof LivingEntity le ? le : null);
-        target.hurtServer(serverLevel, source, (float) profile.value(ShotComponents.DAMAGE));
+        target.hurtServer(serverLevel, source, damage);
 
-        if (profile.get(ShotComponents.ON_HIT).contains(OnHitEffect.IGNITE)) {
-            target.igniteForSeconds(IGNITE_SECONDS);
-        }
         float knockback = (float) profile.value(ShotComponents.KNOCKBACK);
         if (target instanceof LivingEntity living && knockback > 0.0F) {
             Vec3 v = getDeltaMovement();
@@ -142,8 +159,8 @@ public class Bullet extends Projectile {
         super.onHitBlock(hitResult);
         int ricochet = this.entityData.get(DATA_RICOCHET);
         level().playSound(null, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()).getSoundType(level(), hitResult.getBlockPos(), null).getBreakSound(), SoundSource.BLOCKS, .75f, 1f);
-        if(level() instanceof ServerLevel serverLevel){
-            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, this.chunkPosition(), new ClientboundBulletImpactPacket(hitResult.getLocation(), this.getDeltaMovement(),hitResult.getDirection().getUnitVec3()));
+        if (level() instanceof ServerLevel serverLevel) {
+            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, this.chunkPosition(), new ClientboundBulletImpactPacket(hitResult.getLocation(), this.getDeltaMovement(), hitResult.getDirection().getUnitVec3()));
         }
         if (ricochet > 0) {
             this.entityData.set(DATA_RICOCHET, ricochet - 1);
@@ -169,6 +186,10 @@ public class Bullet extends Projectile {
     @Override
     protected double getDefaultGravity() {
         return this.entityData.get(DATA_GRAVITY);
+    }
+
+    public float getDrag() {
+        return this.entityData.get(DATA_DRAG);
     }
 
     private void emitTrail(ServerLevel level, Vec3 from, Vec3 to) {
