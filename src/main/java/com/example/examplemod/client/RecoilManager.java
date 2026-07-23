@@ -35,6 +35,7 @@ public final class RecoilManager {
     private static float pitchCursor = 0.0F;
     private static float yawCursor = 0.0F;
 
+
     /**
      * Applies a recoil impulse from a local fire. {@code roundIndex} drives the yaw pattern.
      */
@@ -75,7 +76,7 @@ public final class RecoilManager {
         yawCursorO = yawCursor;
         pitch = decay(pitch);
         yaw = decay(yaw);
-        updateCursor();
+        updateCameraCursor();
     }
 
     private static float decay(float value) {
@@ -83,7 +84,7 @@ public final class RecoilManager {
         return Math.abs(decayed) < EPSILON ? 0.0F : decayed;
     }
 
-    private static void updateCursor() {
+    private static void updateCameraCursor() {
         pitchCursor = Mth.lerp(CURSOR_STRENGTH, pitchCursor, pitch);
         yawCursor = Mth.lerp(CURSOR_STRENGTH, yawCursor, yaw);
         if (Math.abs(pitchCursor) < EPSILON) {
@@ -93,4 +94,12 @@ public final class RecoilManager {
             yawCursor = 0;
         }
     }
+
+
+
+    public static float localRecoilMagnitude() {
+        return Mth.sqrt(yaw * yaw + pitch * pitch);
+    }
+
+
 }

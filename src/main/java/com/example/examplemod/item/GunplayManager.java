@@ -8,19 +8,23 @@ import com.example.examplemod.gun.GunProfile;
 import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.menu.GunContainer;
 import com.example.examplemod.modifier.ModifierItem;
+import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
 import com.example.examplemod.recoil.RecoilState;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.registry.ItemRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class GunplayManager {
 
@@ -74,7 +78,7 @@ public final class GunplayManager {
         float yaw = player.getYRot() + offset.yaw();
         int projectileCount = Math.max(1, (int) Math.round(profile.value(ShotComponents.PROJECTILE_COUNT)));
         float speed = (float) profile.value(ShotComponents.BULLET_SPEED);
-        float spread = (float) profile.value(ShotComponents.SPREAD);
+        float spread = getSpreadForEntity(profile, player);
         for (int i = 0; i < projectileCount; i++) {
             Bullet bullet = new Bullet(EntityRegistry.BULLET.get(), level);
             bullet.setOwner(player);
@@ -90,6 +94,27 @@ public final class GunplayManager {
             );
             level.addFreshEntity(bullet);
         }
+    }
+
+    public static float getSpreadForEntity(ShotProfile shotProfile, Entity entity) {
+        float crouchingMultiplier = 0.5f;
+        float inAirMultiplier = 1.5f;
+        float penaltyPerMovement = 3f;
+        float maxMovementPenalty = 15f;
+
+        float spread = (float) shotProfile.value(ShotComponents.SPREAD);
+        if (entity.isCrouching()) {
+            spread *= crouchingMultiplier;
+        }
+        if (!entity.onGround()) {
+            spread *= inAirMultiplier;
+        }
+        float entitySpeed = (float) entity.getDeltaMovement().length();
+        if (entitySpeed > 0.1) {
+            float penalty = Mth.clamp(1 + penaltyPerMovement * entitySpeed, 1, maxMovementPenalty);
+            spread *= penalty;
+        }
+        return spread;
     }
 
     public static ShotProfile compose(GunProfile gunProfile, Container modifiers, LivingEntity shooter,
@@ -148,7 +173,11 @@ public final class GunplayManager {
         if (requiresAmmo && available <= 0) {
             return ReloadResult.NO_AMMO;
         }
-        GunItem.startReload(gun, gunItem.getGunProfile().reloadTimeTicks());
+        int ticks = gunItem.getGunProfile().reloadTimeTicks();
+        GunItem.startReload(gun, ticks);
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new ClientboundReloadCrosshairAnimationPacket(ticks));
+        }
         return ReloadResult.STARTING_RELOAD;
     }
 

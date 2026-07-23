@@ -25,5 +25,10 @@ public final class PayloadRegistry {
                 ClientboundBulletTrailPacket.STREAM_CODEC,
                 ClientboundBulletTrailPacket::handle
         );
+        registrar.playToClient(
+                ClientboundReloadCrosshairAnimationPacket.TYPE,
+                ClientboundReloadCrosshairAnimationPacket.STREAM_CODEC,
+                ClientboundReloadCrosshairAnimationPacket::handle
+        );
     }
 }

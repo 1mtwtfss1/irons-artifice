@@ -1,6 +1,7 @@
 package com.example.examplemod.client;
 
 import com.example.examplemod.network.ClientboundBulletTrailPacket;
+import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleOptions;
@@ -33,5 +34,9 @@ public final class ClientHelper {
                     pos.x, pos.y, pos.z,
                     dir.x * speed, dir.y * speed, dir.z * speed);
         }
+    }
+
+    public static void handleCrosshairAnimation(ClientboundReloadCrosshairAnimationPacket msg) {
+        CrosshairRenderer.triggerReloadAnimation(msg.reloadDuration());
     }
 }
