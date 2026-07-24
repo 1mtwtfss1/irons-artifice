@@ -1,5 +1,6 @@
 package com.example.examplemod.menu;
 
+import com.example.examplemod.modifier.ModifierItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -36,7 +37,6 @@ public class GunContainer extends SimpleContainer {
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        // Only modifier items belong in a gun's modifier slots.
-        return stack.getItem() instanceof com.example.examplemod.modifier.ModifierItem;
+        return stack.getItem() instanceof ModifierItem;
     }
 }

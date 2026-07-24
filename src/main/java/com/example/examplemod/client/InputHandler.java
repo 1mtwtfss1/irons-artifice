@@ -21,38 +21,19 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 @EventBusSubscriber(modid = ExampleMod.MODID, value = Dist.CLIENT)
 public final class InputHandler {
 
+    private static boolean attackHeldLastTick = false;
+
     @SubscribeEvent
     static void onAttackInput(InputEvent.InteractionKeyMappingTriggered event) {
         if (!event.isAttack()) {
             return;
         }
-
-        Minecraft minecraft = Minecraft.getInstance();
-        LocalPlayer player = minecraft.player;
-        if (player == null) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null || !(player.getMainHandItem().getItem() instanceof GunItem)) {
             return;
         }
-        if (!(player.getMainHandItem().getItem() instanceof GunItem gunItem)) {
-            return;
-        }
-
         event.setSwingHand(false);
         event.setCanceled(true);
-
-        ClientPacketDistributor.sendToServer(ServerboundFireGunPacket.INSTANCE);
-        predictRecoil(player, gunItem);
-    }
-
-    private static void predictRecoil(LocalPlayer player, GunItem gunItem) {
-        ItemStack held = player.getMainHandItem();
-        // todo: this layer is thin and must be manually kept in sync with future conditions. shot profile itself should be able to judge whether it can shoot or something
-        if (player.getCooldowns().isOnCooldown(held) || GunItem.getMagazine(held).isEmpty()) {
-            return;
-        }
-        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), player, held, player.level());
-        // deterministic and server-synced "spray pattern" based off of the index of the bullet being fired
-        int bulletIndex = gunItem.magazineCapacity() - GunItem.getMagazine(held).count();
-        RecoilManager.applyRecoil((float) profile.value(ShotComponents.CAMERA_RECOIL), bulletIndex);
     }
 
     @SubscribeEvent
@@ -63,10 +44,49 @@ public final class InputHandler {
             return;
         }
 
+        handleFireInput(minecraft, player);
+
         while (Keybinds.OPEN_MODIFIER_MENU.consumeClick()) {
             if (player.getMainHandItem().getItem() instanceof GunItem) {
                 ClientPacketDistributor.sendToServer(ServerboundOpenModifierMenuPacket.INSTANCE);
             }
+        }
+    }
+
+    private static void handleFireInput(Minecraft minecraft, LocalPlayer player) {
+        boolean canInput = minecraft.screen == null && minecraft.mouseHandler.isMouseGrabbed();
+        boolean attackHeld = canInput && minecraft.options.keyAttack.isDown();
+
+        if (!(player.getMainHandItem().getItem() instanceof GunItem gunItem)) {
+            attackHeldLastTick = attackHeld;
+            return;
+        }
+
+        boolean triggerPulled = switch (gunItem.getGun().fireMode()) {
+            case SEMI -> attackHeld && !attackHeldLastTick;
+            case AUTO -> attackHeld;
+        };
+        attackHeldLastTick = attackHeld;
+
+        if (triggerPulled) {
+            tryFire(player, gunItem);
+        }
+    }
+
+    private static void tryFire(LocalPlayer player, GunItem gunItem) {
+        ItemStack held = player.getMainHandItem();
+        // fixme: these conditions are thin and must be manually kept in sync
+        if (player.getCooldowns().isOnCooldown(held) || GunItem.isReloading(held)) {
+            return;
+        }
+
+        ClientPacketDistributor.sendToServer(ServerboundFireGunPacket.INSTANCE);
+
+        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), player, held, player.level());
+
+        if (!GunItem.getMagazine(held).isEmpty()) {
+            int bulletIndex = gunItem.magazineCapacity() - GunItem.getMagazine(held).count();
+            RecoilManager.applyRecoil((float) profile.value(ShotComponents.CAMERA_RECOIL), bulletIndex);
         }
     }
 }

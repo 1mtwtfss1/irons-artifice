@@ -12,7 +12,8 @@ public final class Guns {
             Guns::basicGun,
             6,
             5,
-            20
+            20,
+            FireMode.SEMI
     );
 
     public static final GunProfile HAND_CANNON = new GunProfile(
@@ -28,7 +29,8 @@ public final class Guns {
             },
             6,
             5,
-            20
+            20,
+            FireMode.SEMI
     );
 
     public static final GunProfile SHOTGUN = new GunProfile(
@@ -46,7 +48,8 @@ public final class Guns {
             },
             6,
             5,
-            20
+            20,
+            FireMode.SEMI
     );
     public static final GunProfile HIGH_CAP = new GunProfile(
             () -> {
@@ -58,7 +61,8 @@ public final class Guns {
             },
             30,
             5,
-            20
+            20,
+            FireMode.AUTO
     );
 
     private static ShotComponentMap basicGun() {

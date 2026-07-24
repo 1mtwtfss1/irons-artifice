@@ -110,6 +110,9 @@ public class Bullet extends Projectile {
         this.setDeltaMovement(getDeltaMovement().scale(getDrag()));
         this.applyGravity();
         this.setPos(destination);
+        if (this.getDeltaMovement().lengthSqr() < 1) {
+            discard();
+        }
     }
 
     @Override

@@ -37,8 +37,11 @@ public final class GunplayManager {
         if (player.getCooldowns().isOnCooldown(stack)) {
             return;
         }
+        if (GunItem.isReloading(stack)) {
+            return;
+        }
 
-        ServerLevel level = (ServerLevel) player.level();
+        ServerLevel level = player.level();
         MagazineContents magazine = GunItem.getMagazine(stack);
         GunProfile gunProfile = gunItem.getGun();
         GunContainer modifiers = new GunContainer(stack);
@@ -50,7 +53,6 @@ public final class GunplayManager {
             return;
         }
 
-        // Fire along the current recoil offset so bullets track the recoiled crosshair, not raw aim.
         long now = level.getGameTime();
         RecoilState offset = RecoilState.current(player, now);
         int roundIndex = gunProfile.magazineCapacity() - magazine.count();

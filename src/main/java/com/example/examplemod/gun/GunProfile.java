@@ -11,12 +11,14 @@ import java.util.function.Supplier;
  * @param magazineCapacity    rounds the magazine holds
  * @param modifierSlots       number of modifier slots on the gun
  * @param reloadTimeTicks     ticks required to reload
+ * @param fireMode            how a held attack input translates into shots (semi vs full auto)
  */
 public record GunProfile(
         Supplier<ShotComponentMap> baseProfileSupplier,
         int magazineCapacity,
         int modifierSlots,
-        int reloadTimeTicks
+        int reloadTimeTicks,
+        FireMode fireMode
 ) {
     public ShotComponentMap baseProfile() {
         return baseProfileSupplier.get();

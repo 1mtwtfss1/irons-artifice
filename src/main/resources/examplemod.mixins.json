@@ -3,7 +3,8 @@
   "minVersion": "0.8.5",
   "package": "com.example.examplemod.mixin",
   "client": [
-    "GuiCrosshairMixin"
+    "GuiCrosshairMixin",
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

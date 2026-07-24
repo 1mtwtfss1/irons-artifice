@@ -71,8 +71,7 @@ public class GunItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-
-        if (!level.isClientSide()) {
+        if (!level.isClientSide() && !isReloading(stack)) {
             ReloadResult result = GunplayManager.attemptStartReload(player, stack);
             playReloadFeedback(level, player, result);
         }
