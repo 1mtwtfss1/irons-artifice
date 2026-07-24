@@ -11,8 +11,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDestroyBlockEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
@@ -70,7 +68,7 @@ public class BlockDamageManager {
         if (destroySpeed < 0) {
             return;
         }
-        float blockMaxHealth = destroySpeed * 120;
+        float blockMaxHealth = (destroySpeed + state.getBlock().getExplosionResistance()) * 5;
         // todo: block specific multipliers, config, blacklist, etc
         if (state.is(Blocks.TARGET)) {
             return;

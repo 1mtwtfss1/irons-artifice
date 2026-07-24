@@ -4,6 +4,7 @@ import com.example.examplemod.ExampleMod;
 import com.example.examplemod.gun.Guns;
 import com.example.examplemod.item.GunItem;
 import com.example.examplemod.modifier.ModifierItem;
+import com.example.examplemod.modifier.modifiers.BreachModifier;
 import com.example.examplemod.modifier.modifiers.FireModifier;
 import com.example.examplemod.modifier.modifiers.GravityWellModifier;
 import com.example.examplemod.modifier.modifiers.HeavyModifier;
@@ -47,6 +48,8 @@ public final class ItemRegistry {
             "fire_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FireModifier()));
     public static final DeferredItem<ModifierItem> GRAVITY = ITEMS.registerItem(
             "gravity_well_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GravityWellModifier()));
+    public static final DeferredItem<ModifierItem> BREACH = ITEMS.registerItem(
+            "breach", properties -> new ModifierItem(properties.stacksTo(1), new BreachModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
 

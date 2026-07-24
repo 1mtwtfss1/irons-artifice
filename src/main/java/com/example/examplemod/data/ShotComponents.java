@@ -18,11 +18,13 @@ public final class ShotComponents {
     public static final ComponentType<Value> GRAVITY = new ComponentType<>(ExampleMod.id("gravity"), () -> Value.of(0.05));
     public static final ComponentType<Value> KNOCKBACK = new ComponentType<>(ExampleMod.id("knockback"), () -> Value.of(0));
     public static final ComponentType<Value> BULLET_DRAG = new ComponentType<>(ExampleMod.id("bullet_drag"), () -> Value.of(.98));
+    public static final ComponentType<Value> BLOCK_DAMAGE_MULTIPLIER = new ComponentType<>(ExampleMod.id("block_damage_multiplier"), () -> Value.of(1));
 
     // Bullet Behavior
     public static final ComponentType<Value> PIERCING = new ComponentType<>(ExampleMod.id("piercing"), () -> Value.of(0));
     public static final ComponentType<Value> RICOCHET = new ComponentType<>(ExampleMod.id("ricochet"), () -> Value.of(0));
     public static final ComponentType<OnHitEffects> ON_HIT = new ComponentType<>(ExampleMod.id("on_hit"), OnHitEffects::new);
+    public static final ComponentType<Boolean> BREAKS_BLOCKS = new ComponentType<>(ExampleMod.id("breaks_blocks"), () -> false);
 
     // UX
     public static final ComponentType<RecoilProfile> CAMERA_RECOIL = new ComponentType<>(ExampleMod.id("camera_recoil"), () -> RecoilProfile.simple(10, 0));

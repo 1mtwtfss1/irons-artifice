@@ -184,7 +184,10 @@ public class Bullet extends Projectile {
             if (this.profile != null) {
                 // todo: block damage mujltipliers
                 // fixme: why is damage not resolved already
-                BlockDamageManager.applyDamage(serverLevel, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()), (float) this.profile.value(ShotComponents.DAMAGE) / (float) profile.value(ShotComponents.PROJECTILE_COUNT), this);
+                if (profile.get(ShotComponents.BREAKS_BLOCKS)) {
+                    float damage = (float) (this.profile.value(ShotComponents.BLOCK_DAMAGE_MULTIPLIER) * this.profile.value(ShotComponents.DAMAGE) / profile.value(ShotComponents.PROJECTILE_COUNT));
+                    BlockDamageManager.applyDamage(serverLevel, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()), damage, this);
+                }
             }
         }
         if (ricochet > 0) {
