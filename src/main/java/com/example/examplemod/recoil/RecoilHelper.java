@@ -1,57 +1,54 @@
 package com.example.examplemod.recoil;
 
+import com.example.examplemod.gun.ShotProfile;
+import com.example.examplemod.item.GunItem;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
+
 public final class RecoilHelper {
-    /** Fraction of the recoil offset retained each tick during recovery (lower = snappier). */
+    /**
+     * Fraction of the recoil offset retained each tick during recovery (lower = snappier).
+     */
     public static final float RETENTION = 0.75F;
 
-    /**
-     * Fraction of each shot's kick applied <b>permanently</b> to the player's actual aim (a settle
-     * offset the player must correct with the mouse); the remainder is the transient, recovered
-     * offset. Applied client-side as a physical rotation change, which syncs to the server, so the
-     * server's bullets inherit it via the player's rotation. The transient remainder is tracked
-     * separately (client camera + {@code ServerRecoil}).
-     */
     public static final float PERMANENT_FRACTION = 0.15F;
 
-    /** Horizontal kick as a fraction of the vertical kick. */
-    private static final float YAW_FRACTION = 0.33F;
-    /** Frequency of the deterministic horizontal spray pattern, in radians per round. */
-    private static final double YAW_PATTERN_FREQ = 1.7;
-
-    /** Full vertical kick (degrees, look-up) for one shot, before the permanent/transient split. */
-    private static float rawPitch(float cameraRecoil) {
-        return cameraRecoil;
+    /**
+     * Deterministic step based on the round index being fired out of the magazine <br>
+     * Used for client-server agreement, and consistent recoil patterns
+     */
+    public static int getBulletIndex(ShotProfile shotProfile){
+        return shotProfile.gun().magazineCapacity() - GunItem.getMagazine(shotProfile.itemStack()).count();
+    }
+    /**
+     * @return pitch, yaw in degrees
+     */
+    public static Vec2 calculateFullRecoil(RecoilProfile profile, int index) {
+        float pitch = profile.magnitude();
+        float yaw = profile.magnitude() * profile.horizontalRatio() *
+                Mth.sin((index + profile.seed()) * profile.horizontalPatternFrequency());
+        return new Vec2(pitch, yaw);
+    }
+    /**
+     * Recoil applied permanently to character's rotation
+     * @return pitch, yaw in degrees
+     */
+    public static Vec2 calculatePermanentRecoil(RecoilProfile profile, int index) {
+        Vec2 fullRecoil = calculateFullRecoil(profile, index);
+        return fullRecoil.scale(PERMANENT_FRACTION);
+    }
+    /**
+     * Recoil applied temporarily to character's camera and aim
+     * @return pitch, yaw in degrees
+     */
+    public static Vec2 calculateCameraRecoil(RecoilProfile profile, int index) {
+        Vec2 fullRecoil = calculateFullRecoil(profile, index);
+        return fullRecoil.scale(1 - PERMANENT_FRACTION);
     }
 
     /**
-     * Full horizontal kick (degrees) for one shot before the split. Deterministic zig-zag keyed on
-     * the round index so the pattern is learnable and identical on client and server.
+     * Decays a recoil component over {@code ticks} elapsed ticks.
      */
-    private static float rawYaw(float cameraRecoil, int roundIndex) {
-        return (float) Math.sin(roundIndex * YAW_PATTERN_FREQ) * cameraRecoil * YAW_FRACTION;
-    }
-
-    /** Permanent (non-recovered) vertical kick applied to the player's actual aim. */
-    public static float permanentPitch(float cameraRecoil) {
-        return rawPitch(cameraRecoil) * PERMANENT_FRACTION;
-    }
-
-    /** Permanent (non-recovered) horizontal kick applied to the player's actual aim. */
-    public static float permanentYaw(float cameraRecoil, int roundIndex) {
-        return rawYaw(cameraRecoil, roundIndex) * PERMANENT_FRACTION;
-    }
-
-    /** Transient vertical kick added to the recovered offset (client camera + server bullets). */
-    public static float impulsePitch(float cameraRecoil) {
-        return rawPitch(cameraRecoil) * (1.0F - PERMANENT_FRACTION);
-    }
-
-    /** Transient horizontal kick added to the recovered offset (client camera + server bullets). */
-    public static float impulseYaw(float cameraRecoil, int roundIndex) {
-        return rawYaw(cameraRecoil, roundIndex) * (1.0F - PERMANENT_FRACTION);
-    }
-
-    /** Decays a recoil component over {@code ticks} elapsed ticks. */
     public static float decay(float value, int ticks) {
         if (ticks <= 0) {
             return value;

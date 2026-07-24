@@ -2,6 +2,7 @@ package com.example.examplemod.recoil;
 
 import com.example.examplemod.registry.DataAttachmentRegistry;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec2;
 
 /**
  * Server-side recoil accumulator stored as a data attachment on the shooter.
@@ -10,9 +11,9 @@ import net.minecraft.server.level.ServerPlayer;
  * decay: the offset is decayed by elapsed ticks only when read at fire time, so no per-tick handler
  * is needed.
  *
- * @param pitch    current vertical offset in degrees (positive = look-up)
- * @param yaw      current horizontal offset in degrees
- * @param tick     game time of the last update
+ * @param pitch current vertical offset in degrees (positive = up)
+ * @param yaw   current horizontal offset in degrees
+ * @param tick  game time of the last update
  */
 public record RecoilState(float pitch, float yaw, long tick) {
     public static final RecoilState NONE = new RecoilState(0.0F, 0.0F, 0L);
@@ -34,11 +35,12 @@ public record RecoilState(float pitch, float yaw, long tick) {
      *
      * @param roundIndex the shot's index within the magazine (drives the deterministic yaw pattern)
      */
-    public static void addImpulse(ServerPlayer player, long now, float cameraRecoil, int roundIndex) {
+    public static void addImpulse(ServerPlayer player, long now, RecoilProfile recoilProfile, int roundIndex) {
         RecoilState decayed = current(player, now);
+        Vec2 recoil = RecoilHelper.calculateCameraRecoil(recoilProfile, roundIndex);
         RecoilState next = new RecoilState(
-                decayed.pitch() + RecoilHelper.impulsePitch(cameraRecoil),
-                decayed.yaw() + RecoilHelper.impulseYaw(cameraRecoil, roundIndex),
+                decayed.pitch() + recoil.x,
+                decayed.yaw() + recoil.y,
                 now);
         player.setData(DataAttachmentRegistry.RECOIL, next);
     }

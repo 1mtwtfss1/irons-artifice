@@ -8,6 +8,7 @@ import com.example.examplemod.item.GunplayManager;
 import com.example.examplemod.menu.GunContainer;
 import com.example.examplemod.network.ServerboundFireGunPacket;
 import com.example.examplemod.network.ServerboundOpenModifierMenuPacket;
+import com.example.examplemod.recoil.RecoilHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -85,8 +86,8 @@ public final class InputHandler {
         ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), player, held, player.level());
 
         if (!GunItem.getMagazine(held).isEmpty()) {
-            int bulletIndex = gunItem.magazineCapacity() - GunItem.getMagazine(held).count();
-            RecoilManager.applyRecoil((float) profile.value(ShotComponents.CAMERA_RECOIL), bulletIndex);
+            int bulletIndex = RecoilHelper.getBulletIndex(profile);
+            RecoilManager.applyRecoil(profile.get(ShotComponents.CAMERA_RECOIL), bulletIndex);
         }
     }
 }

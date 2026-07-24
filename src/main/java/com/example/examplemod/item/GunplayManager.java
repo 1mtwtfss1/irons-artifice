@@ -9,7 +9,9 @@ import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.menu.GunContainer;
 import com.example.examplemod.modifier.ModifierItem;
 import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
+import com.example.examplemod.recoil.RecoilHelper;
 import com.example.examplemod.recoil.RecoilState;
+import com.example.examplemod.registry.DataComponentRegistry;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.registry.ItemRegistry;
 import net.minecraft.server.level.ServerLevel;
@@ -61,7 +63,7 @@ public final class GunplayManager {
         GunItem.setMagazine(stack, magazine.deplete());
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, player.position());
         applyCharacterRecoil(player, profile);
-        RecoilState.addImpulse(player, now, (float) profile.value(ShotComponents.CAMERA_RECOIL), roundIndex);
+        RecoilState.addImpulse(player, now, profile.get(ShotComponents.CAMERA_RECOIL), RecoilHelper.getBulletIndex(profile));
         player.getCooldowns().addCooldown(stack, (int) Math.round(profile.value(ShotComponents.FIRE_DELAY)));
     }
 
@@ -128,7 +130,7 @@ public final class GunplayManager {
                 modifierItem.getModifier().apply(components);
             }
         }
-        return new ShotProfile(components);
+        return new ShotProfile(gunStack, gunProfile, gunStack.get(DataComponentRegistry.MAGAZINE), components);
     }
 
     public static ReloadResult attemptFinishReload(Player player, ItemStack gun) {

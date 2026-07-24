@@ -2,9 +2,11 @@ package com.example.examplemod.client;
 
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.recoil.RecoilHelper;
+import com.example.examplemod.recoil.RecoilProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -39,22 +41,16 @@ public final class RecoilManager {
     /**
      * Applies a recoil impulse from a local fire. {@code roundIndex} drives the yaw pattern.
      */
-    public static void applyRecoil(float cameraRecoil, int roundIndex) {
-        if (cameraRecoil <= 0.0F) {
-            return;
-        }
-
-        // Permanent settle offset: shift the actual aim (negative pitch = look up). This syncs to
-        // the server via normal movement packets, so the server's bullets inherit it automatically.
+    public static void applyRecoil(RecoilProfile recoilProfile, int index) {
         LocalPlayer player = Minecraft.getInstance().player;
+        Vec2 permanentRecoil = RecoilHelper.calculatePermanentRecoil(recoilProfile, index);
+        Vec2 cameraRecoil = RecoilHelper.calculateCameraRecoil(recoilProfile, index);
         if (player != null) {
-            player.setXRot(player.getXRot() - RecoilHelper.permanentPitch(cameraRecoil));
-            player.setYRot(player.getYRot() + RecoilHelper.permanentYaw(cameraRecoil, roundIndex));
+            player.setXRot(player.getXRot() - permanentRecoil.x);
+            player.setYRot(player.getYRot() + permanentRecoil.y);
         }
-
-        // Transient kick: recovered over the next few ticks; mirrored by ServerRecoil for bullets.
-        pitch += RecoilHelper.impulsePitch(cameraRecoil);
-        yaw += RecoilHelper.impulseYaw(cameraRecoil, roundIndex);
+        pitch += cameraRecoil.x;
+        yaw += cameraRecoil.y;
     }
 
     @SubscribeEvent
@@ -65,7 +61,6 @@ public final class RecoilManager {
         if (p == 0.0F && y == 0.0F) {
             return;
         }
-        // Positive pitch = look up (reduce camera pitch); yaw offset added directly.
         event.setPitch(event.getPitch() - p);
         event.setYaw(event.getYaw() + y);
     }
@@ -94,7 +89,6 @@ public final class RecoilManager {
             yawCursor = 0;
         }
     }
-
 
 
     public static float localRecoilMagnitude() {
