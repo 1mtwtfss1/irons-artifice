@@ -1,6 +1,7 @@
 package com.example.examplemod;
 
 import com.example.examplemod.client.Keybinds;
+import com.example.examplemod.client.particle.BlockDustParticle;
 import com.example.examplemod.client.particle.ImpactBlockParticle;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.menu.GunScreen;
@@ -58,5 +59,6 @@ public class ExampleModClient {
     @SubscribeEvent
     static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpecial(ParticleRegistry.BLOCK_IMPACT.get(), new ImpactBlockParticle.Provider());
+        event.registerSpriteSet(ParticleRegistry.BLOCK_DUST.get(), BlockDustParticle.Provider::new);
     }
 }

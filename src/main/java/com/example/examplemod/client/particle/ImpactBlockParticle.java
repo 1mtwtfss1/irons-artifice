@@ -1,5 +1,6 @@
 package com.example.examplemod.client.particle;
 
+import com.example.examplemod.registry.ParticleRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -15,6 +16,25 @@ public class ImpactBlockParticle extends TerrainParticle {
                                double xa, double ya, double za, BlockState state) {
         super(level, x, y, z, xa, ya, za, state);
         this.setParticleSpeed(xa, ya, za);
+        this.emitter = level.getRandom().nextFloat() < 0.25;
+        if (emitter) {
+            this.blockState = state;
+        }
+    }
+
+    @Nullable BlockState blockState;
+    final boolean emitter;
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.emitter && blockState != null) {
+            if (age < 10) {
+                level.addParticle(new BlockParticleOption(ParticleRegistry.BLOCK_DUST.get(), blockState), x, y, z, xd * 0.5, yd * 0.5, zd * 0.5);
+            } else {
+                blockState = null;
+            }
+        }
     }
 
     public static class Provider implements ParticleProvider<BlockParticleOption> {

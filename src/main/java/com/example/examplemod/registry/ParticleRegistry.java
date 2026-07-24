@@ -27,6 +27,18 @@ public final class ParticleRegistry {
                     return BlockParticleOption.streamCodec(this);
                 }
             });
+    public static final DeferredHolder<ParticleType<?>, ParticleType<BlockParticleOption>> BLOCK_DUST =
+            PARTICLE_TYPES.register("block_dust", () -> new ParticleType<BlockParticleOption>(false) {
+                @Override
+                public MapCodec<BlockParticleOption> codec() {
+                    return BlockParticleOption.codec(this);
+                }
+
+                @Override
+                public StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> streamCodec() {
+                    return BlockParticleOption.streamCodec(this);
+                }
+            });
 
     public static void register(IEventBus modEventBus) {
         PARTICLE_TYPES.register(modEventBus);

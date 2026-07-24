@@ -11,10 +11,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class ClientHelper {
 
@@ -60,6 +63,8 @@ public final class ClientHelper {
             Vec3 motion = new Vec3(level.getRandom().nextFloat() * 2 - 1, level.getRandom().nextFloat() * 2 - 1, level.getRandom().nextFloat() * 2 - 1).subtract(direction.scale(0.25)).normalize();
             motion = motion.scale(particleSpeed);
             level.addParticle(new BlockParticleOption(ParticleRegistry.BLOCK_IMPACT.get(), blockState), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+            motion = motion.scale(0.25);
+            level.addParticle(new BlockParticleOption(ParticleRegistry.BLOCK_DUST.get(), blockState), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         }
         for (int i = 0; i < 5; i++) {
             Vec3 motion = new Vec3(level.getRandom().nextFloat() * 2 - 1, level.getRandom().nextFloat() * 2 - 1, level.getRandom().nextFloat() * 2 - 1)
