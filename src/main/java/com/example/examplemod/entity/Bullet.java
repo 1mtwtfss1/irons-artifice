@@ -2,6 +2,7 @@ package com.example.examplemod.entity;
 
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.data.ShotComponents;
+import com.example.examplemod.gun.BlockDamageManager;
 import com.example.examplemod.gun.OnHitEffect;
 import com.example.examplemod.gun.OnHitEffects;
 import com.example.examplemod.gun.ShotProfile;
@@ -180,6 +181,11 @@ public class Bullet extends Projectile {
         level().playSound(null, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()).getSoundType(level(), hitResult.getBlockPos(), null).getBreakSound(), SoundSource.BLOCKS, .75f, 1f);
         if (level() instanceof ServerLevel serverLevel) {
             PacketDistributor.sendToPlayersTrackingChunk(serverLevel, this.chunkPosition(), new ClientboundBulletImpactPacket(hitResult.getLocation(), this.getDeltaMovement(), hitResult.getDirection().getUnitVec3()));
+            if (this.profile != null) {
+                // todo: block damage mujltipliers
+                // fixme: why is damage not resolved already
+                BlockDamageManager.applyDamage(serverLevel, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()), (float) this.profile.value(ShotComponents.DAMAGE) / (float) profile.value(ShotComponents.PROJECTILE_COUNT), this);
+            }
         }
         if (ricochet > 0) {
             this.entityData.set(DATA_RICOCHET, ricochet - 1);
