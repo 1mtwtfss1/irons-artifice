@@ -30,7 +30,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class GunplayManager {
 
-    public static void tryFire(ServerPlayer player) {
+    public static void tryFire(ServerPlayer player, Vec3 direction) {
         InteractionHand hand = InteractionHand.MAIN_HAND;
         ItemStack stack = player.getItemInHand(hand);
         if (!(stack.getItem() instanceof GunItem gunItem)) {
@@ -57,9 +57,10 @@ public final class GunplayManager {
 
         long now = level.getGameTime();
         RecoilState offset = RecoilState.current(player, now);
-        int roundIndex = gunProfile.magazineCapacity() - magazine.count();
 
-        fireShot(level, player, profile, offset);
+        // todo: add config for authority
+        Vec3 authoritativeDirection = direction;
+        fireShot(level, player, authoritativeDirection.xRot(offset.pitch() * Mth.DEG_TO_RAD).yRot(-offset.yaw() * Mth.DEG_TO_RAD), profile);
         GunItem.setMagazine(stack, magazine.deplete());
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, player.position());
         applyCharacterRecoil(player, profile);
@@ -77,9 +78,7 @@ public final class GunplayManager {
         player.hurtMarked = true;
     }
 
-    private static void fireShot(ServerLevel level, ServerPlayer player, ShotProfile profile, RecoilState offset) {
-        float pitch = player.getXRot() - offset.pitch();
-        float yaw = player.getYRot() + offset.yaw();
+    private static void fireShot(ServerLevel level, ServerPlayer player, Vec3 direction, ShotProfile profile) {
         int projectileCount = Math.max(1, (int) Math.round(profile.value(ShotComponents.PROJECTILE_COUNT)));
         float speed = (float) profile.value(ShotComponents.BULLET_SPEED);
         float spread = getSpreadForEntity(profile, player);
@@ -88,14 +87,7 @@ public final class GunplayManager {
             bullet.setOwner(player);
             bullet.applyProfile(profile);
             bullet.setPos(player.getEyePosition());
-            bullet.shootFromRotation(
-                    player,
-                    pitch,
-                    yaw,
-                    0.0F,
-                    speed,
-                    spread
-            );
+            bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);
         }
     }

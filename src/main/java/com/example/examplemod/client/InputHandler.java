@@ -81,7 +81,7 @@ public final class InputHandler {
             return;
         }
 
-        ClientPacketDistributor.sendToServer(ServerboundFireGunPacket.INSTANCE);
+        ClientPacketDistributor.sendToServer(new ServerboundFireGunPacket(player.getLookAngle()));
 
         ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), player, held, player.level());
 

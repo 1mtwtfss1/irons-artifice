@@ -24,7 +24,7 @@ public final class CrosshairRenderer {
     private static final int THICKNESS = 1;
     private static final int LENGTH = 3;
     private static final float GAP_BASE = 0.0F;
-    private static final float GAP_PER_DEGREE = 1.5F;
+    private static final float GAP_PER_DEGREE = 1.90915243f; // magic number taking from in game measurements
 
     private static float crosshairGapCursor = 0.0F;
     private static float crosshairGapCursorO = 0.0F;

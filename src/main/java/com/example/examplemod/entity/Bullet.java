@@ -1,5 +1,6 @@
 package com.example.examplemod.entity;
 
+import com.example.examplemod.ExampleMod;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.OnHitEffect;
 import com.example.examplemod.gun.OnHitEffects;
@@ -13,6 +14,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -113,6 +116,19 @@ public class Bullet extends Projectile {
         if (this.getDeltaMovement().lengthSqr() < 1) {
             discard();
         }
+    }
+
+    private double irwinHall(RandomSource randomSource) {
+        return (randomSource.nextDouble() + randomSource.nextDouble() + randomSource.nextDouble() + randomSource.nextDouble() - 2) / 2.0;
+    }
+
+    @Override
+    public Vec3 getMovementToShoot(double xd, double yd, double zd, float pow, float uncertainty) {
+        return new Vec3(xd, yd, zd)
+                .normalize()
+                .add(new Vec3(irwinHall(random), irwinHall(random), irwinHall(random)).normalize()
+                        .scale(uncertainty * Mth.DEG_TO_RAD * 0.5))
+                .scale(pow);
     }
 
     @Override
