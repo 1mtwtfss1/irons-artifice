@@ -27,7 +27,7 @@ public final class RecoilManager {
     // strength of 1 means cursor is just mirroring the real value perfectly.
     // the cursor (otherwise) acts as a smoother interpolation to the exact pitch/yaw, let snaps transition over multiple ticks instead of always 1.
     // snappy looks better though so
-    private static final float CURSOR_STRENGTH = .5F;
+    private static final float CURSOR_STRENGTH = 0.75F;
 
     // Current recoil offset (degrees) and the previous-tick value for partial-tick interpolation.
     private static float pitch = 0.0F;

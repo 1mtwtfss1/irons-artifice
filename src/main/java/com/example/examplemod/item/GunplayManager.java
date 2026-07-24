@@ -1,5 +1,7 @@
 package com.example.examplemod.item;
 
+import com.example.examplemod.ExampleMod;
+import com.example.examplemod.client.RecoilManager;
 import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.data.ShotComponentMap;
 import com.example.examplemod.data.ShotComponents;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -60,7 +63,10 @@ public final class GunplayManager {
 
         // todo: add config for authority
         Vec3 authoritativeDirection = direction;
-        fireShot(level, player, authoritativeDirection.xRot(offset.pitch() * Mth.DEG_TO_RAD).yRot(-offset.yaw() * Mth.DEG_TO_RAD), profile);
+        Vec2 rotation = authoritativeDirection.rotation();
+        float pitch = rotation.x - offset.pitch();
+        float yaw = rotation.y + offset.yaw();
+        fireShot(level, player, Vec3.directionFromRotation(pitch, yaw), profile);
         GunItem.setMagazine(stack, magazine.deplete());
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, player.position());
         applyCharacterRecoil(player, profile);
