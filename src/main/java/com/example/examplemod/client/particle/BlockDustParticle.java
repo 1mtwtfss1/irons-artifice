@@ -31,6 +31,7 @@ public class BlockDustParticle extends SingleQuadParticle {
         this.setSpriteFromAge(sprites);
         this.gravity *= 0.5f;
         this.quadSize *= 2f;
+        updateAlpha(0);
     }
 
     protected final SpriteSet sprites;
@@ -46,8 +47,12 @@ public class BlockDustParticle extends SingleQuadParticle {
 
     @Override
     public void extract(QuadParticleRenderState particleTypeRenderState, Camera camera, float partialTickTime) {
-        this.alpha = Mth.lerp((age + partialTickTime) / lifetime, 0.75f, 0);
+        updateAlpha(partialTickTime);
         super.extract(particleTypeRenderState, camera, partialTickTime);
+    }
+
+    private void updateAlpha(float partialTickTime) {
+        this.alpha = Mth.clamp(Mth.lerp((age + partialTickTime) / lifetime, 0.75f, 0), 0, 1f);
     }
 
     @Override
