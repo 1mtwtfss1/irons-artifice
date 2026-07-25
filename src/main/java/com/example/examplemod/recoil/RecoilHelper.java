@@ -1,5 +1,6 @@
 package com.example.examplemod.recoil;
 
+import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.item.GunItem;
 import net.minecraft.util.Mth;
@@ -17,32 +18,40 @@ public final class RecoilHelper {
      * Deterministic step based on the round index being fired out of the magazine <br>
      * Used for client-server agreement, and consistent recoil patterns
      */
-    public static int getBulletIndex(ShotProfile shotProfile){
+    public static int getBulletIndex(ShotProfile shotProfile) {
         return shotProfile.gun().magazineCapacity() - GunItem.getMagazine(shotProfile.itemStack()).count();
     }
+
     /**
      * @return pitch, yaw in degrees
      */
-    public static Vec2 calculateFullRecoil(RecoilProfile profile, int index) {
-        float pitch = profile.magnitude();
-        float yaw = profile.magnitude() * profile.horizontalRatio() *
-                Mth.sin((index + profile.seed()) * profile.horizontalPatternFrequency());
-        return new Vec2(pitch, yaw);
+    public static Vec2 calculateFullRecoil(ShotProfile shotProfile) {
+        int index = getBulletIndex(shotProfile);
+        float strengthMultiplier = (float) shotProfile.value(ShotComponents.CAMERA_RECOIL_MULTIPLIER);
+        RecoilProfile recoil = shotProfile.get(ShotComponents.CAMERA_RECOIL);
+        float pitch = recoil.magnitude();
+        float yaw = recoil.magnitude() * recoil.horizontalRatio() *
+                Mth.sin((index + recoil.seed()) * recoil.horizontalPatternFrequency());
+        return new Vec2(pitch, yaw).scale(strengthMultiplier);
     }
+
     /**
      * Recoil applied permanently to character's rotation
+     *
      * @return pitch, yaw in degrees
      */
-    public static Vec2 calculatePermanentRecoil(RecoilProfile profile, int index) {
-        Vec2 fullRecoil = calculateFullRecoil(profile, index);
+    public static Vec2 calculatePermanentRecoil(ShotProfile shotProfile) {
+        Vec2 fullRecoil = calculateFullRecoil(shotProfile);
         return fullRecoil.scale(PERMANENT_FRACTION);
     }
+
     /**
      * Recoil applied temporarily to character's camera and aim
+     *
      * @return pitch, yaw in degrees
      */
-    public static Vec2 calculateCameraRecoil(RecoilProfile profile, int index) {
-        Vec2 fullRecoil = calculateFullRecoil(profile, index);
+    public static Vec2 calculateCameraRecoil(ShotProfile shotProfile) {
+        Vec2 fullRecoil = calculateFullRecoil(shotProfile);
         return fullRecoil.scale(1 - PERMANENT_FRACTION);
     }
 

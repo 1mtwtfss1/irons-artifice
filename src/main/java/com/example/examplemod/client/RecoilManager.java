@@ -1,6 +1,8 @@
 package com.example.examplemod.client;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.data.ShotComponents;
+import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.recoil.RecoilHelper;
 import com.example.examplemod.recoil.RecoilProfile;
 import net.minecraft.client.Minecraft;
@@ -41,10 +43,10 @@ public final class RecoilManager {
     /**
      * Applies a recoil impulse from a local fire. {@code roundIndex} drives the yaw pattern.
      */
-    public static void applyRecoil(RecoilProfile recoilProfile, int index) {
+    public static void applyRecoil(ShotProfile shotProfile) {
         LocalPlayer player = Minecraft.getInstance().player;
-        Vec2 permanentRecoil = RecoilHelper.calculatePermanentRecoil(recoilProfile, index);
-        Vec2 cameraRecoil = RecoilHelper.calculateCameraRecoil(recoilProfile, index);
+        Vec2 permanentRecoil = RecoilHelper.calculatePermanentRecoil(shotProfile);
+        Vec2 cameraRecoil = RecoilHelper.calculateCameraRecoil(shotProfile);
         if (player != null) {
             player.setXRot(player.getXRot() - permanentRecoil.x);
             player.setYRot(player.getYRot() + permanentRecoil.y);

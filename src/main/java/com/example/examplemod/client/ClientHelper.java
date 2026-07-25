@@ -1,5 +1,6 @@
 package com.example.examplemod.client;
 
+import com.example.examplemod.entity.Bullet;
 import com.example.examplemod.network.ClientboundBulletImpactPacket;
 import com.example.examplemod.network.ClientboundBulletTrailPacket;
 import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
@@ -30,7 +31,7 @@ public final class ClientHelper {
 
         Vec3 from = msg.from();
         Vec3 to = msg.to();
-        int steps = (int) (from.distanceTo(to));
+        int steps = (int) (from.distanceTo(to) * Bullet.TRAIL_DENSITY);
         if (steps <= 0) {
             return;
         }

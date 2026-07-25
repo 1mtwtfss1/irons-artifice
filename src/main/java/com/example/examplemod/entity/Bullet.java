@@ -1,6 +1,5 @@
 package com.example.examplemod.entity;
 
-import com.example.examplemod.ExampleMod;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.BlockDamageManager;
 import com.example.examplemod.gun.OnHitEffect;
@@ -8,6 +7,8 @@ import com.example.examplemod.gun.OnHitEffects;
 import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.network.ClientboundBulletImpactPacket;
 import com.example.examplemod.network.ClientboundBulletTrailPacket;
+import com.example.examplemod.utils.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -46,16 +47,22 @@ public class Bullet extends Projectile {
     private static final EntityDataAccessor<Float> DATA_DRAG =
             SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
 
-    private static final double BOUNCE_RETENTION = 0.8;
-    private static final double TRAIL_DENSITY = 1.0;
+    public static final double TRAIL_DENSITY = 2.0;
 
     @Nullable
     private ShotProfile profile;
     private int piercingRemaining = 0;
     private final Set<Integer> piercedEntities = new HashSet<>();
+    private HitState hitState = HitState.CONTINUE;
 
     public Bullet(EntityType<? extends Bullet> type, Level level) {
         super(type, level);
+    }
+
+    enum HitState {
+        CONTINUE,
+        STOP,
+        DISCARD;
     }
 
     public void applyProfile(ShotProfile profile) {
@@ -75,6 +82,19 @@ public class Bullet extends Projectile {
     }
 
     @Override
+    protected boolean canHitEntity(@NonNull Entity entity) {
+        return super.canHitEntity(entity) && !piercedEntities.contains(entity.getId());
+    }
+
+    public float resolveDamage() {
+        if (profile == null) {
+            return 0;
+        }
+        // fixme: this is dumb
+        return (float) (profile.value(ShotComponents.DAMAGE) / Math.max(1, profile.value(ShotComponents.PROJECTILE_COUNT)));
+    }
+
+    @Override
     public void tick() {
         super.tick();
         this.piercedEntities.clear();
@@ -83,32 +103,34 @@ public class Bullet extends Projectile {
         Vec3 position = position();
         Vec3 destination = position.add(delta);
 
-        HitResult blockHit = level().clip(new ClipContext(
-                position, destination, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
-        if (blockHit.getType() != HitResult.Type.MISS) {
-            destination = blockHit.getLocation();
-        }
-        Vec3 particleEnd = destination;
-
-        EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
-                level(), this, position, destination,
-                getBoundingBox().expandTowards(delta).inflate(1),
-                this::canHitEntity, 0.25f);
-
-        if (entityHit != null) {
-            onHit(entityHit);
-            if (this.isRemoved()) {
-                // should automatically handle piercing or other effects
-                particleEnd = entityHit.getLocation();
+        int i = 64;
+        this.hitState = HitState.CONTINUE;
+        while (hitState == HitState.CONTINUE && --i > 0) {
+            HitResult blockHit = level().clip(new ClipContext(
+                    position, destination, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
+            Vec3 blockClip = blockHit.getLocation();
+            EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
+                    level(), this, position, blockClip,
+                    getBoundingBox().expandTowards(delta).inflate(1),
+                    this::canHitEntity, 0.25f);
+            if (entityHit != null) {
+                onHit(entityHit);
+                destination = entityHit.getLocation();
+            } else if (blockHit.getType() != HitResult.Type.MISS) {
+                onHit(blockHit);
+                destination = blockHit.getLocation();
             }
-        } else if (blockHit.getType() != HitResult.Type.MISS) {
-            onHit(blockHit);
-            particleEnd = blockHit.getLocation();
+            if (hitState == HitState.STOP) {
+                break;
+            } else if (hitState == HitState.DISCARD) {
+                discard();
+                break;
+            }
         }
 
         if (level() instanceof ServerLevel serverLevel && profile != null) {
             Vec3 particleStart = this.tickCount == 1 ? position.subtract(0, 0.25, 0) : position;
-            emitTrail(serverLevel, particleStart, particleEnd);
+            emitTrail(serverLevel, particleStart, destination);
         }
 
         this.setDeltaMovement(getDeltaMovement().scale(getDrag()));
@@ -134,13 +156,16 @@ public class Bullet extends Projectile {
 
     @Override
     protected void onHit(@NonNull HitResult hitResult) {
+        hitState = HitState.DISCARD; // setup default hit state
         super.onHit(hitResult);
         if (profile == null) {
             return;
         }
-        OnHitEffects onHitEffects = profile.get(ShotComponents.ON_HIT);
-        for (OnHitEffect effect : onHitEffects.all()) {
-            effect.onHit(this, hitResult);
+        if (level() instanceof ServerLevel serverLevel) {
+            OnHitEffects onHitEffects = profile.get(ShotComponents.ON_HIT);
+            for (OnHitEffect effect : onHitEffects.all()) {
+                effect.onHit(serverLevel, this, hitResult);
+            }
         }
     }
 
@@ -157,7 +182,7 @@ public class Bullet extends Projectile {
         }
 
         Entity owner = getOwner();
-        float damage = (float) profile.value(ShotComponents.DAMAGE) / (int) profile.value(ShotComponents.PROJECTILE_COUNT);
+        float damage = resolveDamage();
         DamageSource source = damageSources().mobProjectile(this, owner instanceof LivingEntity le ? le : null);
         target.hurtServer(serverLevel, source, damage);
 
@@ -168,47 +193,62 @@ public class Bullet extends Projectile {
         }
 
         if (piercingRemaining > 0) {
+            this.hitState = HitState.CONTINUE;
             piercingRemaining--;
-        } else {
-            discard();
         }
+    }
+
+    protected void playBlockHitEffects(BlockHitResult hitResult) {
+        BlockPos pos = hitResult.getBlockPos();
+        level().playSound(null, pos, level().getBlockState(pos).getSoundType(level(), pos, null).getBreakSound(), SoundSource.BLOCKS, .75f, 1f);
+        if (level() instanceof ServerLevel serverLevel) {
+            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, this.chunkPosition(), new ClientboundBulletImpactPacket(hitResult.getLocation(), this.getDeltaMovement(), hitResult.getDirection().getUnitVec3()));
+        }
+    }
+
+    /**
+     * @return whether the block was completed destroyed
+     */
+    protected boolean attemptApplyBlockDamage(BlockHitResult hitResult) {
+        if (level() instanceof ServerLevel serverLevel && this.profile != null && profile.get(ShotComponents.BREAKS_BLOCKS)) {
+            float damage = (float) (this.profile.value(ShotComponents.BLOCK_DAMAGE_MULTIPLIER) * resolveDamage());
+            return BlockDamageManager.applyDamage(serverLevel, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()), damage, this);
+        }
+        return false;
     }
 
     @Override
     protected void onHitBlock(@NonNull BlockHitResult hitResult) {
         super.onHitBlock(hitResult);
-        int ricochet = this.entityData.get(DATA_RICOCHET);
-        level().playSound(null, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()).getSoundType(level(), hitResult.getBlockPos(), null).getBreakSound(), SoundSource.BLOCKS, .75f, 1f);
-        if (level() instanceof ServerLevel serverLevel) {
-            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, this.chunkPosition(), new ClientboundBulletImpactPacket(hitResult.getLocation(), this.getDeltaMovement(), hitResult.getDirection().getUnitVec3()));
-            if (this.profile != null) {
-                // todo: block damage mujltipliers
-                // fixme: why is damage not resolved already
-                if (profile.get(ShotComponents.BREAKS_BLOCKS)) {
-                    float damage = (float) (this.profile.value(ShotComponents.BLOCK_DAMAGE_MULTIPLIER) * this.profile.value(ShotComponents.DAMAGE) / profile.value(ShotComponents.PROJECTILE_COUNT));
-                    BlockDamageManager.applyDamage(serverLevel, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()), damage, this);
-                }
-            }
-        }
-        if (ricochet > 0) {
-            this.entityData.set(DATA_RICOCHET, ricochet - 1);
-            reflect(hitResult.getDirection());
+        playBlockHitEffects(hitResult);
+        if (profile == null) {
             return;
         }
-        discard();
+        boolean brokeThroughBlock = attemptApplyBlockDamage(hitResult);
+        if (brokeThroughBlock) {
+            // if we break through block, continue forward, and maybe pierce for additional buffs
+            hitState = HitState.CONTINUE;
+            if (piercingRemaining > 0) {
+                piercingRemaining--;
+            } else {
+                // allow the bullet to continue without piercing, but do not allow additional block damage thereafter
+                profile.remove(ShotComponents.BREAKS_BLOCKS);
+            }
+        } else {
+            // on solid block impact, ricochet or discard
+            int ricochet = this.entityData.get(DATA_RICOCHET);
+            if (ricochet > 0) {
+                this.entityData.set(DATA_RICOCHET, ricochet - 1);
+                reflectMotion(hitResult.getDirection());
+                hitState = HitState.STOP; // stop in place and resume next tick, raycaster doesn't handle bent segments
+            } else {
+                hitState = HitState.DISCARD;
+            }
+        }
     }
 
-    private void reflect(Direction face) {
-        Vec3 v = getDeltaMovement();
-        double x = v.x;
-        double y = v.y;
-        double z = v.z;
-        switch (face.getAxis()) {
-            case X -> x = -x;
-            case Y -> y = -y;
-            case Z -> z = -z;
-        }
-        setDeltaMovement(x * BOUNCE_RETENTION, y * BOUNCE_RETENTION, z * BOUNCE_RETENTION);
+    private void reflectMotion(Direction face) {
+        setDeltaMovement(Utils.reflect(getDeltaMovement(), face.getUnitVec3()));
     }
 
     @Override

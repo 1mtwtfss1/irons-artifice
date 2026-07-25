@@ -28,6 +28,7 @@ public final class ShotComponents {
 
     // UX
     public static final ComponentType<RecoilProfile> CAMERA_RECOIL = new ComponentType<>(ExampleMod.id("camera_recoil"), () -> RecoilProfile.simple(10, 0));
+    public static final ComponentType<Value> CAMERA_RECOIL_MULTIPLIER = new ComponentType<>(ExampleMod.id("camera_recoil_multiplier"), () -> Value.of(1));
     public static final ComponentType<Value> CHARACTER_RECOIL = new ComponentType<>(ExampleMod.id("character_recoil"), () -> Value.of(0));
     public static final ComponentType<GunShotSoundStack> GUNSHOT_SOUND = new ComponentType<>(ExampleMod.id("gunshot_sound"), () -> new GunShotSoundStack(PlayableSound.standard(SoundEvents.FIREWORK_ROCKET_BLAST), PlayableSound.of(SoundEvents.DISPENSER_FAIL, 0.75f, 1.4f, 1.6f)));
     public static final ComponentType<ParticleStack> PARTICLE_TRAIL = new ComponentType<>(ExampleMod.id("particle_trail"), ParticleStack::new);

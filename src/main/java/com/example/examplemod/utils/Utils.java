@@ -3,8 +3,11 @@ package com.example.examplemod.utils;
 import com.example.examplemod.data.ComponentType;
 import com.example.examplemod.data.ValueModifier;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class Utils {
@@ -34,5 +37,9 @@ public class Utils {
                     ChatFormatting.GOLD.getColor() : ChatFormatting.RED.getColor();
         }
         return Component.translatable(String.format("examplemod.value_modifier.%s", identifier), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value), valueName).withColor(color);
+    }
+
+    public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
+        level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, false, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
     }
 }

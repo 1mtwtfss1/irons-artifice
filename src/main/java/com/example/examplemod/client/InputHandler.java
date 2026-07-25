@@ -84,8 +84,7 @@ public final class InputHandler {
         ClientPacketDistributor.sendToServer(new ServerboundFireGunPacket(player.getLookAngle()));
         // fixme: another thin client-server manually synced thingie
         if (!GunItem.getMagazine(held).isEmpty()) {
-            int bulletIndex = RecoilHelper.getBulletIndex(profile);
-            RecoilManager.applyRecoil(profile.get(ShotComponents.CAMERA_RECOIL), bulletIndex);
+            RecoilManager.applyRecoil(profile);
         }
     }
 }

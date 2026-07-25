@@ -63,15 +63,18 @@ public class BlockDamageManager {
         INSTANCE.damageManagersByLevel.clear();
     }
 
-    public static void applyDamage(ServerLevel level, BlockPos pos, BlockState state, float damage, Bullet bullet) {
+    /**
+     * @return whether block was destroyed
+     */
+    public static boolean applyDamage(ServerLevel level, BlockPos pos, BlockState state, float damage, Bullet bullet) {
         float destroySpeed = state.getDestroySpeed(level, pos);
         if (destroySpeed < 0) {
-            return;
+            return false;
         }
         float blockMaxHealth = (destroySpeed + state.getBlock().getExplosionResistance()) * 5;
         // todo: block specific multipliers, config, blacklist, etc
         if (state.is(Blocks.TARGET)) {
-            return;
+            return false;
         }
 
         float blockCurrentHealth;
@@ -92,6 +95,7 @@ public class BlockDamageManager {
             level.destroyBlockProgress(id, pos, -1);
             level.destroyBlock(pos, false);
             manager.remove(pos);
+            return true;
         } else {
             manager.put(pos, new BlockHealth(blockCurrentHealth, blockMaxHealth, level.getGameTime(), id));
             int stage = (int) (destroyProgress * 10);
@@ -99,6 +103,7 @@ public class BlockDamageManager {
             if (destroyProgress >= 0.2 && stage != lastStage) {
                 level.destroyBlockProgress(id, pos, (int) (destroyProgress * 10));
             }
+            return false;
         }
     }
 }

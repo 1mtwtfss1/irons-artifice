@@ -70,7 +70,7 @@ public final class GunplayManager {
         GunItem.setMagazine(stack, magazine.deplete());
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, player.position());
         applyCharacterRecoil(player, profile);
-        RecoilState.addImpulse(player, now, profile.get(ShotComponents.CAMERA_RECOIL), RecoilHelper.getBulletIndex(profile));
+        RecoilState.addImpulse(player, now, profile);
         player.getCooldowns().addCooldown(stack, (int) Math.round(profile.value(ShotComponents.FIRE_DELAY)));
     }
 

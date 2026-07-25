@@ -1,5 +1,6 @@
 package com.example.examplemod.recoil;
 
+import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.registry.DataAttachmentRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec2;
@@ -35,9 +36,9 @@ public record RecoilState(float pitch, float yaw, long tick) {
      *
      * @param roundIndex the shot's index within the magazine (drives the deterministic yaw pattern)
      */
-    public static void addImpulse(ServerPlayer player, long now, RecoilProfile recoilProfile, int roundIndex) {
+    public static void addImpulse(ServerPlayer player, long now, ShotProfile shotProfile) {
         RecoilState decayed = current(player, now);
-        Vec2 recoil = RecoilHelper.calculateCameraRecoil(recoilProfile, roundIndex);
+        Vec2 recoil = RecoilHelper.calculateCameraRecoil(shotProfile);
         RecoilState next = new RecoilState(
                 decayed.pitch() + recoil.x,
                 decayed.yaw() + recoil.y,

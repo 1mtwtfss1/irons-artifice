@@ -6,10 +6,15 @@ import com.example.examplemod.data.Value;
 import com.example.examplemod.item.MagazineContents;
 import net.minecraft.world.item.ItemStack;
 
-public record ShotProfile(ItemStack itemStack, GunProfile gun, MagazineContents magazineContents, ShotComponentMap components) {
+public record ShotProfile(ItemStack itemStack, GunProfile gun, MagazineContents magazineContents,
+                          ShotComponentMap components) {
 
     public <T> T get(ComponentType<T> type) {
         return components.getOrDefault(type);
+    }
+
+    public <T> void remove(ComponentType<T> type) {
+        components.remove(type);
     }
 
     public double value(ComponentType<Value> type) {
