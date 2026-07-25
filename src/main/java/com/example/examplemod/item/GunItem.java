@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-public class GunItem extends Item {
+public class GunItem extends BaseGeoItem {
     private final GunProfile gunProfile;
 
     public GunItem(Properties properties, GunProfile gunProfile) {

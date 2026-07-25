@@ -1,6 +1,9 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "examplemod:item/gun"
+    "type": "minecraft:special",
+    "base": "example:item/gun",
+    "model": {
+      "type": "geckolib:geckolib"
+    }
   }
 }

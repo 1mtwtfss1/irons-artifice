@@ -1,12 +1,19 @@
 package com.example.examplemod;
 
 import com.example.examplemod.client.Keybinds;
+import com.example.examplemod.client.gun.GunInHandRenderer;
 import com.example.examplemod.client.particle.BlockDustParticle;
 import com.example.examplemod.client.particle.ImpactBlockParticle;
+import com.example.examplemod.item.GunItem;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.menu.GunScreen;
+import com.example.examplemod.registry.ItemRegistry;
 import com.example.examplemod.registry.MenuRegistry;
 import com.example.examplemod.registry.ParticleRegistry;
+import com.geckolib.animatable.client.GeoRenderProvider;
+import com.geckolib.model.DefaultedItemGeoModel;
+import com.geckolib.renderer.GeoItemRenderer;
+import com.google.common.base.Suppliers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.neoforged.api.distmarker.Dist;
@@ -22,23 +29,30 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
-// This class will not load on dedicated servers. Accessing client side code from here is safe.
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
 @Mod(value = ExampleMod.MODID, dist = Dist.CLIENT)
-// You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
 @EventBusSubscriber(modid = ExampleMod.MODID, value = Dist.CLIENT)
 public class ExampleModClient {
     public ExampleModClient(ModContainer container) {
-        // Allows NeoForge to create a config screen for this mod's configs.
-        // The config screen is accessed by going to the Mods screen > clicking on your mod > clicking on config.
-        // Do not forget to add translations for your config options to the en_us.json file.
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
     @SubscribeEvent
+    public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        ItemRegistry.GUN.get().geoRenderProvider.setValue(new GeoRenderProvider() {
+            private final Supplier<GeoItemRenderer<GunItem>> renderer = Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(ExampleMod.id("example_revolver"))));
+
+            @Override
+            public @Nullable GeoItemRenderer<GunItem> getGeoItemRenderer() {
+                return this.renderer.get();
+            }
+        });
+    }
+
+    @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
-        // Some client setup code
-        ExampleMod.LOGGER.info("HELLO FROM CLIENT SETUP");
-        ExampleMod.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
     }
 
     @SubscribeEvent
