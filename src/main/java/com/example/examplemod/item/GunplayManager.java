@@ -87,7 +87,7 @@ public final class GunplayManager {
 
     private static void playFireAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
         double fireSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.value(ShotComponents.FIRE_DELAY);
-        ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getId(stack), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
+        ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
                 "fire", fireSpeedMultiplier, 0);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
@@ -100,7 +100,7 @@ public final class GunplayManager {
             // fixme: expose ticks
             offsetSeconds = existingState.percent(0) * existingState.duration() / 20.0;
         }
-        ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getId(stack), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
+        ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
                 "reload", 1, offsetSeconds);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
