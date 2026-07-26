@@ -1,9 +1,13 @@
 package com.example.examplemod.events;
 
 import com.example.examplemod.entity.Bullet;
+import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.item.GunItem;
 import com.example.examplemod.item.GunplayManager;
+import com.example.examplemod.item.ReloadState;
+import com.example.examplemod.menu.GunContainer;
 import com.example.examplemod.network.ClientboundGunAnimationPacket;
+import com.example.examplemod.registry.DataComponentRegistry;
 import com.geckolib.animatable.GeoItem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -15,7 +19,7 @@ import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
-public class SeverEvents {
+public class ServerEvents {
 
 
     @SubscribeEvent
@@ -40,9 +44,20 @@ public class SeverEvents {
                 event.getSlot().equals(EquipmentSlot.MAINHAND) && //fixme: hardcoded mainhand
                 !equippedStack.isEmpty() && equippedStack.getItem() instanceof GunItem gunItem &&
                 gunItem != event.getFrom().getItem()) {
-            ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(entity.getId(), GeoItem.getOrAssignId(equippedStack, serverLevel),
-                    equippedStack == entity.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                    "equip", 1.0, 0);
+            ClientboundGunAnimationPacket packet;
+            if (GunItem.isReloading(equippedStack)) {
+                ShotProfile profile = GunplayManager.compose(gunItem.getGunProfile(), new GunContainer(equippedStack), entity, equippedStack, entity.level());
+                double reloadSpeed = 1.0; // fixme: reload speed not component yet
+                ReloadState reloadState = equippedStack.get(DataComponentRegistry.RELOAD_STATE);
+                double progress = reloadState.progress() / 20.0;
+                packet = new ClientboundGunAnimationPacket(entity.getId(), GeoItem.getOrAssignId(equippedStack, serverLevel),
+                        equippedStack == entity.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
+                        "reload", reloadSpeed, progress);
+            } else {
+                packet = new ClientboundGunAnimationPacket(entity.getId(), GeoItem.getOrAssignId(equippedStack, serverLevel),
+                        equippedStack == entity.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
+                        "equip", 1.0, 0);
+            }
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, packet);
         }
     }

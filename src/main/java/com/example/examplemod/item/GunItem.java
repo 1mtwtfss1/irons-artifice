@@ -4,6 +4,7 @@ import com.example.examplemod.client.ClientHelper;
 import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.gun.GunProfile;
 import com.example.examplemod.registry.DataComponentRegistry;
+import com.geckolib.animatable.GeoAnimatable;
 import com.geckolib.animatable.GeoItem;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
@@ -11,6 +12,8 @@ import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.constant.DefaultAnimations;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -136,10 +139,19 @@ public class GunItem extends BaseGeoItem {
         super.registerControllers(controllers);
         controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunAnimationStateHandler)
         );
-        controllers.add(DefaultAnimations.triggerOnlyController()
-                .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
-                .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
-                .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
+        controllers.add(new AnimationController<>("Actions", test -> PlayState.STOP) {
+                    @Override
+                    protected void initializeNewAnimation(GeoAnimatable animatable, GeoRenderState renderState, GeoModel<GeoAnimatable> geoModel, double prevAnimSpeed, int prevTransitionTicks) {
+                        double offset = timelineTime;
+                        super.initializeNewAnimation(animatable, renderState, geoModel, prevAnimSpeed, prevTransitionTicks);
+                        if (offset > 0) {
+                            timelineTime = offset;
+                        }
+                    }
+                }
+                        .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
+                        .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
+                        .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
         );
     }
 
