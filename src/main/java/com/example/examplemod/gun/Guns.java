@@ -13,7 +13,7 @@ public final class Guns {
             Guns::basicGun,
             6,
             5,
-            20,
+            40,
             FireMode.SEMI
     );
 

@@ -98,7 +98,13 @@ public final class ClientHelper {
         controller.triggerAnimation(msg.animName());
         controller.setAnimationSpeed(msg.speed());
         // this doesn't seem to work
-        controller.setAnimationTime(msg.offsetSeconds());
+        double offset = 0.5;//msg.offsetSeconds();
+        if (offset > 0) {
+//            controller.setAnimationTime(msg.offsetSeconds());
+            // fixme: timeline gets immediately reset by `AnimationController#initialNewAnimation`.
+            //  need different hook, or to save and defer timeline until after the animation is initialized
+            controller.setAnimationTime(offset);
+        }
     }
 
     public static void handleCrosshairAnimation(ClientboundReloadCrosshairAnimationPacket msg) {

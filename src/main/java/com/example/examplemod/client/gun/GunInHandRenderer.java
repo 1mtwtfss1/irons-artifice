@@ -1,9 +1,12 @@
 package com.example.examplemod.client.gun;
 
 import com.example.examplemod.item.GunItem;
+import com.geckolib.animation.state.BoneSnapshot;
+import com.geckolib.cache.model.GeoBone;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoItemRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -16,8 +19,11 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Display;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jspecify.annotations.NonNull;
+
+import java.util.Optional;
 
 public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
     public GunInHandRenderer(GeoModel<GunItem> model) {
@@ -27,8 +33,8 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
     @Override
     public void preRenderPass(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull SubmitNodeCollector renderTasks) {
         super.preRenderPass(renderPassInfo, renderTasks);
-        var perspective = renderPassInfo.renderState().getGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE);
-        if (!(perspective == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || perspective == ItemDisplayContext.FIRST_PERSON_LEFT_HAND)) {
+        // Use Marker Bones "right_arm" and "left_arm" to render the player's hands in first person
+        if (!isFirstPersonPerspective(renderPassInfo.renderState())) {
             return;
         }
         AbstractClientPlayer player = Minecraft.getInstance().player;
@@ -58,6 +64,23 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
         );
     }
 
+    @Override
+    public void adjustModelBonesForRender(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
+        super.adjustModelBonesForRender(renderPassInfo, snapshots);
+        // Root bone tends to contain large animations that only make sense in first person.
+        // Cancel them out in third person viewers
+        if (isFirstPersonPerspective(renderPassInfo.renderState())) {
+            return;
+        }
+        Optional<BoneSnapshot> rootOpt = snapshots.get("root");
+        if (rootOpt.isEmpty()) {
+            return;
+        }
+        BoneSnapshot root = rootOpt.get();
+        root.setTranslation(0, 0, 0);
+        root.setRotation(0, 0, 0);
+    }
+
     private void renderFirstPersonHand(SubmitNodeCollector renderTasks, RenderType renderType, ModelPart modelPart, PoseStack.Pose pose, RenderPassInfo<GeoRenderState> renderPassInfo) {
         modelPart.x = 0;
         modelPart.y = 0;
@@ -78,6 +101,11 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
                 OverlayTexture.NO_OVERLAY,
                 null
         );
+    }
+
+    private boolean isFirstPersonPerspective(GeoRenderState renderState) {
+        var perspective = renderState.getGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE);
+        return perspective == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || perspective == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
     }
 }
 
