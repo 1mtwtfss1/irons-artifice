@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ParticleStack {
     private static final List<ParticleOptions> EMPTY = List.of(new ColorTransitionParticleOption(
-            ParticleRegistry.BULLET_TRAIL.get(), 0xFF8C00, 0x0F0600, 1f, 0f, 1f, 1f, 0.5f, 0f, 0
+            ParticleRegistry.BULLET_TRAIL.get(), 0xffc600, 0x04f0b00, 1f, 0f, 1f, 1f, 0.5f, 0f, 0
     ));
     private final List<ParticleOptions> particles = new ArrayList<>();
 

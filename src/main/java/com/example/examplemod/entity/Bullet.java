@@ -50,13 +50,14 @@ public class Bullet extends Projectile {
     private static final EntityDataAccessor<Float> DATA_DRAG =
             SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
 
-    public static final double TRAIL_DENSITY = 2.0;
+    public static final double TRAIL_DENSITY = 3.0;
 
     @Nullable
     private ShotProfile profile;
     private int piercingRemaining = 0;
     private final Set<Integer> piercedEntities = new HashSet<>();
     private HitState hitState = HitState.CONTINUE;
+    private final int TRAIL_COMPENSATION_TICKS = 5;
 
     public Bullet(EntityType<? extends Bullet> type, Level level) {
         super(type, level);
@@ -153,8 +154,13 @@ public class Bullet extends Projectile {
         }
 
         if (level() instanceof ServerLevel serverLevel && profile != null) {
-            Vec3 particleStart = this.tickCount == 1 ? position.subtract(0, 0.25, 0) : position;
-            emitTrail(serverLevel, particleStart, destination);
+            Vec3 particleStart = position;
+            Vec3 particleEnd = destination;
+            if (tickCount < TRAIL_COMPENSATION_TICKS) {
+                particleStart = position.subtract(0, Mth.lerp(this.tickCount / (float) TRAIL_COMPENSATION_TICKS, 0.25, 0), 0);
+                particleEnd = destination.subtract(0, Mth.lerp((this.tickCount + 1) / (float) TRAIL_COMPENSATION_TICKS, 0.25, 0), 0);
+            }
+            emitTrail(serverLevel, particleStart, particleEnd);
         }
 
         this.setDeltaMovement(getDeltaMovement().scale(getDrag()));

@@ -22,7 +22,7 @@ public class BulletImpactParticle extends SingleQuadParticle {
         this.quadSize = 1;
         this.particleOptions = particleOptions;
         this.hasAlpha = particleOptions.getFromAlpha() != 1 || particleOptions.getToAlpha() != 1;
-        this.lifetime = level.getRandom().nextIntBetweenInclusive(320, 560);
+        this.lifetime = level.getRandom().nextIntBetweenInclusive(160, 360);
         setupColorAndAlpha(0);
     }
 

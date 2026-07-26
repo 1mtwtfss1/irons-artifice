@@ -42,9 +42,9 @@ public class BulletTrailParticle extends SingleQuadParticle {
         }
         Vector3f fromColor = particleOptions.getFromColor();
         Vector3f toColor = particleOptions.getToColor();
-        this.rCol = Mth.lerp(f, fromColor.x(), toColor.x());
-        this.gCol = Mth.lerp(f, fromColor.y(), toColor.y());
-        this.bCol = Mth.lerp(f, fromColor.z(), toColor.z());
+        this.rCol = Mth.lerp(f * f, fromColor.x(), toColor.x());
+        this.gCol = Mth.lerp(f * f, fromColor.y(), toColor.y());
+        this.bCol = Mth.lerp(f * f, fromColor.z(), toColor.z());
     }
 
     @Override
