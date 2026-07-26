@@ -1,6 +1,8 @@
 package com.example.examplemod.registry;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.client.particle.BulletTrailParticleType;
+import com.example.examplemod.client.particle.ColorTransitionParticleOption;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleType;
@@ -39,6 +41,9 @@ public final class ParticleRegistry {
                     return BlockParticleOption.streamCodec(this);
                 }
             });
+
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> BULLET_TRAIL =
+            PARTICLE_TYPES.register("bullet_trail", () -> new BulletTrailParticleType(false));
 
     public static void register(IEventBus modEventBus) {
         PARTICLE_TYPES.register(modEventBus);

@@ -1,5 +1,7 @@
 package com.example.examplemod.data;
 
+import com.example.examplemod.client.particle.ColorTransitionParticleOption;
+import com.example.examplemod.registry.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 
@@ -7,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParticleStack {
-    private static final List<ParticleOptions> EMPTY = List.of(ParticleTypes.SMOKE);
+    private static final List<ParticleOptions> EMPTY = List.of(new ColorTransitionParticleOption(
+            ParticleRegistry.BULLET_TRAIL.get(), 0xFF8C00, 0x0F0600, 1f, 0f, 1f, 1f, 0.5f, 0f, 0
+    ));
     private final List<ParticleOptions> particles = new ArrayList<>();
 
     public void add(ParticleOptions options) {

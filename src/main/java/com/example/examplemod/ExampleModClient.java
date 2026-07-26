@@ -3,6 +3,7 @@ package com.example.examplemod;
 import com.example.examplemod.client.Keybinds;
 import com.example.examplemod.client.gun.GunInHandRenderer;
 import com.example.examplemod.client.particle.BlockDustParticle;
+import com.example.examplemod.client.particle.BulletTrailParticle;
 import com.example.examplemod.client.particle.ImpactBlockParticle;
 import com.example.examplemod.client.pose.ModArmPoseParams;
 import com.example.examplemod.item.GunItem;
@@ -81,6 +82,7 @@ public class ExampleModClient {
     static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpecial(ParticleRegistry.BLOCK_IMPACT.get(), new ImpactBlockParticle.Provider());
         event.registerSpriteSet(ParticleRegistry.BLOCK_DUST.get(), BlockDustParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.BULLET_TRAIL.get(), BulletTrailParticle.Provider::new);
     }
 
     @SubscribeEvent

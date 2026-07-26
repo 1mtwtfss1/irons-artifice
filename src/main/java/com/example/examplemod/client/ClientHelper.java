@@ -1,5 +1,6 @@
 package com.example.examplemod.client;
 
+import com.example.examplemod.client.particle.ITrailParticle;
 import com.example.examplemod.entity.Bullet;
 import com.example.examplemod.item.GunItem;
 import com.example.examplemod.network.ClientboundBulletImpactPacket;
@@ -34,16 +35,21 @@ public final class ClientHelper {
 
         Vec3 from = msg.from();
         Vec3 to = msg.to();
-        int steps = (int) (from.distanceTo(to) * Bullet.TRAIL_DENSITY);
+        double distance = from.distanceTo(to);
+        int steps = (int) (distance * Bullet.TRAIL_DENSITY);
         if (steps <= 0) {
             return;
         }
 
         Vec3 dir = to.subtract(from).normalize();
-        float speed = 0.03f;
+        float speed = 6 / ((float) Bullet.TRAIL_DENSITY * 15f);
         for (int i = 0; i < steps; i++) {
-            Vec3 pos = from.lerp(to, (i + 1.0F) / steps);
+            float f = (i + 1.0F) / steps;
+            Vec3 pos = from.lerp(to, f);
             ParticleOptions particle = particles.get(i % particles.size());
+            if (particle.getType() instanceof ITrailParticle trailParticle) {
+                particle = trailParticle.applyTrailInterpolation(particle, (1 - f));
+            }
             level.addAlwaysVisibleParticle(particle, true,
                     pos.x, pos.y, pos.z,
                     dir.x * speed, dir.y * speed, dir.z * speed);
@@ -91,19 +97,23 @@ public final class ClientHelper {
         if (!(stack.getItem() instanceof GunItem gun)) {
             return;
         }
-        AnimationController<?> controller = gun.getAnimatableInstanceCache().getManagerForId(msg.instanceId()).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
+        playClientGunAnimation(gun, msg.instanceId(), msg.animName(), msg.speed(), msg.offsetSeconds());
+    }
+
+    public static void playClientGunAnimation(GunItem gun, long instanceId, String animName, double speed, double offsetSeconds) {
+        AnimationController<?> controller = gun.getAnimatableInstanceCache().getManagerForId(instanceId).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
         if (controller == null) {
             return;
         }
-        controller.triggerAnimation(msg.animName());
-        controller.setAnimationSpeed(msg.speed());
+        controller.triggerAnimation(animName);
+        controller.setAnimationSpeed(speed);
         // this doesn't seem to work
-        double offset = 0.5;//msg.offsetSeconds();
-        if (offset > 0) {
-//            controller.setAnimationTime(msg.offsetSeconds());
+        offsetSeconds = 0.5;
+        if (offsetSeconds > 0) {
+//            controller.setAnimationTime(offsetSeconds);
             // fixme: timeline gets immediately reset by `AnimationController#initialNewAnimation`.
             //  need different hook, or to save and defer timeline until after the animation is initialized
-            controller.setAnimationTime(offset);
+            controller.setAnimationTime(offsetSeconds);
         }
     }
 
