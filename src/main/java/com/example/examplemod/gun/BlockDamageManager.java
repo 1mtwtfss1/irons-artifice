@@ -100,7 +100,7 @@ public class BlockDamageManager {
             manager.put(pos, new BlockHealth(blockCurrentHealth, blockMaxHealth, level.getGameTime(), id));
             int stage = (int) (destroyProgress * 10);
             int lastStage = (int) (lastProgress * 10);
-            if (destroyProgress >= 0.2 && stage != lastStage) {
+            if (stage != lastStage) {
                 level.destroyBlockProgress(id, pos, (int) (destroyProgress * 10));
             }
             return false;

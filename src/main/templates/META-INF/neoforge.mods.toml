@@ -43,6 +43,10 @@ description='''
 Example mod description.
 '''
 
+# Declares the enum extension entries used to add custom HumanoidModel.ArmPose values.
+# The file is relative to the root output directory of the resources.
+enumExtensions="META-INF/enumextensions.json"
+
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
 [[mixins]]
 config="${mod_id}.mixins.json"

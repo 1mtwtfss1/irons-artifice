@@ -8,30 +8,30 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
-public record ReloadState(int tick, int duration) {
+public record ReloadState(int progress, int duration) {
     public static final ReloadState EMPTY = new ReloadState(0, 0);
 
     public static final Codec<ReloadState> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.INT.fieldOf("tick").forGetter(ReloadState::tick),
+            Codec.INT.fieldOf("progress").forGetter(ReloadState::progress),
             Codec.INT.fieldOf("duration").forGetter(ReloadState::duration)
     ).apply(builder, ReloadState::new));
 
     public static final StreamCodec<ByteBuf, ReloadState> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT, ReloadState::tick,
+            ByteBufCodecs.VAR_INT, ReloadState::progress,
             ByteBufCodecs.VAR_INT, ReloadState::duration,
             ReloadState::new
     );
 
     public boolean isFinished() {
-        return this.tick >= duration;
+        return this.progress >= duration;
     }
 
     public float percent(float partialTick) {
-        return (tick + partialTick) / duration;
+        return (progress + partialTick) / duration;
     }
 
     public ReloadState increment(int ticks) {
-        return new ReloadState(tick + ticks, duration);
+        return new ReloadState(progress + ticks, duration);
     }
 
     /**

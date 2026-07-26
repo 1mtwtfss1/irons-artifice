@@ -20,6 +20,7 @@
   "examplemod.component_type.piercing": "Piercing",
   "examplemod.component_type.camera_recoil_multiplier": "Recoil",
   "examplemod.component_type.block_damage_multiplier": "Terrain Damage",
+  "examplemod.component_type.enables_block_damage": "Enables Terrain Damage",
   "examplemod.component_type.fire_rate": "Fire Rate",
   "examplemod.component_type.fire_delay": "Fire Delay",
 

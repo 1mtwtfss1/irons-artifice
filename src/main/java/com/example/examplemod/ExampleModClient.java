@@ -4,6 +4,7 @@ import com.example.examplemod.client.Keybinds;
 import com.example.examplemod.client.gun.GunInHandRenderer;
 import com.example.examplemod.client.particle.BlockDustParticle;
 import com.example.examplemod.client.particle.ImpactBlockParticle;
+import com.example.examplemod.client.pose.ModArmPoseParams;
 import com.example.examplemod.item.GunItem;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.menu.GunScreen;
@@ -15,7 +16,11 @@ import com.geckolib.model.DefaultedItemGeoModel;
 import com.geckolib.renderer.GeoItemRenderer;
 import com.google.common.base.Suppliers;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -26,6 +31,8 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -74,5 +81,24 @@ public class ExampleModClient {
     static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpecial(ParticleRegistry.BLOCK_IMPACT.get(), new ImpactBlockParticle.Provider());
         event.registerSpriteSet(ParticleRegistry.BLOCK_DUST.get(), BlockDustParticle.Provider::new);
+    }
+
+    @SubscribeEvent
+    static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        IClientItemExtensions pistolPose = new IClientItemExtensions() {
+            @Override
+            public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
+                return ModArmPoseParams.PISTOL.getValue();
+            }
+        };
+        IClientItemExtensions riflePose = new IClientItemExtensions() {
+            @Override
+            public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
+                return ModArmPoseParams.RIFLE.getValue();
+            }
+        };
+        // todo: let gun provide it
+        event.registerItem(pistolPose, ItemRegistry.GUN.get(), ItemRegistry.GUN1.get(), ItemRegistry.GUN2.get());
+        event.registerItem(riflePose, ItemRegistry.GUN3.get());
     }
 }

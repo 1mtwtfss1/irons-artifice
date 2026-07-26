@@ -31,10 +31,10 @@ public class Utils {
         }
         int color;
         if (valueModifier.type() == ValueModifier.Type.NEUTRAL) {
-            color = ChatFormatting.BLUE.getColor();
+            color = ChatFormatting.YELLOW.getColor();
         } else {
             color = valueModifier.type() == ValueModifier.Type.BENEFICIAL ^ valueModifier.amount() < 0 ?
-                    ChatFormatting.GOLD.getColor() : ChatFormatting.RED.getColor();
+                    ChatFormatting.GREEN.getColor() : ChatFormatting.RED.getColor();
         }
         return Component.translatable(String.format("examplemod.value_modifier.%s", identifier), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value), valueName).withColor(color);
     }

@@ -273,4 +273,16 @@ public class Bullet extends Projectile {
             PacketDistributor.sendToPlayersTrackingEntity(this, payload);
         }
     }
+
+    @Override
+    public void checkDespawn() {
+        if (this.level() instanceof ServerLevel serverLevel && !serverLevel.getChunkSource().chunkMap.getDistanceManager().inEntityTickingRange(this.chunkPosition().pack())) {
+            this.discard();
+        }
+    }
+
+    @Override
+    public boolean shouldBeSaved() {
+        return false ;
+    }
 }

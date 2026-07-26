@@ -1,0 +1,22 @@
+{
+    "entries": [
+        {
+            "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+            "name": "EXAMPLEMOD_PISTOL",
+            "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+            "parameters": {
+                "class": "com/example/examplemod/client/pose/ModArmPoseParams",
+                "field": "PISTOL"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+            "name": "EXAMPLEMOD_RIFLE",
+            "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+            "parameters": {
+                "class": "com/example/examplemod/client/pose/ModArmPoseParams",
+                "field": "RIFLE"
+            }
+        }
+    ]
+}
