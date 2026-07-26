@@ -1,5 +1,6 @@
 package com.example.examplemod.client;
 
+import com.example.examplemod.client.particle.ColorTransitionParticleOption;
 import com.example.examplemod.client.particle.ITrailParticle;
 import com.example.examplemod.entity.Bullet;
 import com.example.examplemod.item.GunItem;
@@ -65,7 +66,9 @@ public final class ClientHelper {
         Vec3 pos = msg.position().subtract(direction.scale(0.05));
         float speed = (float) msg.deltaMovement().length();
         Vec3 reflected = Utils.reflect(direction, msg.normal());
-        level.addAlwaysVisibleParticle(ParticleTypes.DRIPPING_LAVA, true, pos.x, pos.y, pos.z, 0, 0, 0);
+        level.addAlwaysVisibleParticle(new ColorTransitionParticleOption(
+                ParticleRegistry.BULLET_IMPACT.get(), 0xFF8C00, 0x0F0600, 0.5f, 0f, 1f, 0.25f, 0.35f, 0.35f, 0
+        ), true, pos.x, pos.y, pos.z, 0, 0, 0);
         BlockPos impactedBlock = BlockPos.containing(pos.add(direction.scale(0.1)));
         BlockState blockState = level.getBlockState(impactedBlock);
         float particleSpeed = (10 + speed) * 0.02f;

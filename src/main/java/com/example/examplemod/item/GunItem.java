@@ -1,8 +1,10 @@
 package com.example.examplemod.item;
 
+import com.example.examplemod.client.ClientHelper;
 import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.gun.GunProfile;
 import com.example.examplemod.registry.DataComponentRegistry;
+import com.geckolib.animatable.GeoItem;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
@@ -137,6 +139,7 @@ public class GunItem extends BaseGeoItem {
         controllers.add(DefaultAnimations.triggerOnlyController()
                 .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
                 .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
+                .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
         );
     }
 

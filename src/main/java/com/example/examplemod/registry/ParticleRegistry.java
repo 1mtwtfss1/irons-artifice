@@ -45,6 +45,9 @@ public final class ParticleRegistry {
     public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> BULLET_TRAIL =
             PARTICLE_TYPES.register("bullet_trail", () -> new BulletTrailParticleType(false));
 
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> BULLET_IMPACT =
+            PARTICLE_TYPES.register("bullet_impact", () -> new BulletTrailParticleType(false));
+
     public static void register(IEventBus modEventBus) {
         PARTICLE_TYPES.register(modEventBus);
     }

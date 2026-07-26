@@ -3,6 +3,7 @@ package com.example.examplemod;
 import com.example.examplemod.client.Keybinds;
 import com.example.examplemod.client.gun.GunInHandRenderer;
 import com.example.examplemod.client.particle.BlockDustParticle;
+import com.example.examplemod.client.particle.BulletImpactParticle;
 import com.example.examplemod.client.particle.BulletTrailParticle;
 import com.example.examplemod.client.particle.ImpactBlockParticle;
 import com.example.examplemod.client.pose.ModArmPoseParams;
@@ -32,6 +33,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.extensions.IModelProviderExtension;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
@@ -83,6 +85,7 @@ public class ExampleModClient {
         event.registerSpecial(ParticleRegistry.BLOCK_IMPACT.get(), new ImpactBlockParticle.Provider());
         event.registerSpriteSet(ParticleRegistry.BLOCK_DUST.get(), BlockDustParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.BULLET_TRAIL.get(), BulletTrailParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.BULLET_IMPACT.get(), BulletImpactParticle.Provider::new);
     }
 
     @SubscribeEvent

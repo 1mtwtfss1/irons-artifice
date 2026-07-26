@@ -6,17 +6,9 @@
 			"translation": [0, 0, 1],
 			"scale": [0.8, 0.8, 0.8]
 		},
-		"thirdperson_lefthand": {
-			"translation": [0, 1.5, -4.5],
-			"scale": [0.8, 0.8, 0.8]
-		},
 		"firstperson_righthand": {
 			"rotation": [0, 0, 8],
-			"translation": [-1, 0, -1]
-		},
-		"firstperson_lefthand": {
-			"rotation": [0, 0, 16],
-			"translation": [-2, 0, -6]
+			"translation": [-1, 0, -2]
 		},
 		"ground": {
 			"translation": [0, 0, 4],

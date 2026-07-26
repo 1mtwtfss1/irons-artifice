@@ -26,6 +26,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -37,7 +38,9 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class Bullet extends Projectile {
     private static final EntityDataAccessor<Float> DATA_GRAVITY =
@@ -94,6 +97,29 @@ public class Bullet extends Projectile {
         return (float) (profile.value(ShotComponents.DAMAGE) / Math.max(1, profile.value(ShotComponents.PROJECTILE_COUNT)));
     }
 
+    public static @Nullable EntityHitResult getEntityHitResult(
+            Level level, Entity source, Vec3 from, Vec3 to, AABB targetSearchArea, Predicate<Entity> matching, float entityMargin, float motionMargin
+    ) {
+        double nearest = Double.MAX_VALUE;
+        Optional<Vec3> nearestLocation = Optional.empty();
+        Entity hitEntity = null;
+
+        for (Entity entity : level.getEntities(source, targetSearchArea, matching)) {
+            AABB bb = entity.getBoundingBox().inflate(entityMargin).expandTowards(entity.getDeltaMovement().scale(motionMargin));
+            Optional<Vec3> location = bb.clip(from, to);
+            if (location.isPresent()) {
+                double dd = from.distanceToSqr(location.get());
+                if (dd < nearest) {
+                    hitEntity = entity;
+                    nearest = dd;
+                    nearestLocation = location;
+                }
+            }
+        }
+
+        return hitEntity == null ? null : new EntityHitResult(hitEntity, nearestLocation.get());
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -109,10 +135,8 @@ public class Bullet extends Projectile {
             HitResult blockHit = level().clip(new ClipContext(
                     position, destination, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
             Vec3 blockClip = blockHit.getLocation();
-            EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
-                    level(), this, position, blockClip,
-                    getBoundingBox().expandTowards(delta).inflate(1),
-                    this::canHitEntity, 0.25f);
+            EntityHitResult entityHit = getEntityHitResult(level(), this, position, blockClip, getBoundingBox().expandTowards(delta).inflate(1),
+                    this::canHitEntity, 0.25f, 3f);
             if (entityHit != null) {
                 onHit(entityHit);
                 destination = entityHit.getLocation();
@@ -283,6 +307,6 @@ public class Bullet extends Projectile {
 
     @Override
     public boolean shouldBeSaved() {
-        return false ;
+        return false;
     }
 }
