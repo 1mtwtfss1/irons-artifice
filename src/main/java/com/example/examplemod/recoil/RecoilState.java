@@ -8,12 +8,12 @@ import net.minecraft.world.phys.Vec2;
 /**
  * Server-side recoil accumulator stored as a data attachment on the shooter.
  *
- * <p>Holds the current aim offset plus the game-tick at which it was last updated, enabling lazy
- * decay: the offset is decayed by elapsed ticks only when read at fire time, so no per-tick handler
+ * <p>Holds the current aim offsetSeconds plus the game-tick at which it was last updated, enabling lazy
+ * decay: the offsetSeconds is decayed by elapsed ticks only when read at fire time, so no per-tick handler
  * is needed.
  *
- * @param pitch current vertical offset in degrees (positive = up)
- * @param yaw   current horizontal offset in degrees
+ * @param pitch current vertical offsetSeconds in degrees (positive = up)
+ * @param yaw   current horizontal offsetSeconds in degrees
  * @param tick  game time of the last update
  */
 public record RecoilState(float pitch, float yaw, long tick) {
@@ -32,7 +32,7 @@ public record RecoilState(float pitch, float yaw, long tick) {
     }
 
     /**
-     * Adds this shot's recoil impulse on top of the current (decayed) offset and stores it.
+     * Adds this shot's recoil impulse on top of the current (decayed) offsetSeconds and stores it.
      *
      * @param roundIndex the shot's index within the magazine (drives the deterministic yaw pattern)
      */

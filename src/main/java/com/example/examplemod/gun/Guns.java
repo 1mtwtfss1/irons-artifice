@@ -78,7 +78,7 @@ public final class Guns {
         map.set(ShotComponents.KNOCKBACK, Value.of(0.3));
         map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(10f, .33f, 1.7f, 431));
         map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.0));
-        map.set(ShotComponents.FIRE_DELAY, Value.of(5));
+        map.set(ShotComponents.FIRE_DELAY, Value.of(20));
         return map;
     }
 }

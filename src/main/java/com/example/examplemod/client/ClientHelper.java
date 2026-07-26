@@ -1,24 +1,27 @@
 package com.example.examplemod.client;
 
 import com.example.examplemod.entity.Bullet;
+import com.example.examplemod.item.GunItem;
 import com.example.examplemod.network.ClientboundBulletImpactPacket;
 import com.example.examplemod.network.ClientboundBulletTrailPacket;
+import com.example.examplemod.network.ClientboundGunAnimationPacket;
 import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
 import com.example.examplemod.registry.ParticleRegistry;
 import com.example.examplemod.utils.Utils;
+import com.geckolib.animation.AnimationController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class ClientHelper {
 
@@ -73,6 +76,29 @@ public final class ClientHelper {
             motion = motion.scale(particleSpeed * 2);
             level.addParticle(new BlockParticleOption(ParticleRegistry.BLOCK_IMPACT.get(), blockState), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         }
+    }
+
+    public static void handleGunAnimationPacket(ClientboundGunAnimationPacket msg) {
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+        Entity entity = level.getEntity(msg.entityId());
+        if (!(entity instanceof LivingEntity livingEntity)) {
+            return;
+        }
+        ItemStack stack = livingEntity.getItemInHand(msg.interactionHand());
+        if (!(stack.getItem() instanceof GunItem gun)) {
+            return;
+        }
+        AnimationController<?> controller = gun.getAnimatableInstanceCache().getManagerForId(msg.instanceId()).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
+        if (controller == null) {
+            return;
+        }
+        controller.triggerAnimation(msg.animName());
+        controller.setAnimationSpeed(msg.speed());
+        // this doesn't seem to work
+        controller.setAnimationTime(msg.offsetSeconds());
     }
 
     public static void handleCrosshairAnimation(ClientboundReloadCrosshairAnimationPacket msg) {

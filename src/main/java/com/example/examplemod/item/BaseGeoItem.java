@@ -17,7 +17,7 @@ public class BaseGeoItem  extends Item implements GeoItem {
 
     public BaseGeoItem(Item.Properties properties) {
         super(properties);
-        //GeoItem.registerSyncedAnimatable(this);
+        GeoItem.registerSyncedAnimatable(this);
     }
 
     @Override
@@ -27,7 +27,6 @@ public class BaseGeoItem  extends Item implements GeoItem {
 
     @Override
     public void registerControllers(final AnimatableManager.@NonNull ControllerRegistrar controllers) {
-
     }
 
     @Override

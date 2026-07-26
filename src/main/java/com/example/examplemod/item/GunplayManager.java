@@ -1,7 +1,5 @@
 package com.example.examplemod.item;
 
-import com.example.examplemod.ExampleMod;
-import com.example.examplemod.client.RecoilManager;
 import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.data.ShotComponentMap;
 import com.example.examplemod.data.ShotComponents;
@@ -10,12 +8,13 @@ import com.example.examplemod.gun.GunProfile;
 import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.menu.GunContainer;
 import com.example.examplemod.modifier.ModifierItem;
+import com.example.examplemod.network.ClientboundGunAnimationPacket;
 import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
-import com.example.examplemod.recoil.RecoilHelper;
 import com.example.examplemod.recoil.RecoilState;
 import com.example.examplemod.registry.DataComponentRegistry;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.registry.ItemRegistry;
+import com.geckolib.animatable.GeoItem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -72,6 +71,7 @@ public final class GunplayManager {
         applyCharacterRecoil(player, profile);
         RecoilState.addImpulse(player, now, profile);
         player.getCooldowns().addCooldown(stack, (int) Math.round(profile.value(ShotComponents.FIRE_DELAY)));
+        playFireAnimation(player, stack, gunItem, profile);
     }
 
     private static void applyCharacterRecoil(ServerPlayer player, ShotProfile profile) {
@@ -80,8 +80,29 @@ public final class GunplayManager {
             return;
         }
         Vec3 look = player.getLookAngle();
+        // todo: factor in recoil
         player.push(-look.x * strength, -look.y * strength * 0.5 + 0.05, -look.z * strength);
         player.hurtMarked = true;
+    }
+
+    private static void playFireAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
+        double fireSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.value(ShotComponents.FIRE_DELAY);
+        ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getId(stack), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
+                "fire", fireSpeedMultiplier, 0);
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
+    }
+
+    private static void playReloadAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
+//        double reloadSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.value(ShotComponents.FIRE_DELAY);
+        ReloadState existingState = stack.get(DataComponentRegistry.RELOAD_STATE);
+        double offsetSeconds = 0;
+        if (existingState != null) {
+            // fixme: expose ticks
+            offsetSeconds = existingState.percent(0) * existingState.duration() / 20.0;
+        }
+        ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getId(stack), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
+                "reload", 1, offsetSeconds);
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
     private static void fireShot(ServerLevel level, ServerPlayer player, Vec3 direction, ShotProfile profile) {
@@ -179,6 +200,7 @@ public final class GunplayManager {
         GunItem.startReload(gun, ticks);
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new ClientboundReloadCrosshairAnimationPacket(ticks));
+            playReloadAnimation(serverPlayer, gun, gunItem, null);
         }
         return ReloadResult.STARTING_RELOAD;
     }

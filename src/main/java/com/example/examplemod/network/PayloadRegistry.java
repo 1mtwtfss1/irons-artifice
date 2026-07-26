@@ -35,5 +35,10 @@ public final class PayloadRegistry {
                 ClientboundBulletImpactPacket.STREAM_CODEC,
                 ClientboundBulletImpactPacket::handle
         );
+        registrar.playToClient(
+                ClientboundGunAnimationPacket.TYPE,
+                ClientboundGunAnimationPacket.STREAM_CODEC,
+                ClientboundGunAnimationPacket::handle
+        );
     }
 }

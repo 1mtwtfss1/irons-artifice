@@ -3,6 +3,12 @@ package com.example.examplemod.item;
 import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.gun.GunProfile;
 import com.example.examplemod.registry.DataComponentRegistry;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.state.AnimationTest;
+import com.geckolib.constant.DefaultAnimations;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -12,13 +18,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public class GunItem extends BaseGeoItem {
+    public static final String TRIGGERED_ANIMATION_CONTROLLER = "Actions";
+    public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
     private final GunProfile gunProfile;
 
     public GunItem(Properties properties, GunProfile gunProfile) {
@@ -120,5 +127,21 @@ public class GunItem extends BaseGeoItem {
             // hell yeah
             return 0xFFAA00;
         }
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {
+        super.registerControllers(controllers);
+        controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunAnimationStateHandler)
+        );
+        controllers.add(DefaultAnimations.triggerOnlyController()
+                .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
+                .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
+        );
+    }
+
+    private PlayState gunAnimationStateHandler(AnimationTest<GunItem> animationTest) {
+        animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
+        return PlayState.CONTINUE;
     }
 }

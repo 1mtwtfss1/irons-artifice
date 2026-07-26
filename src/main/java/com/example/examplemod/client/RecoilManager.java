@@ -18,8 +18,8 @@ import net.neoforged.neoforge.client.event.ViewportEvent;
 /**
  * Client-side <b>predicted</b> camera recoil.
  *
- * <p>Recoil is a pure decaying aim offset applied only to the rendered camera angles (never to the
- * player's actual rotation). The server maintains the same offset via {@code ServerRecoil} and fires
+ * <p>Recoil is a pure decaying aim offsetSeconds applied only to the rendered camera angles (never to the
+ * player's actual rotation). The server maintains the same offsetSeconds via {@code ServerRecoil} and fires
  * bullets along it, so the crosshair and the shots agree. Both sides use {@link RecoilHelper} for the
  * impulse and decay, keeping the independent simulations aligned.
  */
@@ -31,7 +31,7 @@ public final class RecoilManager {
     // snappy looks better though so
     private static final float CURSOR_STRENGTH = 0.75F;
 
-    // Current recoil offset (degrees) and the previous-tick value for partial-tick interpolation.
+    // Current recoil offsetSeconds (degrees) and the previous-tick value for partial-tick interpolation.
     private static float pitch = 0.0F;
     private static float yaw = 0.0F;
     private static float pitchCursorO = 0.0F;

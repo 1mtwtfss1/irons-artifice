@@ -36,7 +36,7 @@
 							"vector": [0, 0, 0]
 						},
 						"0.0833": {
-							"vector": [-50.83, 0, 0],
+							"vector": [-30.83, 0, 0],
 							"easing": "easeInSine"
 						},
 						"0.5": {
@@ -108,7 +108,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.125": {
+						"0.0833": {
 							"vector": [-20, 0, 0],
 							"easing": "easeInSine"
 						},
@@ -125,7 +125,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.125": {
+						"0.0833": {
 							"vector": [0, 1, 5],
 							"easing": "easeInSine"
 						},
@@ -138,6 +138,20 @@
 							"easing": "easeInOutSine"
 						},
 						"1.0": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"cylinder_spin": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 90]
+						},
+						"0.5417": {
+							"vector": [0, 0, 90]
+						},
+						"0.9583": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutSine"
 						}

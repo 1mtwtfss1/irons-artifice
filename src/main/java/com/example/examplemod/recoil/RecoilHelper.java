@@ -8,7 +8,7 @@ import net.minecraft.world.phys.Vec2;
 
 public final class RecoilHelper {
     /**
-     * Fraction of the recoil offset retained each tick during recovery (lower = snappier).
+     * Fraction of the recoil offsetSeconds retained each tick during recovery (lower = snappier).
      */
     public static final float RETENTION = 0.75F;
 
