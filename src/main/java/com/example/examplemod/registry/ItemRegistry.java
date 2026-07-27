@@ -28,16 +28,20 @@ public final class ItemRegistry {
         ITEMS.register(modEventBus);
     }
 
-    public static final DeferredItem<GunItem> GUN = ITEMS.registerItem("gun", propertires -> new GunItem(propertires.stacksTo(1), Guns.BASIC),
+    public static final DeferredItem<GunItem> GUN = ITEMS.registerItem("gun", properties -> new GunItem(properties.stacksTo(1), Guns.BASIC),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
-    public static final DeferredItem<GunItem> GUN1 = ITEMS.registerItem("gunbang", propertires -> new GunItem(propertires.stacksTo(1), Guns.HAND_CANNON),
+    public static final DeferredItem<GunItem> GUN1 = ITEMS.registerItem("gunbang", properties -> new GunItem(properties.stacksTo(1), Guns.HAND_CANNON),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
-    public static final DeferredItem<GunItem> GUN2 = ITEMS.registerItem("shotgun", propertires -> new GunItem(propertires.stacksTo(1), Guns.SHOTGUN),
+    public static final DeferredItem<GunItem> GUN2 = ITEMS.registerItem("shotgun", properties -> new GunItem(properties.stacksTo(1), Guns.SHOTGUN),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
-    public static final DeferredItem<GunItem> GUN3 = ITEMS.registerItem("gunbip", propertires -> new GunItem(propertires.stacksTo(1), Guns.HIGH_CAP),
+    public static final DeferredItem<GunItem> GUN3 = ITEMS.registerItem("gunbip", properties -> new GunItem(properties.stacksTo(1), Guns.HIGH_CAP),
+            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+    );
+
+    public static final DeferredItem<GunItem> FLINTLOCK_PISTOL = ITEMS.registerItem("flintlock", properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
 

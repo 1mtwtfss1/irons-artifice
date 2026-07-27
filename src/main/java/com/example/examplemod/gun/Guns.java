@@ -27,6 +27,27 @@ public final class Guns {
             FireMode.SEMI
     );
 
+    public static final GunProfile FLINTLOCK_PISTOL = new GunProfile(
+            () -> {
+                var map = basicGun();
+                map.set(ShotComponents.DAMAGE, Value.of(14));
+                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
+                        new GunShotSoundSettings(SoundRegistry.REVOLVER_SHOOT, 0.7f, 0.9f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.GENERIC_BULLET_ECHO, 0.5f, 0.6f, 48f, 112f, 192f),
+                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
+                ));
+                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(35f, .45f, 1.7f, 0));
+                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.25));
+                map.set(ShotComponents.SPREAD, Value.of(3));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
+                return map;
+            },
+            1,
+            3,
+            80,
+            FireMode.SEMI
+    );
+
     public static final GunProfile HAND_CANNON = new GunProfile(
             () -> {
                 var map = basicGun();

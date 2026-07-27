@@ -57,6 +57,14 @@ public class ExampleModClient {
                 return this.renderer.get();
             }
         });
+        ItemRegistry.FLINTLOCK_PISTOL.get().geoRenderProvider.setValue(new GeoRenderProvider() {
+            private final Supplier<GeoItemRenderer<GunItem>> renderer = Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(ExampleMod.id("flintlock_pistol"))));
+
+            @Override
+            public @Nullable GeoItemRenderer<GunItem> getGeoItemRenderer() {
+                return this.renderer.get();
+            }
+        });
     }
 
     @SubscribeEvent

@@ -181,6 +181,7 @@ public class GunItem extends BaseGeoItem {
                         .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
                         .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
                         .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
+                        .triggerableAnim("idle_uncocked", RawAnimation.begin().thenPlay("idle_uncocked"))
         );
     }
 

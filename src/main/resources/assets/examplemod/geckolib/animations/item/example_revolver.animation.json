@@ -3,6 +3,7 @@
 	"animations": {
 		"idle": {
 			"loop": true,
+			"animation_length": 3.0833,
 			"bones": {
 				"hammer": {
 					"rotation": {
