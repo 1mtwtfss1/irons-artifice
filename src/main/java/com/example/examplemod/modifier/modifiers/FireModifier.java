@@ -16,6 +16,6 @@ public final class FireModifier implements GunModifier {
         components.getOrCreate(ShotComponents.ON_HIT).add(new IgniteOnHit());
         components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(ParticleTypes.FLAME);
         components.getOrCreate(ShotComponents.BULLET_DRAG).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.ADD, ValueModifier.Type.BENEFICIAL));
-        components.getOrCreate(ShotComponents.GUNSHOT_SOUND).addAccent(PlayableSound.of(SoundEvents.BLAZE_SHOOT, 4f, 1.2f, 1.4f));
+        components.getOrCreate(ShotComponents.GUNSHOT_SOUND).addAccent(PlayableSound.of(PlayableSound.holder(SoundEvents.BLAZE_SHOOT), 4f, 1.2f, 1.4f));
     }
 }

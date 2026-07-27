@@ -14,7 +14,7 @@ public final class GravityWellModifier implements GunModifier {
     @Override
     public void apply(ShotComponentMap components) {
         components.getOrCreate(ShotComponents.ON_HIT).add(new GravityWellOnHit());
-        components.getOrCreate(ShotComponents.GUNSHOT_SOUND).addAccent(PlayableSound.of(SoundEvents.BEACON_ACTIVATE, 4f, 1.6f, 1.8f));
+        components.getOrCreate(ShotComponents.GUNSHOT_SOUND).addAccent(PlayableSound.of(PlayableSound.holder(SoundEvents.BEACON_ACTIVATE), 4f, 1.6f, 1.8f));
         components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 0));
     }
 }

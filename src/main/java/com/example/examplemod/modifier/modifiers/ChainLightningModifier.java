@@ -15,6 +15,6 @@ public final class ChainLightningModifier implements GunModifier {
     public void apply(ShotComponentMap components) {
         components.getOrCreate(ShotComponents.ON_HIT).add(new ChainLightningOnHit());
         components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(ParticleTypes.SCULK_CHARGE_POP);
-        components.getOrCreate(ShotComponents.GUNSHOT_SOUND).addAccent(PlayableSound.of(SoundEvents.GUARDIAN_ATTACK, 3f, 1.6f, 1.8f));
+        components.getOrCreate(ShotComponents.GUNSHOT_SOUND).addAccent(PlayableSound.of(PlayableSound.holder(SoundEvents.GUARDIAN_ATTACK), 3f, 1.6f, 1.8f));
     }
 }

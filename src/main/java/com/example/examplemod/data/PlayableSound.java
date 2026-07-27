@@ -60,10 +60,10 @@ public record PlayableSound(Holder<SoundEvent> soundEventHolder, float volume, f
      * ************/
 
     /**
-     * @return "standard" playable sound with volume 8 and pitch [0.9, 1.1]
+     * @return "standard" playable sound with volume 2 and pitch [0.9, 1.1]
      */
     public static PlayableSound standard(Holder<SoundEvent> soundEvent) {
-        return of(soundEvent, 8f, 0.9f, 1.1f);
+        return of(soundEvent, 2f, 0.9f, 1.1f);
     }
 
     public static PlayableSound of(Holder<SoundEvent> soundEvent, float volume) {
@@ -78,29 +78,8 @@ public record PlayableSound(Holder<SoundEvent> soundEventHolder, float volume, f
         return new PlayableSound(soundEvent, volume, minPitch, maxPitch);
     }
 
-    /**
-     * @return "standard" playable sound with volume 8 and pitch [0.9, 1.1]
-     */
-    public static PlayableSound standard(SoundEvent soundEvent) {
-        return standard(holder(soundEvent));
-    }
-
-    public static PlayableSound of(SoundEvent soundEvent, float volume) {
-        return of(holder(soundEvent), volume);
-    }
-
-    public static PlayableSound of(SoundEvent soundEvent, float volume, float pitch) {
-        return of(holder(soundEvent), volume, pitch);
-    }
-
-    public static PlayableSound of(SoundEvent soundEvent, float volume, float minPitch, float maxPitch) {
-        return of(holder(soundEvent), volume, minPitch, maxPitch);
-    }
-
-    private static Holder<SoundEvent> holder(SoundEvent soundEvent) {
+    public static Holder<SoundEvent> holder(SoundEvent soundEvent) {
         return BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent);
     }
-
-
 }
 

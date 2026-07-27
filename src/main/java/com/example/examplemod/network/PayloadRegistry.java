@@ -41,9 +41,9 @@ public final class PayloadRegistry {
                 ClientboundGunAnimationPacket::handle
         );
         registrar.playToClient(
-                ClientboundGunshotEchoPacket.TYPE,
-                ClientboundGunshotEchoPacket.STREAM_CODEC,
-                ClientboundGunshotEchoPacket::handle
+                ClientboundGunshotSoundPacket.TYPE,
+                ClientboundGunshotSoundPacket.STREAM_CODEC,
+                ClientboundGunshotSoundPacket::handle
         );
     }
 }

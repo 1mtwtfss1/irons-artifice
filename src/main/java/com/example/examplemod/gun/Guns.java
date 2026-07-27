@@ -1,16 +1,26 @@
 package com.example.examplemod.gun;
 
+import com.example.examplemod.client.GunShotSoundSettings;
 import com.example.examplemod.data.PlayableSound;
 import com.example.examplemod.data.ShotComponentMap;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.data.Value;
 import com.example.examplemod.recoil.RecoilProfile;
+import com.example.examplemod.registry.SoundRegistry;
 import net.minecraft.sounds.SoundEvents;
 
 public final class Guns {
 
     public static final GunProfile BASIC = new GunProfile(
-            Guns::basicGun,
+            () -> {
+                var map = basicGun();
+                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
+                        new GunShotSoundSettings(SoundRegistry.REVOLVER_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.GENERIC_BULLET_ECHO, 0.6f, 0.7f, 48f, 112f, 192f),
+                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
+                ));
+                return map;
+            },
             6,
             5,
             40,
@@ -25,7 +35,7 @@ public final class Guns {
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
                 map.set(ShotComponents.DAMAGE, Value.of(8));
                 map.set(ShotComponents.GUNSHOT_SOUND,
-                        new GunShotSoundStack(PlayableSound.of(SoundEvents.FIREWORK_ROCKET_BLAST, 8f, 0.75f, 0.85f), PlayableSound.of(SoundEvents.DISPENSER_FAIL, 0.75f, 1.4f, 1.6f))
+                        new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_BLAST, 0.75f, 0.85f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
                 );
                 return map;
             },
@@ -44,7 +54,7 @@ public final class Guns {
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.simple(30f, 999));
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(1.5));
                 map.set(ShotComponents.GUNSHOT_SOUND,
-                        new GunShotSoundStack(PlayableSound.standard(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST), PlayableSound.of(SoundEvents.DISPENSER_FAIL, 0.75f, 1.4f, 1.6f))
+                        new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.9f, 1.1f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
                 );
                 return map;
             },

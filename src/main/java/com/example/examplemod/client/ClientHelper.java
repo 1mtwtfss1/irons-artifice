@@ -7,7 +7,7 @@ import com.example.examplemod.item.GunItem;
 import com.example.examplemod.network.ClientboundBulletImpactPacket;
 import com.example.examplemod.network.ClientboundBulletTrailPacket;
 import com.example.examplemod.network.ClientboundGunAnimationPacket;
-import com.example.examplemod.network.ClientboundGunshotEchoPacket;
+import com.example.examplemod.network.ClientboundGunshotSoundPacket;
 import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
 import com.example.examplemod.registry.ParticleRegistry;
 import com.example.examplemod.utils.Utils;
@@ -17,7 +17,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -120,11 +119,15 @@ public final class ClientHelper {
         CrosshairRenderer.triggerReloadAnimation(msg.reloadDuration());
     }
 
-    public static void handleGunshotEcho(ClientboundGunshotEchoPacket msg) {
+    public static void handleGunshotSound(ClientboundGunshotSoundPacket msg) {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) {
             return;
         }
-        Minecraft.getInstance().getSoundManager().play(new GunShotEchoSoundInstance(msg.sound().value(), msg.source(), RandomSource.create(),new Vec3(msg.x(),msg.y(),msg.z()),msg.minPitch(),msg.maxPitch()));
+        Vec3 pos = new Vec3(msg.x(), msg.y(), msg.z());
+        RandomSource random = RandomSource.create();
+        for (GunShotSoundSettings settings : msg.sounds()) {
+            Minecraft.getInstance().getSoundManager().play(new GunShotSoundInstance(settings, msg.source(), random, pos));
+        }
     }
 }

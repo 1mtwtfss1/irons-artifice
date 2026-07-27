@@ -1,6 +1,7 @@
 package com.example.examplemod.data;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.client.GunShotSoundSettings;
 import com.example.examplemod.gun.GunShotSoundStack;
 import com.example.examplemod.gun.ImpactSoundStack;
 import com.example.examplemod.gun.OnHitEffects;
@@ -34,9 +35,11 @@ public final class ShotComponents {
     public static final ComponentType<RecoilProfile> CAMERA_RECOIL = new ComponentType<>(ExampleMod.id("camera_recoil"), () -> RecoilProfile.simple(10, 0));
     public static final ComponentType<Value> CAMERA_RECOIL_MULTIPLIER = new ComponentType<>(ExampleMod.id("camera_recoil_multiplier"), () -> Value.of(1));
     public static final ComponentType<Value> CHARACTER_RECOIL = new ComponentType<>(ExampleMod.id("character_recoil"), () -> Value.of(0));
-    public static final ComponentType<GunShotSoundStack> GUNSHOT_SOUND = new ComponentType<>(ExampleMod.id("gunshot_sound"), () -> new GunShotSoundStack(PlayableSound.standard(SoundEvents.FIREWORK_ROCKET_BLAST), PlayableSound.of(SoundEvents.DISPENSER_FAIL, 0.75f, 1.4f, 1.6f), PlayableSound.standard(SoundRegistry.GENERIC_BULLET_ECHO)));
+    public static final ComponentType<GunShotSoundStack> GUNSHOT_SOUND = new ComponentType<>(ExampleMod.id("gunshot_sound"), () -> new GunShotSoundStack(
+            GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_BLAST, 0.9f, 1.1f, -1f, 0f, 48f),
+            PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)));
     public static final ComponentType<ImpactSoundStack> IMPACT_SOUND = new ComponentType<>(ExampleMod.id("impact_sound"), () -> new ImpactSoundStack(
-            Optional.of(PlayableSound.of(SoundRegistry.BULLET_IMPACT_GENERIC.get(), 2f, .8f, 1.2f)), Optional.empty()
+            Optional.of(PlayableSound.of(SoundRegistry.BULLET_IMPACT_GENERIC, 2f, .8f, 1.2f)), Optional.empty()
     ));
     public static final ComponentType<ParticleStack> PARTICLE_TRAIL = new ComponentType<>(ExampleMod.id("particle_trail"), ParticleStack::new);
 

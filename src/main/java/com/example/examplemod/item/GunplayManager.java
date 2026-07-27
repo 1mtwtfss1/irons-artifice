@@ -65,13 +65,37 @@ public final class GunplayManager {
         Vec2 rotation = authoritativeDirection.rotation();
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
-        fireShot(level, player, Vec3.directionFromRotation(pitch, yaw), profile);
+        fireShot(level, player, player.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
         GunItem.setMagazine(stack, magazine.deplete());
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, player.position());
         applyCharacterRecoil(player, profile);
         RecoilState.addImpulse(player, now, profile);
         player.getCooldowns().addCooldown(stack, (int) Math.round(profile.value(ShotComponents.FIRE_DELAY)));
         playFireAnimation(player, stack, gunItem, profile);
+    }
+
+    /**
+     * Fires a shot using the given player's held gun profile, but from an explicit origin/direction rather than the
+     * player's actual eye position/look angle. Skips ammo, cooldown, and reload checks, and doesn't apply recoil -
+     * intended for debug/testing purposes (e.g. the {@code /irons_artifice debug shoot} command), so it plays nicely
+     * with {@code /execute positioned ... rotated ... run irons_artifice debug shoot}.
+     *
+     * @return whether the player was holding a gun and a shot was fired
+     */
+    public static boolean debugFire(ServerLevel level, ServerPlayer player, Vec3 origin, Vec3 direction) {
+        ItemStack stack = player.getMainHandItem();
+        if (!(stack.getItem() instanceof GunItem gunItem)) {
+            return false;
+        }
+
+        GunProfile gunProfile = gunItem.getGun();
+        GunContainer modifiers = new GunContainer(stack);
+        ShotProfile profile = compose(gunProfile, modifiers, player, stack, level);
+
+        fireShot(level, player, origin, direction, profile);
+        profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
+        playFireAnimation(player, stack, gunItem, profile);
+        return true;
     }
 
     private static void applyCharacterRecoil(ServerPlayer player, ShotProfile profile) {
@@ -105,7 +129,7 @@ public final class GunplayManager {
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
-    private static void fireShot(ServerLevel level, ServerPlayer player, Vec3 direction, ShotProfile profile) {
+    private static void fireShot(ServerLevel level, ServerPlayer player, Vec3 origin, Vec3 direction, ShotProfile profile) {
         int projectileCount = Math.max(1, (int) Math.round(profile.value(ShotComponents.PROJECTILE_COUNT)));
         float speed = (float) profile.value(ShotComponents.BULLET_SPEED);
         float spread = getSpreadForEntity(profile, player);
@@ -113,7 +137,7 @@ public final class GunplayManager {
             Bullet bullet = new Bullet(EntityRegistry.BULLET.get(), level);
             bullet.setOwner(player);
             bullet.applyProfile(profile);
-            bullet.setPos(player.getEyePosition());
+            bullet.setPos(origin);
             bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);
         }

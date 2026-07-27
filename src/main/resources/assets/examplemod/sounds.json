@@ -18,5 +18,10 @@
     "sounds": [
       "examplemod:gunshot_far_echo"
     ]
+  },
+  "item.example_revolver.shoot": {
+    "sounds": [
+      "examplemod:revolver_shoot"
+    ]
   }
 }

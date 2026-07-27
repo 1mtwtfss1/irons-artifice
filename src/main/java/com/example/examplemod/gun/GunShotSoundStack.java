@@ -1,7 +1,8 @@
 package com.example.examplemod.gun;
 
+import com.example.examplemod.client.GunShotSoundSettings;
 import com.example.examplemod.data.PlayableSound;
-import com.example.examplemod.network.ClientboundGunshotEchoPacket;
+import com.example.examplemod.network.ClientboundGunshotSoundPacket;
 import com.example.examplemod.registry.SoundRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -13,26 +14,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GunShotSoundStack {
-    PlayableSound baseSound;
+    GunShotSoundSettings baseSound;
+    GunShotSoundSettings echoSound;
     PlayableSound dryFireSound;
-    PlayableSound echoSound;
     private final List<PlayableSound> accents = new ArrayList<>();
 
-    public GunShotSoundStack(PlayableSound baseSound, PlayableSound dryFireSound, PlayableSound echoSound) {
+    public GunShotSoundStack(GunShotSoundSettings baseSound, GunShotSoundSettings echoSound, PlayableSound dryFireSound) {
         this.baseSound = baseSound;
         this.dryFireSound = dryFireSound;
         this.echoSound = echoSound;
     }
 
-    public GunShotSoundStack(PlayableSound baseSound, PlayableSound dryFireSound) {
-        this(baseSound, dryFireSound, PlayableSound.standard(SoundRegistry.GENERIC_BULLET_ECHO));
+    public GunShotSoundStack(GunShotSoundSettings baseSound, PlayableSound dryFireSound) {
+        this(baseSound, new GunShotSoundSettings(SoundRegistry.GENERIC_BULLET_ECHO, 0.7f, 0.9f, 64f, 128f, 192f), dryFireSound);
     }
 
     public void addAccent(PlayableSound options) {
         this.accents.add(options);
     }
 
-    public void setBaseSound(PlayableSound sound) {
+    public void setBaseSound(GunShotSoundSettings sound) {
         this.baseSound = sound;
     }
 
@@ -41,13 +42,12 @@ public class GunShotSoundStack {
     }
 
     public void playGunShotSound(Level level, Vec3 pos) {
-        this.baseSound.play(level, pos, SoundSource.NEUTRAL);
         for (PlayableSound sound : accents) {
             sound.play(level, pos, SoundSource.NEUTRAL);
         }
         if (level instanceof ServerLevel serverLevel) {
             PacketDistributor.sendToPlayersNear(serverLevel, null, pos.x, pos.y, pos.z, 12 * 16,
-                    new ClientboundGunshotEchoPacket(this.echoSound.soundEventHolder(), SoundSource.NEUTRAL, pos.x, pos.y, pos.z, this.echoSound.minPitch(), this.echoSound.maxPitch()));
+                    new ClientboundGunshotSoundPacket(SoundSource.NEUTRAL, pos.x, pos.y, pos.z, List.of(this.baseSound, this.echoSound)));
         }
     }
 
