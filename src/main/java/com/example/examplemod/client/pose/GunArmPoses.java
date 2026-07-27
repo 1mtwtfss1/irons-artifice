@@ -2,7 +2,6 @@ package com.example.examplemod.client.pose;
 
 import com.example.examplemod.item.ReloadState;
 import com.example.examplemod.registry.DataComponentRegistry;
-import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
@@ -11,24 +10,24 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.client.IArmPoseTransformer;
 
-public final class ModArmPoseParams {
+public final class GunArmPoses {
     public static final EnumProxy<HumanoidModel.ArmPose> PISTOL = new EnumProxy<>(
-            HumanoidModel.ArmPose.class, false, false, (IArmPoseTransformer) ModArmPoseParams::applyPistolPose
+            HumanoidModel.ArmPose.class, false, false, (IArmPoseTransformer) GunArmPoses::applyPistolPose
     );
 
     public static final EnumProxy<HumanoidModel.ArmPose> RIFLE = new EnumProxy<>(
-            HumanoidModel.ArmPose.class, true, true, (IArmPoseTransformer) ModArmPoseParams::applyRiflePose
+            HumanoidModel.ArmPose.class, true, true, (IArmPoseTransformer) GunArmPoses::applyRiflePose
     );
 
     private static <T extends HumanoidRenderState> void applyPistolPose(HumanoidModel<?> model, T renderState, HumanoidArm arm) {
-        boolean holdingInRightArm = renderState.mainArm == HumanoidArm.RIGHT;
+        boolean holdingInRightArm = arm == HumanoidArm.RIGHT;
         ReloadState reloadState = renderState.getMainHandItemStack().get(DataComponentRegistry.RELOAD_STATE); // fixme: mainhand hardcode
         if (reloadState != null && !reloadState.isFinished()) {
             animateCrossbowCharge(model.rightArm, model.leftArm, reloadState.progress(), reloadState.duration(), holdingInRightArm);
         } else {
             var head = model.head;
             ModelPart armModel = model.getArm(arm);
-            armModel.yRot = (holdingInRightArm ? -0.1F : 0.1F) + head.yRot;
+            armModel.yRot = (holdingInRightArm ? -0.15F : 0.15F) + head.yRot;
             armModel.xRot = -1.5F + head.xRot;
         }
     }

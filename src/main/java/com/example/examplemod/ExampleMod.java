@@ -7,6 +7,7 @@ import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.registry.ItemRegistry;
 import com.example.examplemod.registry.MenuRegistry;
 import com.example.examplemod.registry.ParticleRegistry;
+import com.example.examplemod.registry.SoundRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -32,7 +33,7 @@ public class ExampleMod {
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> ItemRegistry.GUN1.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
-                for(var i : ItemRegistry.ITEMS.getEntries()){
+                for (var i : ItemRegistry.ITEMS.getEntries()) {
                     output.accept(i.get());
                 }
             }).build());
@@ -44,6 +45,7 @@ public class ExampleMod {
         MenuRegistry.register(modEventBus);
         DataAttachmentRegistry.register(modEventBus);
         ParticleRegistry.register(modEventBus);
+        SoundRegistry.register(modEventBus);
         modEventBus.addListener(PayloadRegistry::register);
         CREATIVE_MODE_TABS.register(modEventBus);
 

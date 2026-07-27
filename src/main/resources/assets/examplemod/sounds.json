@@ -1,0 +1,22 @@
+{
+  "entity.bullet.impact.generic": {
+    "sounds": [
+      "examplemod:bullet_impact_1_ardirt",
+      "examplemod:bullet_impact_2_ardirt",
+      "examplemod:bullet_impact_3_ardirt"
+    ]
+  },
+  "entity.bullet.impact.ricochet": {
+    "sounds": [
+      "examplemod:ricochet_1_pcon",
+      "examplemod:ricochet_2_pcon",
+      "examplemod:ricochet_3_pcon",
+      "examplemod:ricochet_4_pcon"
+    ]
+  },
+  "entity.bullet.echo.generic": {
+    "sounds": [
+      "examplemod:gunshot_far_echo"
+    ]
+  }
+}

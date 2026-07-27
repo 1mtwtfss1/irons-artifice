@@ -196,6 +196,7 @@ public class Bullet extends Projectile {
             for (OnHitEffect effect : onHitEffects.all()) {
                 effect.onHit(serverLevel, this, hitResult);
             }
+            profile.get(ShotComponents.IMPACT_SOUND).playImpactSound(serverLevel, hitResult.getLocation(), hitResult.getType() == HitResult.Type.ENTITY);
         }
     }
 

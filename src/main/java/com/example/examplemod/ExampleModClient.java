@@ -6,7 +6,7 @@ import com.example.examplemod.client.particle.BlockDustParticle;
 import com.example.examplemod.client.particle.BulletImpactParticle;
 import com.example.examplemod.client.particle.BulletTrailParticle;
 import com.example.examplemod.client.particle.ImpactBlockParticle;
-import com.example.examplemod.client.pose.ModArmPoseParams;
+import com.example.examplemod.client.pose.GunArmPoses;
 import com.example.examplemod.item.GunItem;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.menu.GunScreen;
@@ -17,7 +17,6 @@ import com.geckolib.animatable.client.GeoRenderProvider;
 import com.geckolib.model.DefaultedItemGeoModel;
 import com.geckolib.renderer.GeoItemRenderer;
 import com.google.common.base.Suppliers;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +32,6 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.extensions.IModelProviderExtension;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
@@ -93,13 +91,13 @@ public class ExampleModClient {
         IClientItemExtensions pistolPose = new IClientItemExtensions() {
             @Override
             public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-                return ModArmPoseParams.PISTOL.getValue();
+                return GunArmPoses.PISTOL.getValue();
             }
         };
         IClientItemExtensions riflePose = new IClientItemExtensions() {
             @Override
             public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-                return ModArmPoseParams.RIFLE.getValue();
+                return GunArmPoses.RIFLE.getValue();
             }
         };
         // todo: let gun provide it
