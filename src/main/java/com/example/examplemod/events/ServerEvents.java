@@ -46,7 +46,7 @@ public class ServerEvents {
                 gunItem != event.getFrom().getItem()) {
             ClientboundGunAnimationPacket packet;
             if (GunItem.isReloading(equippedStack)) {
-                ShotProfile profile = GunplayManager.compose(gunItem.getGunProfile(), new GunContainer(equippedStack), entity, equippedStack, entity.level());
+                ShotProfile profile = GunplayManager.compose(gunItem.getGunProfile(), new GunContainer(equippedStack), equippedStack);
                 double reloadSpeed = 1.0; // fixme: reload speed not component yet
                 ReloadState reloadState = equippedStack.get(DataComponentRegistry.RELOAD_STATE);
                 double progress = reloadState.progress() / 20.0;

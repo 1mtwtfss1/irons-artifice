@@ -49,7 +49,7 @@ public final class GunplayManager {
         MagazineContents magazine = GunItem.getMagazine(stack);
         GunProfile gunProfile = gunItem.getGun();
         GunContainer modifiers = new GunContainer(stack);
-        ShotProfile profile = compose(gunProfile, modifiers, player, stack, level);
+        ShotProfile profile = compose(gunProfile, modifiers, stack);
 
         if (magazine.isEmpty()) {
             profile.get(ShotComponents.GUNSHOT_SOUND).playDryFireSound(level, player.position());
@@ -90,7 +90,7 @@ public final class GunplayManager {
 
         GunProfile gunProfile = gunItem.getGun();
         GunContainer modifiers = new GunContainer(stack);
-        ShotProfile profile = compose(gunProfile, modifiers, player, stack, level);
+        ShotProfile profile = compose(gunProfile, modifiers,  stack);
 
         fireShot(level, player, origin, direction, profile);
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
@@ -164,8 +164,7 @@ public final class GunplayManager {
         return spread;
     }
 
-    public static ShotProfile compose(GunProfile gunProfile, Container modifiers, LivingEntity shooter,
-                                      ItemStack gunStack, Level level) {
+    public static ShotProfile compose(GunProfile gunProfile, Container modifiers, ItemStack gunStack) {
         ShotComponentMap components = gunProfile.baseProfile();
         for (int slot = 0; slot < modifiers.getContainerSize(); slot++) {
             ItemStack stack = modifiers.getItem(slot);

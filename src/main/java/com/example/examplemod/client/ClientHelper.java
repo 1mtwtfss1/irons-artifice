@@ -127,7 +127,12 @@ public final class ClientHelper {
         Vec3 pos = new Vec3(msg.x(), msg.y(), msg.z());
         RandomSource random = RandomSource.create();
         for (GunShotSoundSettings settings : msg.sounds()) {
-            Minecraft.getInstance().getSoundManager().play(new GunShotSoundInstance(settings, msg.source(), random, pos));
+            var instance = new GunShotSoundInstance(settings, msg.source(), random, pos);
+            if (instance.getDelay() > 0) {
+                Minecraft.getInstance().getSoundManager().playDelayed(instance, instance.getDelay());
+            } else {
+                Minecraft.getInstance().getSoundManager().play(instance);
+            }
         }
     }
 }

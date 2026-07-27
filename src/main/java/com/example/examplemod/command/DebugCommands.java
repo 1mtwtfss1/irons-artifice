@@ -15,9 +15,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
-/**
- * Debug-only commands, gated behind permission level 2 (ops).
- */
 @EventBusSubscriber
 public final class DebugCommands {
 
@@ -31,14 +28,6 @@ public final class DebugCommands {
                                 .executes(DebugCommands::shoot))));
     }
 
-    /**
-     * Fires using the executing player's held gun profile, but from the command source's position/rotation rather
-     * than the player's actual eye position/look angle. This means it composes with {@code /execute positioned ...}
-     * and {@code /execute rotated ...} for testing shots at a distance or at arbitrary angles, e.g.:
-     * <pre>{@code
-     * /execute as @s at @s positioned ~ ~ ~10 rotated ~ 90 run irons_artifice debug shoot
-     * }</pre>
-     */
     private static int shoot(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
         ServerPlayer player = source.getPlayerOrException();
@@ -57,8 +46,5 @@ public final class DebugCommands {
                 "Fired debug shot from (%.2f, %.2f, %.2f) towards (%.2f, %.2f, %.2f)",
                 origin.x, origin.y, origin.z, direction.x, direction.y, direction.z)), true);
         return 1;
-    }
-
-    private DebugCommands() {
     }
 }

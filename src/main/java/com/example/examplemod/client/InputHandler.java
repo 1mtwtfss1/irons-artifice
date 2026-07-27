@@ -80,7 +80,7 @@ public final class InputHandler {
         if (player.getCooldowns().isOnCooldown(held) || GunItem.isReloading(held)) {
             return;
         }
-        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), player, held, player.level());
+        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), held);
         ClientPacketDistributor.sendToServer(new ServerboundFireGunPacket(player.getLookAngle()));
         // fixme: another thin client-server manually synced thingie
         if (!GunItem.getMagazine(held).isEmpty()) {

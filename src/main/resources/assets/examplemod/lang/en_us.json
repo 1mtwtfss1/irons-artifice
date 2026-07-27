@@ -27,5 +27,12 @@
   "examplemod.value_modifier.plus": "+%s %s",
   "examplemod.value_modifier.minus": "-%s %s",
   "examplemod.value_modifier.plus_percent": "%s%% %s",
-  "examplemod.value_modifier.minus_percent": "%s%% %s"
+  "examplemod.value_modifier.minus_percent": "%s%% %s",
+  "examplemod.tooltip.damage_per_bullet": "%s/%s Damage",
+  "examplemod.tooltip.bullet_count": "%s Bullets",
+  "examplemod.tooltip.bullet_speed": "%s Blocks/s",
+  "examplemod.tooltip.damage": "%s Damage",
+  "examplemod.tooltip.fire_rate": "%s Fire Rate",
+  "examplemod.tooltip.reload_time": "%ss Reload",
+  "examplemod.tooltip.modifiers": "Modifiers:"
 }

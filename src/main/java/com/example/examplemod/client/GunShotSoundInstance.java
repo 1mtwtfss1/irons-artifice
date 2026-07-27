@@ -30,5 +30,6 @@ public class GunShotSoundInstance extends AbstractSoundInstance {
         this.volume = Math.clamp(triangleInterpolate((float) distance, sound.start(), sound.peak(), sound.end()) * 1.1f, 0, 1);
         this.pitch = Mth.lerp(random.nextFloat(), sound.minPitch(), sound.maxPitch());
         this.relative = false;
+//        this.delay = (int) Mth.clamp((distance - 64) / 16, 0, 40);
     }
 }

@@ -89,7 +89,7 @@ public final class CrosshairRenderer {
         if (!(held.getItem() instanceof GunItem gunItem)) {
             return;
         }
-        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), player, held, player.level());
+        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), held);
         float spread = GunplayManager.getSpreadForEntity(profile, player);
         float recoilMagnitude = RecoilManager.localRecoilMagnitude();
 
