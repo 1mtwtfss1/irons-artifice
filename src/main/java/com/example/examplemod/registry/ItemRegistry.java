@@ -66,9 +66,9 @@ public final class ItemRegistry {
     public static final DeferredItem<ModifierItem> HAIR_TRIGGER = ITEMS.registerItem(
             "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_LIGHTNING = ITEMS.registerItem(
-            "chain_lightning", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
+            "chain_lightning_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
     public static final DeferredItem<ModifierItem> LUBRICATED_MECHANISM = ITEMS.registerItem(
-            "lubricated_mechanism", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
+            "lubricated_mechanism_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
 
