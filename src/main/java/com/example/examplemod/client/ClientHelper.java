@@ -69,7 +69,7 @@ public final class ClientHelper {
         Vec3 reflected = Utils.reflect(direction, msg.normal());
         level.addAlwaysVisibleParticle(new ColorTransitionParticleOption(
                 ParticleRegistry.BULLET_IMPACT.get(), 0x862900, 0x0F0600, 0.125f, 0f, 1f, 0.75f, 0.35f, 0.35f, 0
-        ), true, pos.x, pos.y, pos.z, 0, 0, 0);
+        ), true, pos.x, pos.y, pos.z, direction.x, direction.y, direction.z);
         BlockPos impactedBlock = BlockPos.containing(pos.add(direction.scale(0.1)));
         BlockState blockState = level.getBlockState(impactedBlock);
         float particleSpeed = (10 + speed) * 0.02f;

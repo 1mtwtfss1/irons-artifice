@@ -7,9 +7,11 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -60,6 +62,25 @@ public class BulletImpactParticle extends SingleQuadParticle {
         block = (int) Mth.lerp(lightIntensity, block, 240);
         sky = (int) Mth.lerp(lightIntensity, sky, 240);
         return LightCoordsUtil.pack(block, sky);
+    }
+
+    @Override
+    public void tick() {
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
+        if (this.age++ >= this.lifetime) {
+            this.remove();
+        } else if (age % 10 == 0) {
+            despawnIfFloating();
+        }
+    }
+
+    private void despawnIfFloating() {
+        BlockPos anchoredBlock = BlockPos.containing(this.getPos().add(new Vec3(xd, yd, zd).normalize().scale(0.25)));
+        if (level.getBlockState(anchoredBlock).isAir()) {
+            remove();
+        }
     }
 
     @Override

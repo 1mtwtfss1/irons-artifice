@@ -124,7 +124,6 @@ public class Bullet extends Projectile {
     @Override
     public void tick() {
         super.tick();
-        this.piercedEntities.clear();
 
         Vec3 delta = getDeltaMovement();
         Vec3 position = position();
@@ -144,6 +143,8 @@ public class Bullet extends Projectile {
             } else if (blockHit.getType() != HitResult.Type.MISS) {
                 onHit(blockHit);
                 destination = blockHit.getLocation();
+            } else {
+                hitState = HitState.STOP;
             }
             if (hitState == HitState.STOP) {
                 break;
@@ -280,6 +281,7 @@ public class Bullet extends Projectile {
 
     private void reflectMotion(Direction face) {
         setDeltaMovement(Utils.reflect(getDeltaMovement(), face.getUnitVec3()));
+        this.piercedEntities.clear();
     }
 
     @Override
