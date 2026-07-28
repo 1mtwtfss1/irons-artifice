@@ -109,7 +109,7 @@ public class ExampleModClient {
             }
         };
         // todo: let gun provide it
-        event.registerItem(pistolPose, ItemRegistry.GUN.get(), ItemRegistry.GUN1.get(), ItemRegistry.GUN2.get());
+        event.registerItem(pistolPose, ItemRegistry.GUN.get(), ItemRegistry.GUN1.get(), ItemRegistry.GUN2.get(), ItemRegistry.FLINTLOCK_PISTOL.get());
         event.registerItem(riflePose, ItemRegistry.GUN3.get());
     }
 }

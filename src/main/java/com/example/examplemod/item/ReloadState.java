@@ -1,5 +1,6 @@
 package com.example.examplemod.item;
 
+import com.example.examplemod.gun.GunProfile;
 import com.example.examplemod.registry.DataComponentRegistry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -30,12 +31,18 @@ public record ReloadState(int progress, int duration) {
         return (progress + partialTick) / duration;
     }
 
+    public double animationProgressSeconds(GunProfile gunProfile) {
+        // calculate based on percent completed to animation time (base reload time) to avoid multipliers affecting pausing the animation at the wrong time
+        return this.percent(0) * gunProfile.reloadTimeTicks() / 20.0;
+    }
+
     public ReloadState increment(int ticks) {
         return new ReloadState(progress + ticks, duration);
     }
 
     /**
      * Manages {@link DataComponentRegistry#RELOAD_STATE}
+     *
      * @return whether reload has completed
      */
     public static boolean tickReload(ItemStack stack) {

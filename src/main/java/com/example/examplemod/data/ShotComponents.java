@@ -24,6 +24,7 @@ public final class ShotComponents {
     public static final ComponentType<Value> KNOCKBACK = new ComponentType<>(ExampleMod.id("knockback"), () -> Value.of(0));
     public static final ComponentType<Value> BULLET_DRAG = new ComponentType<>(ExampleMod.id("bullet_drag"), () -> Value.of(.98));
     public static final ComponentType<Value> BLOCK_DAMAGE_MULTIPLIER = new ComponentType<>(ExampleMod.id("block_damage_multiplier"), () -> Value.of(1));
+    public static final ComponentType<Value> RELOAD_SPEED_MULTIPLIER = new ComponentType<>(ExampleMod.id("reload_speed_multiplier"), () -> Value.of(1));
 
     // Bullet Behavior
     public static final ComponentType<Value> PIERCING = new ComponentType<>(ExampleMod.id("piercing"), () -> Value.of(0));

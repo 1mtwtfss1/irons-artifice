@@ -6,6 +6,7 @@ import com.example.examplemod.item.GunItem;
 import com.example.examplemod.modifier.ModifierItem;
 import com.example.examplemod.modifier.modifiers.BreachModifier;
 import com.example.examplemod.modifier.modifiers.ChainLightningModifier;
+import com.example.examplemod.modifier.modifiers.LubricatedMechanismModifier;
 import com.example.examplemod.modifier.modifiers.OverchargedPowderModifier;
 import com.example.examplemod.modifier.modifiers.FireModifier;
 import com.example.examplemod.modifier.modifiers.GravityWellModifier;
@@ -66,6 +67,8 @@ public final class ItemRegistry {
             "hair_trigger", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_LIGHTNING = ITEMS.registerItem(
             "chain_lightning", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
+    public static final DeferredItem<ModifierItem> LUBRICATED_MECHANISM = ITEMS.registerItem(
+            "lubricated_mechanism", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
 

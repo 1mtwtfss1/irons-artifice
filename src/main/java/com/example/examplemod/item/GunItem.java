@@ -1,5 +1,7 @@
 package com.example.examplemod.item;
 
+import com.example.examplemod.ExampleMod;
+import com.example.examplemod.client.gun.GunInHandRenderer;
 import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.GunProfile;
@@ -12,6 +14,7 @@ import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.state.AnimationTest;
+import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.base.GeoRenderState;
 import net.minecraft.ChatFormatting;
@@ -37,8 +40,10 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 
 public class GunItem extends BaseGeoItem {
+    public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(ExampleMod.id("magazine_state").toString(), MagazineContents.class);
     public static final String TRIGGERED_ANIMATION_CONTROLLER = "Actions";
     public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
+
     private final GunProfile gunProfile;
 
     public GunItem(Properties properties, GunProfile gunProfile) {
@@ -108,7 +113,7 @@ public class GunItem extends BaseGeoItem {
         int bulletCount = (int) shotProfile.value(ShotComponents.PROJECTILE_COUNT);
 //        float bulletSpeed = (float) shotProfile.value(ShotComponents.BULLET_SPEED);
         String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20 / shotProfile.value(ShotComponents.FIRE_DELAY));
-        String reloadTime = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(gunProfile.reloadTimeTicks() / 20f);
+        String reloadTime = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(gunProfile.reloadTimeTicks() / 20f / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (bulletCount > 1) {
             builder.accept(Component.literal(" ").append(Component.translatable("examplemod.tooltip.damage_per_bullet", damage, bulletCount).withStyle(ChatFormatting.DARK_GREEN)));
             builder.accept(Component.literal(" ").append(Component.translatable("examplemod.tooltip.bullet_count", bulletCount).withStyle(ChatFormatting.DARK_GREEN)));
@@ -166,7 +171,7 @@ public class GunItem extends BaseGeoItem {
     @Override
     public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {
         super.registerControllers(controllers);
-        controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunAnimationStateHandler)
+        controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunIdleHandler)
         );
         controllers.add(new AnimationController<>("Actions", test -> PlayState.STOP) {
                     @Override
@@ -181,12 +186,15 @@ public class GunItem extends BaseGeoItem {
                         .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
                         .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
                         .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
-                        .triggerableAnim("idle_uncocked", RawAnimation.begin().thenPlay("idle_uncocked"))
         );
     }
 
-    private PlayState gunAnimationStateHandler(AnimationTest<GunItem> animationTest) {
-        animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
+    private PlayState gunIdleHandler(AnimationTest<GunItem> animationTest) {
+        if (animationTest.hasData(MAGAZINE_ANIMATION_TICKET) && animationTest.getData(MAGAZINE_ANIMATION_TICKET).isEmpty()) {
+            animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle_magazine_empty"));
+        } else {
+            animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
+        }
         return PlayState.CONTINUE;
     }
 }

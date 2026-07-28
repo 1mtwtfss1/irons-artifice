@@ -90,7 +90,7 @@ public final class GunplayManager {
 
         GunProfile gunProfile = gunItem.getGun();
         GunContainer modifiers = new GunContainer(stack);
-        ShotProfile profile = compose(gunProfile, modifiers,  stack);
+        ShotProfile profile = compose(gunProfile, modifiers, stack);
 
         fireShot(level, player, origin, direction, profile);
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
@@ -119,13 +119,13 @@ public final class GunplayManager {
     private static void playReloadAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
 //        double reloadSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.value(ShotComponents.FIRE_DELAY);
         ReloadState existingState = stack.get(DataComponentRegistry.RELOAD_STATE);
+        double speed = profile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
         double offsetSeconds = 0;
         if (existingState != null) {
-            // fixme: expose ticks
-            offsetSeconds = existingState.percent(0) * existingState.duration() / 20.0;
+            offsetSeconds = existingState.animationProgressSeconds(gunItem.getGunProfile());
         }
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                "reload", 1, offsetSeconds);
+                "reload", speed, offsetSeconds);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
@@ -219,11 +219,12 @@ public final class GunplayManager {
         if (requiresAmmo && available <= 0) {
             return ReloadResult.NO_AMMO;
         }
-        int ticks = gunItem.getGunProfile().reloadTimeTicks();
+        ShotProfile shotProfile = compose(gunItem.getGunProfile(), new GunContainer(gun), gun);
+        int ticks = (int) (gunItem.getGunProfile().reloadTimeTicks() / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         GunItem.startReload(gun, ticks);
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new ClientboundReloadCrosshairAnimationPacket(ticks));
-            playReloadAnimation(serverPlayer, gun, gunItem, null);
+            playReloadAnimation(serverPlayer, gun, gunItem, shotProfile);
         }
         return ReloadResult.STARTING_RELOAD;
     }

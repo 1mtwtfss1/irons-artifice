@@ -1,8 +1,8 @@
 package com.example.examplemod.client.gun;
 
 import com.example.examplemod.item.GunItem;
+import com.example.examplemod.registry.DataComponentRegistry;
 import com.geckolib.animation.state.BoneSnapshot;
-import com.geckolib.cache.model.GeoBone;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoItemRenderer;
@@ -19,13 +19,14 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Display;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 
 public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
+
+
     public GunInHandRenderer(GeoModel<GunItem> model) {
         super(model);
     }
@@ -65,8 +66,21 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
     }
 
     @Override
+    @SuppressWarnings("all")
+    public void captureDefaultRenderState(GunItem animatable, RenderData renderData, GeoRenderState renderState, float partialTick) {
+        super.captureDefaultRenderState(animatable, renderData, renderState, partialTick);
+        if (renderData.itemStack().has(DataComponentRegistry.MAGAZINE)) {
+            renderState.addGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET, renderData.itemStack().get(DataComponentRegistry.MAGAZINE));
+        }
+    }
+
+    @Override
     public void adjustModelBonesForRender(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
         super.adjustModelBonesForRender(renderPassInfo, snapshots);
+        normalizeThirdPersonGunAnimations(renderPassInfo, snapshots);
+    }
+
+    private void normalizeThirdPersonGunAnimations(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
         // Root bone tends to contain large animations that only make sense in first person.
         // Cancel them out in third person viewers
         if (isFirstPersonPerspective(renderPassInfo.renderState())) {
@@ -92,7 +106,7 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
         poseStack.last().set(pose);
         poseStack.scale(-1, -1, 1);
         // no clue where these numbers come from (manually lined up from block bench)
-        poseStack.translate(1 / 16f, -10 / 16f, 0);
+        poseStack.translate(1 / 16f, -10 / 16f, 0 / 16f);
         renderTasks.submitModelPart(
                 modelPart,
                 poseStack,
