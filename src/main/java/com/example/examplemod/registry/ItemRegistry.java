@@ -58,13 +58,13 @@ public final class ItemRegistry {
     public static final DeferredItem<ModifierItem> GRAVITY = ITEMS.registerItem(
             "gravity_well_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GravityWellModifier()));
     public static final DeferredItem<ModifierItem> BREACH = ITEMS.registerItem(
-            "breach", properties -> new ModifierItem(properties.stacksTo(1), new BreachModifier()));
+            "breach_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BreachModifier()));
     public static final DeferredItem<ModifierItem> OVERCHARGED_POWDER = ITEMS.registerItem(
-            "overcharged_powder", properties -> new ModifierItem(properties.stacksTo(1), new OverchargedPowderModifier()));
+            "overcharged_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new OverchargedPowderModifier()));
     public static final DeferredItem<ModifierItem> STEEL_CORE = ITEMS.registerItem(
-            "steel_core", properties -> new ModifierItem(properties.stacksTo(1), new SteelCoreModifier()));
+            "steel_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SteelCoreModifier()));
     public static final DeferredItem<ModifierItem> HAIR_TRIGGER = ITEMS.registerItem(
-            "hair_trigger", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
+            "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_LIGHTNING = ITEMS.registerItem(
             "chain_lightning", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
     public static final DeferredItem<ModifierItem> LUBRICATED_MECHANISM = ITEMS.registerItem(

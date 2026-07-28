@@ -7,6 +7,7 @@ import com.example.examplemod.data.ValueModifier;
 import com.example.examplemod.utils.Utils;
 import net.minecraft.network.chat.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ public class ValueStackModifier implements GunModifier {
 
     @Override
     public List<Component> getDescriptionText() {
-        return modifiers.entrySet().stream().map(entry -> Utils.formatValueModifierDescription(entry.getValue(), entry.getKey())).toList();
+        return modifiers.entrySet().stream()
+                .sorted(Comparator.comparingDouble(entry -> -Math.abs(entry.getValue().amount())))
+                .map(entry -> Utils.formatValueModifierDescription(entry.getValue(), entry.getKey())).toList();
     }
 }
