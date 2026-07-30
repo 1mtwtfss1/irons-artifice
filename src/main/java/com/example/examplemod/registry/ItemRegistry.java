@@ -45,6 +45,9 @@ public final class ItemRegistry {
     public static final DeferredItem<GunItem> FLINTLOCK_PISTOL = ITEMS.registerItem("flintlock", properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
+    public static final DeferredItem<GunItem> BLACKPOWDER_REVOLVER = ITEMS.registerItem("blackpowder_revolver", properties -> new GunItem(properties.stacksTo(1), Guns.HAND_CANNON),
+            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+    );
 
 
     public static final DeferredItem<ModifierItem> HEAVY = ITEMS.registerItem(

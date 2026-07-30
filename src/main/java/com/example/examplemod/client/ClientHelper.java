@@ -73,14 +73,15 @@ public final class ClientHelper {
         BlockPos impactedBlock = BlockPos.containing(pos.add(direction.scale(0.1)));
         BlockState blockState = level.getBlockState(impactedBlock);
         float particleSpeed = (10 + speed) * 0.02f;
-        for (int i = 0; i < 5; i++) {
+        int particleCount = 3 + (int) (msg.damage() / 2);
+        for (int i = 0; i < particleCount; i++) {
             Vec3 motion = new Vec3(level.getRandom().nextFloat() * 2 - 1, level.getRandom().nextFloat() * 2 - 1, level.getRandom().nextFloat() * 2 - 1).subtract(direction.scale(0.25)).normalize();
             motion = motion.scale(particleSpeed);
             level.addParticle(new BlockParticleOption(ParticleRegistry.BLOCK_IMPACT.get(), blockState), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
             motion = motion.scale(0.25);
             level.addParticle(new BlockParticleOption(ParticleRegistry.BLOCK_DUST.get(), blockState), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         }
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < particleCount; i++) {
             Vec3 motion = new Vec3(level.getRandom().nextFloat() * 2 - 1, level.getRandom().nextFloat() * 2 - 1, level.getRandom().nextFloat() * 2 - 1)
                     .add(reflected.scale(3)).normalize();
             motion = motion.scale(particleSpeed * 2);

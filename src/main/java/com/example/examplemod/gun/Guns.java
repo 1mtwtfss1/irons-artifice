@@ -52,9 +52,9 @@ public final class Guns {
             () -> {
                 var map = basicGun();
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(25f, .33f, 1.7f, 0));
-                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.25));
-                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
-                map.set(ShotComponents.DAMAGE, Value.of(8));
+                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.125));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(15));
+                map.set(ShotComponents.DAMAGE, Value.of(10));
                 map.set(ShotComponents.GUNSHOT_SOUND,
                         new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_BLAST, 0.75f, 0.85f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
                 );
@@ -62,7 +62,7 @@ public final class Guns {
             },
             6,
             5,
-            20,
+            50,
             FireMode.SEMI
     );
 
@@ -74,6 +74,7 @@ public final class Guns {
                 map.set(ShotComponents.SPREAD, Value.of(5));
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.simple(30f, 999));
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(1.5));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
                 map.set(ShotComponents.GUNSHOT_SOUND,
                         new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.9f, 1.1f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
                 );

@@ -1,10 +1,8 @@
 package com.example.examplemod.client;
 
 import com.example.examplemod.ExampleMod;
-import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.recoil.RecoilHelper;
-import com.example.examplemod.recoil.RecoilProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
@@ -29,7 +27,7 @@ public final class RecoilManager {
     // strength of 1 means cursor is just mirroring the real value perfectly.
     // the cursor (otherwise) acts as a smoother interpolation to the exact pitch/yaw, let snaps transition over multiple ticks instead of always 1.
     // snappy looks better though so
-    private static final float CURSOR_STRENGTH = 0.75F;
+    private static final float CURSOR_STRENGTH = 0.9F;
 
     // Current recoil offsetSeconds (degrees) and the previous-tick value for partial-tick interpolation.
     private static float pitch = 0.0F;

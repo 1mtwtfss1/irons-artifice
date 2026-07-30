@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record ClientboundBulletImpactPacket(Vec3 position, Vec3 deltaMovement, Vec3 normal)
+public record ClientboundBulletImpactPacket(Vec3 position, Vec3 deltaMovement, Vec3 normal, double damage)
         implements CustomPacketPayload {
 
     public static final Type<ClientboundBulletImpactPacket> TYPE =
@@ -28,13 +28,14 @@ public record ClientboundBulletImpactPacket(Vec3 position, Vec3 deltaMovement, V
         buf.writeDouble(msg.normal.x);
         buf.writeDouble(msg.normal.y);
         buf.writeDouble(msg.normal.z);
+        buf.writeDouble(msg.damage);
     }
 
     private static ClientboundBulletImpactPacket decode(RegistryFriendlyByteBuf buf) {
         Vec3 pos = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
         Vec3 deltaMovement = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
         Vec3 normal = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        return new ClientboundBulletImpactPacket(pos, deltaMovement, normal);
+        return new ClientboundBulletImpactPacket(pos, deltaMovement, normal, buf.readDouble());
     }
 
     @Override
