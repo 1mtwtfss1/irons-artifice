@@ -42,6 +42,7 @@
   "examplemod.tooltip.damage_per_bullet": "%s/%s Damage",
   "examplemod.tooltip.bullet_count": "%s Bullets",
   "examplemod.tooltip.bullet_speed": "%s Blocks/s",
+  "examplemod.tooltip.bullet_speed_percent": "%s%% Bullet Speed",
   "examplemod.tooltip.damage": "%s Damage",
   "examplemod.tooltip.fire_rate": "%s Fire Rate",
   "examplemod.tooltip.reload_time": "%ss Reload",

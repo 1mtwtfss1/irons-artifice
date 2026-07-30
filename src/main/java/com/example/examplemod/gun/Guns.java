@@ -66,6 +66,25 @@ public final class Guns {
             FireMode.SEMI
     );
 
+    public static final GunProfile MUSKET = new GunProfile(
+            () -> {
+                var map = basicGun();
+                map.set(ShotComponents.DAMAGE, Value.of(18));
+                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(30f, .45f, 1.9f, 111));
+                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.25));
+                map.set(ShotComponents.SPREAD, Value.of(0.5));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
+                map.set(ShotComponents.GUNSHOT_SOUND,
+                        new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.9f, 1.1f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
+                );
+                return map;
+            },
+            1,
+            5,
+            80,
+            FireMode.SEMI
+    );
+
     public static final GunProfile SHOTGUN = new GunProfile(
             () -> {
                 var map = basicGun();

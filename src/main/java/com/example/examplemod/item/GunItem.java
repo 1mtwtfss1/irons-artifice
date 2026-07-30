@@ -1,7 +1,6 @@
 package com.example.examplemod.item;
 
 import com.example.examplemod.ExampleMod;
-import com.example.examplemod.client.gun.GunInHandRenderer;
 import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.GunProfile;
@@ -111,18 +110,27 @@ public class GunItem extends BaseGeoItem {
         ShotProfile shotProfile = GunplayManager.compose(this.gunProfile, new GunContainer(itemStack), itemStack);
         String damage = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(shotProfile.value(ShotComponents.DAMAGE));
         int bulletCount = (int) shotProfile.value(ShotComponents.PROJECTILE_COUNT);
-//        float bulletSpeed = (float) shotProfile.value(ShotComponents.BULLET_SPEED);
+        int bulletSpeedPercent = (int) (100 * shotProfile.value(ShotComponents.BULLET_SPEED) / shotProfile.get(ShotComponents.BULLET_SPEED).base());
         String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20 / shotProfile.value(ShotComponents.FIRE_DELAY));
         String reloadTime = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(gunProfile.reloadTimeTicks() / 20f / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (bulletCount > 1) {
-            builder.accept(Component.literal(" ").append(Component.translatable("examplemod.tooltip.damage_per_bullet", damage, bulletCount).withStyle(ChatFormatting.DARK_GREEN)));
-            builder.accept(Component.literal(" ").append(Component.translatable("examplemod.tooltip.bullet_count", bulletCount).withStyle(ChatFormatting.DARK_GREEN)));
+            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.damage_per_bullet", damage, bulletCount));
+            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.bullet_count", bulletCount));
         } else {
-            builder.accept(Component.literal(" ").append(Component.translatable("examplemod.tooltip.damage", damage).withStyle(ChatFormatting.DARK_GREEN)));
+            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.damage", damage));
         }
-//        builder.accept(Component.translatable("examplemod.tooltip.bullet_speed", bulletSpeed));
-        builder.accept(Component.literal(" ").append(Component.translatable("examplemod.tooltip.fire_rate", fireRate).withStyle(ChatFormatting.DARK_GREEN)));
-        builder.accept(Component.literal(" ").append(Component.translatable("examplemod.tooltip.reload_time", reloadTime).withStyle(ChatFormatting.DARK_GREEN)));
+        if (bulletSpeedPercent != 100) {
+            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.bullet_speed_percent", bulletSpeedPercent));
+        }
+        if (gunProfile.magazineCapacity() > 1) {
+            // hide fire rate on single shot guns
+            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.fire_rate", fireRate));
+        }
+        buildGunStatLine(builder, Component.translatable("examplemod.tooltip.reload_time", reloadTime));
+    }
+
+    private void buildGunStatLine(Consumer<Component> builder, Component component) {
+        builder.accept(Component.literal(" ").append(component).withStyle(ChatFormatting.DARK_GREEN));
     }
 
     @Override
@@ -171,8 +179,7 @@ public class GunItem extends BaseGeoItem {
     @Override
     public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {
         super.registerControllers(controllers);
-        controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunIdleHandler)
-        );
+        controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunIdleHandler));
         controllers.add(new AnimationController<>("Actions", test -> PlayState.STOP) {
                     @Override
                     protected void initializeNewAnimation(GeoAnimatable animatable, GeoRenderState renderState, GeoModel<GeoAnimatable> geoModel, double prevAnimSpeed, int prevTransitionTicks) {

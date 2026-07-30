@@ -49,6 +49,7 @@ public class ExampleModClient {
 
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        // todo: let gun provide it
         ItemRegistry.GUN.get().geoRenderProvider.setValue(new GeoRenderProvider() {
             private final Supplier<GeoItemRenderer<GunItem>> renderer = Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(ExampleMod.id("example_revolver"))));
 
@@ -67,6 +68,14 @@ public class ExampleModClient {
         });
         ItemRegistry.BLACKPOWDER_REVOLVER.get().geoRenderProvider.setValue(new GeoRenderProvider() {
             private final Supplier<GeoItemRenderer<GunItem>> renderer = Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(ExampleMod.id("hand_cannon"))));
+
+            @Override
+            public @Nullable GeoItemRenderer<GunItem> getGeoItemRenderer() {
+                return this.renderer.get();
+            }
+        });
+        ItemRegistry.MUSKET.get().geoRenderProvider.setValue(new GeoRenderProvider() {
+            private final Supplier<GeoItemRenderer<GunItem>> renderer = Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(ExampleMod.id("musket"))));
 
             @Override
             public @Nullable GeoItemRenderer<GunItem> getGeoItemRenderer() {
@@ -118,6 +127,6 @@ public class ExampleModClient {
         };
         // todo: let gun provide it
         event.registerItem(pistolPose, ItemRegistry.GUN.get(), ItemRegistry.GUN1.get(), ItemRegistry.GUN2.get(), ItemRegistry.FLINTLOCK_PISTOL.get(), ItemRegistry.BLACKPOWDER_REVOLVER.get());
-        event.registerItem(riflePose, ItemRegistry.GUN3.get());
+        event.registerItem(riflePose, ItemRegistry.GUN3.get(), ItemRegistry.MUSKET.get());
     }
 }
