@@ -7,15 +7,17 @@ import com.example.examplemod.item.GunItem;
 import com.example.examplemod.network.ClientboundBulletImpactPacket;
 import com.example.examplemod.network.ClientboundBulletTrailPacket;
 import com.example.examplemod.network.ClientboundGunAnimationPacket;
+import com.example.examplemod.data.PlayableSound;
 import com.example.examplemod.network.ClientboundGunshotSoundPacket;
+import com.example.examplemod.network.ClientboundLocalSoundPacket;
 import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
 import com.example.examplemod.registry.ParticleRegistry;
-import com.example.examplemod.registry.SoundRegistry;
 import com.example.examplemod.utils.Utils;
 import com.geckolib.animation.AnimationController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -137,5 +139,24 @@ public final class ClientHelper {
                 Minecraft.getInstance().getSoundManager().play(instance);
             }
         }
+    }
+
+    public static void handleLocalSound(ClientboundLocalSoundPacket msg) {
+        PlayableSound sound = msg.sound();
+        RandomSource random = SoundInstance.createUnseededRandom();
+        Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(
+                sound.soundEventHolder().value().location(),
+                msg.source(),
+                sound.volume(),
+                sound.samplePitch(random),
+                random,
+                false,
+                0,
+                SoundInstance.Attenuation.NONE,
+                0.0,
+                0.0,
+                0.0,
+                true
+        ));
     }
 }

@@ -133,6 +133,7 @@ public class GunItem extends BaseGeoItem {
     @SuppressWarnings("deprecation")
     public void appendHoverText(@NonNull ItemStack itemStack, @NonNull TooltipContext context, @NonNull TooltipDisplay display, @NonNull Consumer<Component> builder, @NonNull TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, context, display, builder, tooltipFlag);
+        Consumer<Component> statBuilder = (component) -> builder.accept(Component.literal(" ").append(component).withStyle(ChatFormatting.DARK_GREEN));
         ShotProfile shotProfile = GunplayManager.compose(this.gunProfile, new GunContainer(itemStack), itemStack);
         String damage = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(shotProfile.value(ShotComponents.DAMAGE));
         int bulletCount = (int) shotProfile.value(ShotComponents.PROJECTILE_COUNT);
@@ -140,23 +141,20 @@ public class GunItem extends BaseGeoItem {
         String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20 / shotProfile.value(ShotComponents.FIRE_DELAY));
         String reloadTime = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(gunProfile.reloadTimeTicks() / 20f / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (bulletCount > 1) {
-            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.damage_per_bullet", damage, bulletCount));
-            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.bullet_count", bulletCount));
+            statBuilder.accept(Component.translatable("examplemod.tooltip.damage_per_bullet", damage, bulletCount));
+            statBuilder.accept(Component.translatable("examplemod.tooltip.bullet_count", bulletCount));
         } else {
-            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.damage", damage));
+            statBuilder.accept(Component.translatable("examplemod.tooltip.damage", damage));
         }
         if (bulletSpeedPercent != 100) {
-            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.bullet_speed_percent", bulletSpeedPercent));
+            statBuilder.accept(Component.translatable("examplemod.tooltip.bullet_speed_percent", bulletSpeedPercent));
         }
         if (gunProfile.magazineCapacity() > 1) {
             // hide fire rate on single shot guns
-            buildGunStatLine(builder, Component.translatable("examplemod.tooltip.fire_rate", fireRate));
+            statBuilder.accept(Component.translatable("examplemod.tooltip.fire_rate", fireRate));
         }
-        buildGunStatLine(builder, Component.translatable("examplemod.tooltip.reload_time", reloadTime));
-    }
-
-    private void buildGunStatLine(Consumer<Component> builder, Component component) {
-        builder.accept(Component.literal(" ").append(component).withStyle(ChatFormatting.DARK_GREEN));
+        statBuilder.accept(Component.translatable("examplemod.tooltip.reload_time", reloadTime));
+        builder.accept(Component.translatable("examplemod.tooltip.modifier_count", gunProfile.modifierSlots()).withStyle(ChatFormatting.GOLD));
     }
 
     @Override

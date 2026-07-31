@@ -1,9 +1,12 @@
 package com.example.examplemod.gun;
 
 import com.example.examplemod.data.PlayableSound;
+import com.example.examplemod.network.ClientboundLocalSoundPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -50,11 +53,14 @@ public class ReloadCueStack {
      *
      * @return the next cue index to fire
      */
-    public int playDueCues(Level level, Vec3 pos, SoundSource source, float percent, int cueIndex, float pitchMultiplier) {
+    public int playDueCues(Entity owner, Vec3 pos, SoundSource source, float percent, int cueIndex, float pitchMultiplier) {
         while (cueIndex < cues.size() && percent >= cues.get(cueIndex).percent()) {
             var sound = cues.get(cueIndex).sound();
             var adjustedSound = new PlayableSound(sound.soundEventHolder(), sound.volume(), sound.minPitch() * pitchMultiplier, sound.maxPitch() * pitchMultiplier);
-            adjustedSound.play(level, pos, source);
+            owner.level().playSound(owner, pos.x, pos.y, pos.z, adjustedSound.soundEventHolder().value(), source, adjustedSound.volume(), adjustedSound.samplePitch(owner.getRandom()));
+            if (owner instanceof ServerPlayer serverPlayer) {
+                PacketDistributor.sendToPlayer(serverPlayer, new ClientboundLocalSoundPacket(source, adjustedSound));
+            }
             cueIndex++;
         }
         return cueIndex;

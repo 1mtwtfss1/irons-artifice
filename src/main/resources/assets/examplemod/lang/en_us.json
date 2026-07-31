@@ -47,5 +47,6 @@
   "examplemod.tooltip.damage": "%s Damage",
   "examplemod.tooltip.fire_rate": "%s Fire Rate",
   "examplemod.tooltip.reload_time": "%ss Reload",
+  "examplemod.tooltip.modifier_count": "%s Modifiers Slots",
   "examplemod.tooltip.modifiers": "Modifiers:"
 }

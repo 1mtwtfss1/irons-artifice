@@ -85,7 +85,7 @@ public record ReloadState(int progress, int duration, int cueIndex, float pitchM
         state = state.increment(1);
 
         ReloadCueStack cues = gun.getReloadCues();
-        int nextCue = cues.playDueCues(level, owner.position(), SoundSource.PLAYERS, state.percent(0), state.cueIndex(), state.pitchMultiplier);
+        int nextCue = cues.playDueCues( owner, owner.position(), SoundSource.PLAYERS, state.percent(0), state.cueIndex(), state.pitchMultiplier);
         state = state.withCueIndex(nextCue);
 
         if (state.isFinished()) {

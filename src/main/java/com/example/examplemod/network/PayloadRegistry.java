@@ -45,5 +45,10 @@ public final class PayloadRegistry {
                 ClientboundGunshotSoundPacket.STREAM_CODEC,
                 ClientboundGunshotSoundPacket::handle
         );
+        registrar.playToClient(
+                ClientboundLocalSoundPacket.TYPE,
+                ClientboundLocalSoundPacket.STREAM_CODEC,
+                ClientboundLocalSoundPacket::handle
+        );
     }
 }
