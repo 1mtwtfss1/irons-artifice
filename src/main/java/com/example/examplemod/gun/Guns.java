@@ -66,6 +66,20 @@ public final class Guns {
             FireMode.SEMI
     );
 
+    public static final GunProfile SIX_SHOOTER = new GunProfile(
+            () -> {
+                var map = basicGun();
+                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(15f, .5f, 2.7f, 465));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(5));
+                map.set(ShotComponents.DAMAGE, Value.of(7));
+                return map;
+            },
+            6,
+            5,
+            20,
+            FireMode.SEMI
+    );
+
     public static final GunProfile MUSKET = new GunProfile(
             () -> {
                 var map = basicGun();

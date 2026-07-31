@@ -1,7 +1,7 @@
 package com.example.examplemod.client.gun;
 
 import com.example.examplemod.item.GunItem;
-import com.example.examplemod.registry.DataComponentRegistry;
+import com.example.examplemod.item.MagazineContents;
 import com.geckolib.animation.state.BoneSnapshot;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.model.GeoModel;
@@ -69,8 +69,8 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
     @SuppressWarnings("all")
     public void captureDefaultRenderState(GunItem animatable, RenderData renderData, GeoRenderState renderState, float partialTick) {
         super.captureDefaultRenderState(animatable, renderData, renderState, partialTick);
-        if (renderData.itemStack().has(DataComponentRegistry.MAGAZINE)) {
-            renderState.addGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET, renderData.itemStack().get(DataComponentRegistry.MAGAZINE));
+        if (MagazineContents.has(renderData.itemStack())) {
+            renderState.addGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET, MagazineContents.get(renderData.itemStack()));
         }
     }
 

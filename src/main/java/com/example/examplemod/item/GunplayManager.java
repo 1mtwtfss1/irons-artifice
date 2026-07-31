@@ -11,7 +11,6 @@ import com.example.examplemod.modifier.ModifierItem;
 import com.example.examplemod.network.ClientboundGunAnimationPacket;
 import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
 import com.example.examplemod.recoil.RecoilState;
-import com.example.examplemod.registry.DataComponentRegistry;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.registry.ItemRegistry;
 import com.geckolib.animatable.GeoItem;
@@ -118,7 +117,7 @@ public final class GunplayManager {
 
     private static void playReloadAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
 //        double reloadSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.value(ShotComponents.FIRE_DELAY);
-        ReloadState existingState = stack.get(DataComponentRegistry.RELOAD_STATE);
+        ReloadState existingState = ReloadState.get(stack);
         double speed = profile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
         double offsetSeconds = 0;
         if (existingState != null) {
@@ -172,7 +171,7 @@ public final class GunplayManager {
                 modifierItem.getModifier().apply(components);
             }
         }
-        return new ShotProfile(gunStack, gunProfile, gunStack.get(DataComponentRegistry.MAGAZINE), components);
+        return new ShotProfile(gunStack, gunProfile, MagazineContents.get(gunStack), components);
     }
 
     public static ReloadResult attemptFinishReload(Player player, ItemStack gun) {

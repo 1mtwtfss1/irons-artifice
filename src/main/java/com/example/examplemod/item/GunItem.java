@@ -3,10 +3,11 @@ package com.example.examplemod.item;
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.data.ShotComponents;
+import com.example.examplemod.gun.ArmPoseKind;
 import com.example.examplemod.gun.GunProfile;
+import com.example.examplemod.gun.ReloadCueStack;
 import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.menu.GunContainer;
-import com.example.examplemod.registry.DataComponentRegistry;
 import com.geckolib.animatable.GeoAnimatable;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
@@ -19,6 +20,7 @@ import com.geckolib.renderer.base.GeoRenderState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -44,10 +46,21 @@ public class GunItem extends BaseGeoItem {
     public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
 
     private final GunProfile gunProfile;
+    private final @Nullable Identifier geoModelId;
+    private final ArmPoseKind armPoseKind;
+    private final ReloadCueStack reloadCues;
 
-    public GunItem(Properties properties, GunProfile gunProfile) {
+    public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
+                   ArmPoseKind armPoseKind, ReloadCueStack reloadCues) {
         super(properties.component(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.CONTAINER, true)));
         this.gunProfile = gunProfile;
+        this.geoModelId = geoModelId;
+        this.armPoseKind = armPoseKind;
+        this.reloadCues = reloadCues;
+    }
+
+    public GunItem(Properties properties, GunProfile gunProfile, ArmPoseKind armPoseKind) {
+        this(properties, gunProfile, null, armPoseKind, ReloadCueStack.EMPTY);
     }
 
     public GunProfile getGun() {
@@ -58,20 +71,33 @@ public class GunItem extends BaseGeoItem {
         return gunProfile.magazineCapacity();
     }
 
+    public @Nullable Identifier getGeoModelId() {
+        return geoModelId;
+    }
+
+    public ArmPoseKind getArmPoseKind() {
+        return armPoseKind;
+    }
+
+    public ReloadCueStack getReloadCues() {
+        return reloadCues;
+    }
+
     public static MagazineContents getMagazine(ItemStack stack) {
-        return stack.getOrDefault(DataComponentRegistry.MAGAZINE.get(), MagazineContents.EMPTY);
+        MagazineContents magazine = MagazineContents.get(stack);
+        return magazine != null ? magazine : MagazineContents.EMPTY;
     }
 
     public static void setMagazine(ItemStack stack, MagazineContents magazine) {
-        stack.set(DataComponentRegistry.MAGAZINE.get(), magazine);
+        MagazineContents.set(stack, magazine);
     }
 
     public static void startReload(ItemStack stack, int duration) {
-        stack.set(DataComponentRegistry.RELOAD_STATE, new ReloadState(0, duration));
+        ReloadState.set(stack, new ReloadState(0, duration, 0));
     }
 
     public static boolean isReloading(ItemStack stack) {
-        return stack.has(DataComponentRegistry.RELOAD_STATE);
+        return ReloadState.has(stack);
     }
 
     public GunProfile getGunProfile() {
@@ -86,7 +112,7 @@ public class GunItem extends BaseGeoItem {
             //  not a v1 concern
             return;
         }
-        if (isReloading(itemStack) && ReloadState.tickReload(itemStack)) {
+        if (isReloading(itemStack) && ReloadState.tickReload(itemStack, this, level, player)) {
             ReloadResult result = GunplayManager.attemptFinishReload(player, itemStack);
             playReloadFeedback(level, player, result);
         }
@@ -140,10 +166,6 @@ public class GunItem extends BaseGeoItem {
 
     private static void playReloadFeedback(Level level, Player player, ReloadResult result) {
         switch (result) {
-            case FINISHED_RELOAD -> level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.CROSSBOW_LOADING_END.value(), SoundSource.PLAYERS, 0.8F, 1.0F);
-            case STARTING_RELOAD -> level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.CROSSBOW_LOADING_START.value(), SoundSource.PLAYERS, 0.8F, 1.0F);
             case NO_AMMO -> level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.DISPENSER_FAIL, SoundSource.PLAYERS, 0.6F, 1.0F);
             case ALREADY_FULL -> level.playSound(null, player.getX(), player.getY(), player.getZ(),
@@ -159,7 +181,7 @@ public class GunItem extends BaseGeoItem {
     @Override
     public int getBarWidth(ItemStack stack) {
         if (isReloading(stack)) {
-            return (int) (stack.get(DataComponentRegistry.RELOAD_STATE).percent(0) * 13);
+            return (int) (ReloadState.get(stack).percent(0) * 13);
         } else {
             int count = getMagazine(stack).count();
             return Mth.clamp(Math.round(count * 13.0F / magazineCapacity()), 0, 13);
@@ -180,16 +202,7 @@ public class GunItem extends BaseGeoItem {
     public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {
         super.registerControllers(controllers);
         controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunIdleHandler));
-        controllers.add(new AnimationController<>("Actions", test -> PlayState.STOP) {
-                    @Override
-                    protected void initializeNewAnimation(GeoAnimatable animatable, GeoRenderState renderState, GeoModel<GeoAnimatable> geoModel, double prevAnimSpeed, int prevTransitionTicks) {
-                        double offset = timelineTime;
-                        super.initializeNewAnimation(animatable, renderState, geoModel, prevAnimSpeed, prevTransitionTicks);
-                        if (offset > 0) {
-                            timelineTime = offset;
-                        }
-                    }
-                }
+        controllers.add(new OffsetableAnimationController<>("Actions", test -> PlayState.STOP)
                         .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
                         .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
                         .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
@@ -203,5 +216,21 @@ public class GunItem extends BaseGeoItem {
             animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
         }
         return PlayState.CONTINUE;
+    }
+
+    private static class OffsetableAnimationController<T extends GeoAnimatable> extends AnimationController<T> {
+
+        public OffsetableAnimationController(String name, AnimationStateHandler<T> stateHandler) {
+            super(name, stateHandler);
+        }
+        @Override
+        protected void initializeNewAnimation(T animatable, GeoRenderState renderState, GeoModel<T> geoModel, double prevAnimSpeed, int prevTransitionTicks) {
+            double offset = timelineTime;
+            super.initializeNewAnimation(animatable, renderState, geoModel, prevAnimSpeed, prevTransitionTicks);
+            if (offset > 0) {
+                timelineTime = offset;
+            }
+        }
+
     }
 }

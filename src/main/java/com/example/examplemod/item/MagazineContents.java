@@ -1,9 +1,12 @@
 package com.example.examplemod.item;
 
+import com.example.examplemod.registry.DataComponentRegistry;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public record MagazineContents(int count) {
     public static final MagazineContents EMPTY = new MagazineContents(0);
@@ -13,6 +16,22 @@ public record MagazineContents(int count) {
 
     public static final StreamCodec<ByteBuf, MagazineContents> STREAM_CODEC =
             ByteBufCodecs.VAR_INT.map(MagazineContents::new, MagazineContents::count);
+
+    public static @Nullable MagazineContents get(ItemStack stack) {
+        return stack.get(DataComponentRegistry.MAGAZINE);
+    }
+
+    public static void set(ItemStack stack, MagazineContents magazine) {
+        stack.set(DataComponentRegistry.MAGAZINE, magazine);
+    }
+
+    public static boolean has(ItemStack stack) {
+        return stack.has(DataComponentRegistry.MAGAZINE);
+    }
+
+    public static void remove(ItemStack stack) {
+        stack.remove(DataComponentRegistry.MAGAZINE);
+    }
 
     public boolean isEmpty() {
         return this.count <= 0;

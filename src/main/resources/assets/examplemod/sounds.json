@@ -23,5 +23,27 @@
     "sounds": [
       "examplemod:revolver_shoot"
     ]
+  },
+  "item.generic.cock_hammer": {
+    "sounds": [
+      "examplemod:shortbow_load_1",
+      "examplemod:shortbow_shoot_1",
+      "examplemod:shortbow_shoot_2"
+    ]
+  },
+  "item.blackpowder_revolver.reload.start": {
+    "sounds": [
+      "examplemod:blackpowder_revolver_reload_start"
+    ]
+  },
+  "item.blackpowder_revolver.reload.mid": {
+    "sounds": [
+      "examplemod:blackpowder_revolver_reload_mid"
+    ]
+  },
+  "item.blackpowder_revolver.reload.end": {
+    "sounds": [
+      "examplemod:blackpowder_revolver_reload_end"
+    ]
   }
 }

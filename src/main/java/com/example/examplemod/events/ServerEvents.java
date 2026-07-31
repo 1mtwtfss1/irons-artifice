@@ -8,7 +8,6 @@ import com.example.examplemod.item.GunplayManager;
 import com.example.examplemod.item.ReloadState;
 import com.example.examplemod.menu.GunContainer;
 import com.example.examplemod.network.ClientboundGunAnimationPacket;
-import com.example.examplemod.registry.DataComponentRegistry;
 import com.geckolib.animatable.GeoItem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -50,7 +49,7 @@ public class ServerEvents {
             if (GunItem.isReloading(equippedStack)) {
                 ShotProfile profile = GunplayManager.compose(gunItem.getGunProfile(), new GunContainer(equippedStack), equippedStack);
                 double reloadSpeedMultiplier = profile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
-                ReloadState reloadState = equippedStack.get(DataComponentRegistry.RELOAD_STATE);
+                ReloadState reloadState = ReloadState.get(equippedStack);
                 double progress = reloadState.animationProgressSeconds(gunItem.getGunProfile());
                 packet = new ClientboundGunAnimationPacket(entity.getId(), GeoItem.getOrAssignId(equippedStack, serverLevel),
                         equippedStack == entity.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,

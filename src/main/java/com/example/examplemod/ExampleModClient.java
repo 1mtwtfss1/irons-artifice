@@ -7,9 +7,10 @@ import com.example.examplemod.client.particle.BulletImpactParticle;
 import com.example.examplemod.client.particle.BulletTrailParticle;
 import com.example.examplemod.client.particle.ImpactBlockParticle;
 import com.example.examplemod.client.pose.GunArmPoses;
+import com.example.examplemod.gun.ArmPoseKind;
 import com.example.examplemod.item.GunItem;
-import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.menu.GunScreen;
+import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.registry.ItemRegistry;
 import com.example.examplemod.registry.MenuRegistry;
 import com.example.examplemod.registry.ParticleRegistry;
@@ -19,8 +20,10 @@ import com.geckolib.renderer.GeoItemRenderer;
 import com.google.common.base.Suppliers;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -36,8 +39,11 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Mod(value = ExampleMod.MODID, dist = Dist.CLIENT)
@@ -49,39 +55,21 @@ public class ExampleModClient {
 
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
-        // todo: let gun provide it
-        ItemRegistry.GUN.get().geoRenderProvider.setValue(new GeoRenderProvider() {
-            private final Supplier<GeoItemRenderer<GunItem>> renderer = Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(ExampleMod.id("example_revolver"))));
-
-            @Override
-            public @Nullable GeoItemRenderer<GunItem> getGeoItemRenderer() {
-                return this.renderer.get();
+        for (GunItem gun : guns()) {
+            Identifier modelId = gun.getGeoModelId();
+            if (modelId == null) {
+                continue;
             }
-        });
-        ItemRegistry.FLINTLOCK_PISTOL.get().geoRenderProvider.setValue(new GeoRenderProvider() {
-            private final Supplier<GeoItemRenderer<GunItem>> renderer = Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(ExampleMod.id("flintlock_pistol"))));
+            gun.geoRenderProvider.setValue(new GeoRenderProvider() {
+                private final Supplier<GeoItemRenderer<GunItem>> renderer =
+                        Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(modelId)));
 
-            @Override
-            public @Nullable GeoItemRenderer<GunItem> getGeoItemRenderer() {
-                return this.renderer.get();
-            }
-        });
-        ItemRegistry.BLACKPOWDER_REVOLVER.get().geoRenderProvider.setValue(new GeoRenderProvider() {
-            private final Supplier<GeoItemRenderer<GunItem>> renderer = Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(ExampleMod.id("hand_cannon"))));
-
-            @Override
-            public @Nullable GeoItemRenderer<GunItem> getGeoItemRenderer() {
-                return this.renderer.get();
-            }
-        });
-        ItemRegistry.MUSKET.get().geoRenderProvider.setValue(new GeoRenderProvider() {
-            private final Supplier<GeoItemRenderer<GunItem>> renderer = Suppliers.memoize(() -> new GunInHandRenderer(new DefaultedItemGeoModel<>(ExampleMod.id("musket"))));
-
-            @Override
-            public @Nullable GeoItemRenderer<GunItem> getGeoItemRenderer() {
-                return this.renderer.get();
-            }
-        });
+                @Override
+                public @Nullable GeoItemRenderer<GunItem> getGeoItemRenderer() {
+                    return this.renderer.get();
+                }
+            });
+        }
     }
 
     @SubscribeEvent
@@ -113,20 +101,42 @@ public class ExampleModClient {
 
     @SubscribeEvent
     static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        IClientItemExtensions pistolPose = new IClientItemExtensions() {
+        IClientItemExtensions pistolPose = armPoseExtension(GunArmPoses.PISTOL.getValue());
+        IClientItemExtensions riflePose = armPoseExtension(GunArmPoses.RIFLE.getValue());
+
+        List<Item> pistols = new ArrayList<>();
+        List<Item> rifles = new ArrayList<>();
+        for (GunItem gun : guns()) {
+            if (gun.getArmPoseKind() == ArmPoseKind.PISTOL) {
+                pistols.add(gun);
+            } else {
+                rifles.add(gun);
+            }
+        }
+        if (!pistols.isEmpty()) {
+            event.registerItem(pistolPose, pistols.toArray(Item[]::new));
+        }
+        if (!rifles.isEmpty()) {
+            event.registerItem(riflePose, rifles.toArray(Item[]::new));
+        }
+    }
+
+    private static IClientItemExtensions armPoseExtension(HumanoidModel.ArmPose pose) {
+        return new IClientItemExtensions() {
             @Override
             public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-                return GunArmPoses.PISTOL.getValue();
+                return pose;
             }
         };
-        IClientItemExtensions riflePose = new IClientItemExtensions() {
-            @Override
-            public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-                return GunArmPoses.RIFLE.getValue();
+    }
+
+    private static List<GunItem> guns() {
+        List<GunItem> guns = new ArrayList<>();
+        for (DeferredHolder<Item, ? extends Item> holder : ItemRegistry.ITEMS.getEntries()) {
+            if (holder.get() instanceof GunItem gunItem) {
+                guns.add(gunItem);
             }
-        };
-        // todo: let gun provide it
-        event.registerItem(pistolPose, ItemRegistry.GUN.get(), ItemRegistry.GUN1.get(), ItemRegistry.GUN2.get(), ItemRegistry.FLINTLOCK_PISTOL.get(), ItemRegistry.BLACKPOWDER_REVOLVER.get());
-        event.registerItem(riflePose, ItemRegistry.GUN3.get(), ItemRegistry.MUSKET.get());
+        }
+        return guns;
     }
 }

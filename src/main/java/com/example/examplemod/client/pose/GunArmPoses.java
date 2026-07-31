@@ -1,7 +1,6 @@
 package com.example.examplemod.client.pose;
 
 import com.example.examplemod.item.ReloadState;
-import com.example.examplemod.registry.DataComponentRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
@@ -21,7 +20,7 @@ public final class GunArmPoses {
 
     private static <T extends HumanoidRenderState> void applyPistolPose(HumanoidModel<?> model, T renderState, HumanoidArm arm) {
         boolean holdingInRightArm = arm == HumanoidArm.RIGHT;
-        ReloadState reloadState = renderState.getMainHandItemStack().get(DataComponentRegistry.RELOAD_STATE); // fixme: mainhand hardcode
+        ReloadState reloadState = ReloadState.get(renderState.getMainHandItemStack()); // fixme: mainhand hardcode
         if (reloadState != null && !reloadState.isFinished()) {
             animateCrossbowCharge(model.rightArm, model.leftArm, reloadState.progress(), reloadState.duration(), holdingInRightArm);
         } else {
@@ -34,7 +33,7 @@ public final class GunArmPoses {
 
     private static <T extends HumanoidRenderState> void applyRiflePose(HumanoidModel<?> model, T renderState, HumanoidArm arm) {
         boolean holdingInRightArm = arm == HumanoidArm.RIGHT;
-        ReloadState reloadState = renderState.getMainHandItemStack().get(DataComponentRegistry.RELOAD_STATE); // fixme: mainhand hardcode
+        ReloadState reloadState = ReloadState.get(renderState.getMainHandItemStack()); // fixme: mainhand hardcode
         if (reloadState != null && !reloadState.isFinished()) {
             animateCrossbowCharge(model.rightArm, model.leftArm, reloadState.progress(), reloadState.duration(), holdingInRightArm);
         } else {
