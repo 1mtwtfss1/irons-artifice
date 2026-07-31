@@ -171,16 +171,18 @@ public class Bullet extends Projectile {
         }
     }
 
-    private double irwinHall(RandomSource randomSource) {
-        return (randomSource.nextDouble() + randomSource.nextDouble() + randomSource.nextDouble() + randomSource.nextDouble() - 2) / 2.0;
+    private double distribution(RandomSource randomSource) {
+        double d = randomSource.nextDouble() - randomSource.nextDouble();
+//        return (d * d) * Math.signum(d);
+        return d;
     }
 
     @Override
     public Vec3 getMovementToShoot(double xd, double yd, double zd, float pow, float uncertainty) {
         return new Vec3(xd, yd, zd)
                 .normalize()
-                .add(new Vec3(irwinHall(random), irwinHall(random), irwinHall(random)).normalize()
-                        .scale(uncertainty * Mth.DEG_TO_RAD * 0.5))
+                .add(new Vec3(distribution(random), distribution(random), distribution(random))
+                        .scale(uncertainty * Mth.DEG_TO_RAD * 0.75))
                 .scale(pow);
     }
 

@@ -141,8 +141,8 @@ public class GunItem extends BaseGeoItem {
         String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20 / shotProfile.value(ShotComponents.FIRE_DELAY));
         String reloadTime = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(gunProfile.reloadTimeTicks() / 20f / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (bulletCount > 1) {
-            statBuilder.accept(Component.translatable("examplemod.tooltip.damage_per_bullet", damage, bulletCount));
-            statBuilder.accept(Component.translatable("examplemod.tooltip.bullet_count", bulletCount));
+            statBuilder.accept(Component.translatable("examplemod.tooltip.damage_per_bullet", damage, Component.literal(String.valueOf(bulletCount)).withStyle(ChatFormatting.YELLOW)));
+            statBuilder.accept(Component.translatable("examplemod.tooltip.bullet_count", bulletCount).withStyle(ChatFormatting.YELLOW));
         } else {
             statBuilder.accept(Component.translatable("examplemod.tooltip.damage", damage));
         }

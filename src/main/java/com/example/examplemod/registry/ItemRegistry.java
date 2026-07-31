@@ -86,7 +86,10 @@ public final class ItemRegistry {
             )),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
-
+    public static final DeferredItem<GunItem> BLUNDERBUSS = ITEMS.registerItem("blunderbuss",
+            properties -> new GunItem(properties.stacksTo(1), Guns.BLUNDERBUSS, ExampleMod.id("blunderbuss"), ArmPoseKind.RIFLE, ReloadCueStack.of()),
+            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+    );
     public static final DeferredItem<ModifierItem> HEAVY = ITEMS.registerItem(
             "heavy_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
     public static final DeferredItem<ModifierItem> SCATTERSHOT = ITEMS.registerItem(
