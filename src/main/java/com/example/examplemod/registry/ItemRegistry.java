@@ -47,11 +47,6 @@ public final class ItemRegistry {
             new ReloadCue(0.90f, PlayableSound.of(SoundEvents.CROSSBOW_LOADING_END, 0.8f, 1.0f))
     );
 
-    private static final ReloadCueStack BLACKPOWDER_RELOAD_CUES = ReloadCueStack.of(
-            new ReloadCue(0f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_START, 0.75f, 0.95f, 1.05f)),
-            new ReloadCue(1.75f / 2.58f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_MID, 0.75f, 0.95f, 1.05f))
-    );
-
     public static final DeferredItem<GunItem> GUN = ITEMS.registerItem("gun",
             properties -> new GunItem(properties.stacksTo(1), Guns.BASIC, ExampleMod.id("example_revolver"), ArmPoseKind.PISTOL, REVOLVER_RELOAD_CUES),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
@@ -74,7 +69,10 @@ public final class ItemRegistry {
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> BLACKPOWDER_REVOLVER = ITEMS.registerItem("blackpowder_revolver",
-            properties -> new GunItem(properties, Guns.HAND_CANNON, ExampleMod.id("hand_cannon"), ArmPoseKind.PISTOL, BLACKPOWDER_RELOAD_CUES),
+            properties -> new GunItem(properties, Guns.HAND_CANNON, ExampleMod.id("hand_cannon"), ArmPoseKind.PISTOL, ReloadCueStack.of(
+                    new ReloadCue(0f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_START, 0.75f, 0.95f, 1.05f)),
+                    new ReloadCue(1.75f / 2.58f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_MID, 0.75f, 0.95f, 1.05f))
+            )),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> MUSKET = ITEMS.registerItem("musket",
@@ -82,7 +80,10 @@ public final class ItemRegistry {
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> SIX_SHOOTER = ITEMS.registerItem("six_shooter",
-            properties -> new GunItem(properties.stacksTo(1), Guns.SIX_SHOOTER, ExampleMod.id("six_shooter"), ArmPoseKind.PISTOL, REVOLVER_RELOAD_CUES),
+            properties -> new GunItem(properties.stacksTo(1), Guns.SIX_SHOOTER, ExampleMod.id("six_shooter"), ArmPoseKind.PISTOL, ReloadCueStack.of(
+                    new ReloadCue(0.1f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 0.75f, 0.95f, 1.05f)),
+                    new ReloadCue(0.38f / 1.25f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_EQUIP, 0.75f, 0.95f, 1.05f))
+            )),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
 

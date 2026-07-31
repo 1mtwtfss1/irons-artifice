@@ -24,7 +24,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -220,7 +219,7 @@ public final class GunplayManager {
         }
         ShotProfile shotProfile = compose(gunItem.getGunProfile(), new GunContainer(gun), gun);
         int ticks = (int) (gunItem.getGunProfile().reloadTimeTicks() / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
-        GunItem.startReload(gun, ticks);
+        GunItem.startReload(gun, gunItem.getGunProfile().reloadTimeTicks(), shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new ClientboundReloadCrosshairAnimationPacket(ticks));
             playReloadAnimation(serverPlayer, gun, gunItem, shotProfile);

@@ -92,8 +92,8 @@ public class GunItem extends BaseGeoItem {
         MagazineContents.set(stack, magazine);
     }
 
-    public static void startReload(ItemStack stack, int duration) {
-        ReloadState.set(stack, new ReloadState(0, duration, 0));
+    public static void startReload(ItemStack stack, int ticks, double speed) {
+        ReloadState.set(stack, new ReloadState(0, (int) (ticks / speed), 0, (float) speed));
     }
 
     public static boolean isReloading(ItemStack stack) {
@@ -203,9 +203,9 @@ public class GunItem extends BaseGeoItem {
         super.registerControllers(controllers);
         controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunIdleHandler));
         controllers.add(new OffsetableAnimationController<>("Actions", test -> PlayState.STOP)
-                        .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
-                        .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
-                        .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
+                .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
+                .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
+                .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
         );
     }
 
@@ -223,6 +223,7 @@ public class GunItem extends BaseGeoItem {
         public OffsetableAnimationController(String name, AnimationStateHandler<T> stateHandler) {
             super(name, stateHandler);
         }
+
         @Override
         protected void initializeNewAnimation(T animatable, GeoRenderState renderState, GeoModel<T> geoModel, double prevAnimSpeed, int prevTransitionTicks) {
             double offset = timelineTime;

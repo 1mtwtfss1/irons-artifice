@@ -14,19 +14,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-public record ReloadState(int progress, int duration, int cueIndex) {
-    public static final ReloadState EMPTY = new ReloadState(0, 0, 0);
+public record ReloadState(int progress, int duration, int cueIndex, float pitchMultiplier) {
+    public static final ReloadState EMPTY = new ReloadState(0, 0, 0, 1);
 
     public static final Codec<ReloadState> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.INT.fieldOf("progress").forGetter(ReloadState::progress),
             Codec.INT.fieldOf("duration").forGetter(ReloadState::duration),
-            Codec.INT.optionalFieldOf("cue_index", 0).forGetter(ReloadState::cueIndex)
+            Codec.INT.optionalFieldOf("cue_index", 0).forGetter(ReloadState::cueIndex),
+            Codec.FLOAT.optionalFieldOf("pitch_multiplier", 1f).forGetter(ReloadState::pitchMultiplier)
     ).apply(builder, ReloadState::new));
 
     public static final StreamCodec<ByteBuf, ReloadState> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, ReloadState::progress,
             ByteBufCodecs.VAR_INT, ReloadState::duration,
             ByteBufCodecs.VAR_INT, ReloadState::cueIndex,
+            ByteBufCodecs.FLOAT, ReloadState::pitchMultiplier,
             ReloadState::new
     );
 
@@ -63,11 +65,11 @@ public record ReloadState(int progress, int duration, int cueIndex) {
     }
 
     public ReloadState increment(int ticks) {
-        return new ReloadState(progress + ticks, duration, cueIndex);
+        return new ReloadState(progress + ticks, duration, cueIndex, pitchMultiplier);
     }
 
     public ReloadState withCueIndex(int cueIndex) {
-        return new ReloadState(progress, duration, cueIndex);
+        return new ReloadState(progress, duration, cueIndex, pitchMultiplier);
     }
 
     /**
@@ -83,7 +85,7 @@ public record ReloadState(int progress, int duration, int cueIndex) {
         state = state.increment(1);
 
         ReloadCueStack cues = gun.getReloadCues();
-        int nextCue = cues.playDueCues(level, owner.position(), SoundSource.PLAYERS, state.percent(0), state.cueIndex());
+        int nextCue = cues.playDueCues(level, owner.position(), SoundSource.PLAYERS, state.percent(0), state.cueIndex(), state.pitchMultiplier);
         state = state.withCueIndex(nextCue);
 
         if (state.isFinished()) {

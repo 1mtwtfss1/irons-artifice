@@ -45,5 +45,15 @@
     "sounds": [
       "examplemod:blackpowder_revolver_reload_end"
     ]
+  },
+  "item.six_shooter.equip": {
+    "sounds": [
+      "examplemod:six_shooter_draw_spin"
+    ]
+  },
+  "item.six_shooter.holster": {
+    "sounds": [
+      "examplemod:step_leather_chain_light_4"
+    ]
   }
 }

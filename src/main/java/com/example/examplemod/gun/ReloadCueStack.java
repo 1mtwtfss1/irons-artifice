@@ -50,9 +50,11 @@ public class ReloadCueStack {
      *
      * @return the next cue index to fire
      */
-    public int playDueCues(Level level, Vec3 pos, SoundSource source, float percent, int cueIndex) {
+    public int playDueCues(Level level, Vec3 pos, SoundSource source, float percent, int cueIndex, float pitchMultiplier) {
         while (cueIndex < cues.size() && percent >= cues.get(cueIndex).percent()) {
-            cues.get(cueIndex).sound().play(level, pos, source);
+            var sound = cues.get(cueIndex).sound();
+            var adjustedSound = new PlayableSound(sound.soundEventHolder(), sound.volume(), sound.minPitch() * pitchMultiplier, sound.maxPitch() * pitchMultiplier);
+            adjustedSound.play(level, pos, source);
             cueIndex++;
         }
         return cueIndex;
