@@ -94,7 +94,7 @@ public final class Guns {
                 return map;
             },
             1,
-            5,
+            7,
             80,
             FireMode.SEMI
     );

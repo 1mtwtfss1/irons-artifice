@@ -1,5 +1,6 @@
 package com.example.examplemod.menu;
 
+import com.example.examplemod.item.GunItem;
 import com.example.examplemod.modifier.ModifierItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.SimpleContainer;
@@ -8,15 +9,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 
 public class GunContainer extends SimpleContainer {
-    public static final int SIZE = 5;
-
     private final ItemStack stack;
 
     public GunContainer(ItemStack stack) {
-        super(SIZE);
+        super(sizeFromStack(stack));
         this.stack = stack;
         ItemContainerContents contents = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
         contents.copyInto(this.getItems());
+    }
+
+    private static int sizeFromStack(ItemStack stack) {
+        if (!(stack.getItem() instanceof GunItem gunItem)) {
+            return 0;
+        }
+        return gunItem.getGunProfile().modifierSlots();
     }
 
     public ItemStack getGunStack() {
