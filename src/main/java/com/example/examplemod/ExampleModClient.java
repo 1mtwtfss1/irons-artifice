@@ -6,6 +6,7 @@ import com.example.examplemod.client.particle.BlockDustParticle;
 import com.example.examplemod.client.particle.BulletImpactParticle;
 import com.example.examplemod.client.particle.BulletTrailParticle;
 import com.example.examplemod.client.particle.ImpactBlockParticle;
+import com.example.examplemod.client.particle.MuzzleFlashLargeParticle;
 import com.example.examplemod.client.pose.GunArmPoses;
 import com.example.examplemod.gun.ArmPoseKind;
 import com.example.examplemod.item.GunItem;
@@ -97,6 +98,7 @@ public class ExampleModClient {
         event.registerSpriteSet(ParticleRegistry.BLOCK_DUST.get(), BlockDustParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.BULLET_TRAIL.get(), BulletTrailParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.BULLET_IMPACT.get(), BulletImpactParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.MUZZLE_FLASH_LARGE.get(), MuzzleFlashLargeParticle.Provider::new);
     }
 
     @SubscribeEvent

@@ -9,6 +9,7 @@ import com.example.examplemod.recoil.RecoilProfile;
 import com.example.examplemod.registry.SoundRegistry;
 import net.minecraft.sounds.SoundEvents;
 
+// todo: should probably be converted into an item component, rather than hardcoded to gunitem
 public final class Guns {
 
     public static final GunProfile BASIC = new GunProfile(
@@ -48,7 +49,7 @@ public final class Guns {
             FireMode.SEMI
     );
 
-    public static final GunProfile HAND_CANNON = new GunProfile(
+    public static final GunProfile BLACKPOWDER_REVOLVER = new GunProfile(
             () -> {
                 var map = basicGun();
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(25f, .33f, 1.7f, 0));
@@ -65,6 +66,7 @@ public final class Guns {
             50,
             FireMode.SEMI
     );
+
 
     public static final GunProfile SIX_SHOOTER = new GunProfile(
             () -> {
@@ -94,8 +96,8 @@ public final class Guns {
                 return map;
             },
             1,
-            7,
-            80,
+            5,
+            60,
             FireMode.SEMI
     );
 
@@ -115,7 +117,57 @@ public final class Guns {
             },
             2,
             5,
-            80,
+            40,
+            FireMode.SEMI
+    );
+
+
+    public static final GunProfile ARQUEBUS = new GunProfile(
+            () -> {
+                var map = basicGun();
+                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(30f, .45f, -1.9f, 222));
+                map.set(ShotComponents.SPREAD, Value.of(1));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
+                map.set(ShotComponents.DAMAGE, Value.of(14));
+                return map;
+            },
+            1,
+            7,
+            20,
+            FireMode.SEMI
+    );
+
+    public static final GunProfile CLOCKWORK_RIFLE = new GunProfile(
+            () -> {
+                var map = basicGun();
+                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(7.5f, .35f, 0.6f, 6969));
+                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.05));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(4));
+                map.set(ShotComponents.SPREAD, Value.of(2));
+                map.set(ShotComponents.DAMAGE, Value.of(4));
+                return map;
+            },
+            10,
+            6,
+            20,
+            FireMode.AUTO
+    );
+
+    public static final GunProfile HAND_CANNON = new GunProfile(
+            () -> {
+                var map = basicGun();
+                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(25f, .33f, 1.7f, 0));
+                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.125));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
+                map.set(ShotComponents.DAMAGE, Value.of(10));
+                map.set(ShotComponents.GUNSHOT_SOUND,
+                        new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_BLAST, 0.75f, 0.85f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
+                );
+                return map;
+            },
+            6,
+            5,
+            20,
             FireMode.SEMI
     );
 
@@ -138,6 +190,7 @@ public final class Guns {
             20,
             FireMode.SEMI
     );
+
     public static final GunProfile HIGH_CAP = new GunProfile(
             () -> {
                 var map = basicGun();

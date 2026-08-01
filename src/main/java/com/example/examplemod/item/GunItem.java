@@ -1,6 +1,7 @@
 package com.example.examplemod.item;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.data.PlayableSound;
 import com.example.examplemod.data.ReloadResult;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.ArmPoseKind;
@@ -49,18 +50,20 @@ public class GunItem extends BaseGeoItem {
     private final @Nullable Identifier geoModelId;
     private final ArmPoseKind armPoseKind;
     private final ReloadCueStack reloadCues;
+    private final @Nullable PlayableSound equipSound;
 
     public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
-                   ArmPoseKind armPoseKind, ReloadCueStack reloadCues) {
+                   ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound) {
         super(properties.component(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.CONTAINER, true)));
         this.gunProfile = gunProfile;
         this.geoModelId = geoModelId;
         this.armPoseKind = armPoseKind;
         this.reloadCues = reloadCues;
+        this.equipSound = equipSound;
     }
 
     public GunItem(Properties properties, GunProfile gunProfile, ArmPoseKind armPoseKind) {
-        this(properties, gunProfile, null, armPoseKind, ReloadCueStack.EMPTY);
+        this(properties, gunProfile, null, armPoseKind, ReloadCueStack.EMPTY, null);
     }
 
     public GunProfile getGun() {
@@ -214,6 +217,10 @@ public class GunItem extends BaseGeoItem {
             animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
         }
         return PlayState.CONTINUE;
+    }
+
+    public PlayableSound getEquipSound() {
+        return this.equipSound;
     }
 
     private static class OffsetableAnimationController<T extends GeoAnimatable> extends AnimationController<T> {

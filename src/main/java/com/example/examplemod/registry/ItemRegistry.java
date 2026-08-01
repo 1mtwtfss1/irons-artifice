@@ -48,7 +48,7 @@ public final class ItemRegistry {
     );
 
     public static final DeferredItem<GunItem> GUN = ITEMS.registerItem("gun",
-            properties -> new GunItem(properties.stacksTo(1), Guns.BASIC, ExampleMod.id("example_revolver"), ArmPoseKind.PISTOL, REVOLVER_RELOAD_CUES),
+            properties -> new GunItem(properties.stacksTo(1), Guns.BASIC, ExampleMod.id("example_revolver"), ArmPoseKind.PISTOL, REVOLVER_RELOAD_CUES, null),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> GUN1 = ITEMS.registerItem("gunbang",
@@ -65,29 +65,39 @@ public final class ItemRegistry {
     );
 
     public static final DeferredItem<GunItem> FLINTLOCK_PISTOL = ITEMS.registerItem("flintlock",
-            properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL, ExampleMod.id("flintlock_pistol"), ArmPoseKind.PISTOL, MUZZLELOADER_RELOAD_CUES),
+            properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL, ExampleMod.id("flintlock_pistol"), ArmPoseKind.PISTOL, MUZZLELOADER_RELOAD_CUES, null),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> BLACKPOWDER_REVOLVER = ITEMS.registerItem("blackpowder_revolver",
-            properties -> new GunItem(properties, Guns.HAND_CANNON, ExampleMod.id("hand_cannon"), ArmPoseKind.PISTOL, ReloadCueStack.of(
+            properties -> new GunItem(properties, Guns.BLACKPOWDER_REVOLVER, ExampleMod.id("hand_cannon"), ArmPoseKind.PISTOL, ReloadCueStack.of(
                     new ReloadCue(0f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_START, 0.75f, 0.95f, 1.05f)),
                     new ReloadCue(1.75f / 2.58f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_MID, 0.75f, 0.95f, 1.05f))
-            )),
+            ), null),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> MUSKET = ITEMS.registerItem("musket",
-            properties -> new GunItem(properties.stacksTo(1), Guns.MUSKET, ExampleMod.id("musket"), ArmPoseKind.RIFLE, MUZZLELOADER_RELOAD_CUES),
+            properties -> new GunItem(properties.stacksTo(1), Guns.MUSKET, ExampleMod.id("musket"), ArmPoseKind.RIFLE, ReloadCueStack.of(
+                    new ReloadCue(3.1f / 3.42f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.75f, 0.9f, 1.1f))
+            ), null),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> SIX_SHOOTER = ITEMS.registerItem("six_shooter",
             properties -> new GunItem(properties.stacksTo(1), Guns.SIX_SHOOTER, ExampleMod.id("six_shooter"), ArmPoseKind.PISTOL, ReloadCueStack.of(
                     new ReloadCue(0.1f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 0.75f, 0.95f, 1.05f)),
                     new ReloadCue(0.38f / 1.25f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_EQUIP, 0.75f, 0.95f, 1.05f))
-            )),
+            ), PlayableSound.of(SoundRegistry.SIX_SHOOTER_EQUIP, 0.75f, 0.95f, 1.05f)),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> BLUNDERBUSS = ITEMS.registerItem("blunderbuss",
-            properties -> new GunItem(properties.stacksTo(1), Guns.BLUNDERBUSS, ExampleMod.id("blunderbuss"), ArmPoseKind.RIFLE, ReloadCueStack.of()),
+            properties -> new GunItem(properties.stacksTo(1), Guns.BLUNDERBUSS, ExampleMod.id("blunderbuss"), ArmPoseKind.RIFLE, ReloadCueStack.of(), null),
+            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+    );
+    public static final DeferredItem<GunItem> ARQUEBUS = ITEMS.registerItem("arquebus",
+            properties -> new GunItem(properties.stacksTo(1), Guns.ARQUEBUS, ExampleMod.id("musket"), ArmPoseKind.RIFLE, ReloadCueStack.of(), null),
+            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+    );
+    public static final DeferredItem<GunItem> CLOCKWORK_RIFLE = ITEMS.registerItem("clockwork_rifle",
+            properties -> new GunItem(properties.stacksTo(1), Guns.CLOCKWORK_RIFLE, ExampleMod.id("musket"), ArmPoseKind.RIFLE, ReloadCueStack.of(), null),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<ModifierItem> HEAVY = ITEMS.registerItem(

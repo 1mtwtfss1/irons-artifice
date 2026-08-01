@@ -193,6 +193,11 @@
 					]
 				},
 				{
+					"name": "muzzle",
+					"parent": "gun",
+					"pivot": [0, 3.5, -34]
+				},
+				{
 					"name": "hammer",
 					"parent": "gun",
 					"pivot": [0, 3.75, 0.75],

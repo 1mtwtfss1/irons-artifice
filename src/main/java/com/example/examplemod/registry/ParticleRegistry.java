@@ -6,6 +6,7 @@ import com.example.examplemod.client.particle.ColorTransitionParticleOption;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -47,6 +48,9 @@ public final class ParticleRegistry {
 
     public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> BULLET_IMPACT =
             PARTICLE_TYPES.register("bullet_impact", () -> new BulletTrailParticleType(false));
+
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MUZZLE_FLASH_LARGE =
+            PARTICLE_TYPES.register("muzzle_flash_large", () -> new SimpleParticleType(false) {});
 
     public static void register(IEventBus modEventBus) {
         PARTICLE_TYPES.register(modEventBus);
