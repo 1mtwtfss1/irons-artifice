@@ -70,5 +70,15 @@
     "sounds": [
       "examplemod:blunderbuss_reload_mid"
     ]
+  },
+  "item.clockwork_rifle.reload.insert_mag": {
+    "sounds": [
+      "examplemod:clockwork_rifle_insert_mag"
+    ]
+  },
+  "item.clockwork_rifle.reload.eject_mag": {
+    "sounds": [
+      "examplemod:clockwork_rifle_eject_mag"
+    ]
   }
 }

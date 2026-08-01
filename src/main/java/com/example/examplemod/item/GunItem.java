@@ -43,6 +43,7 @@ import java.util.function.Consumer;
 
 public class GunItem extends BaseGeoItem {
     public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(ExampleMod.id("magazine_state").toString(), MagazineContents.class);
+    public static final DataTicket<AnimationAdjuster> ANIMATION_ADJUSTER_TICKET = DataTicket.create(ExampleMod.id("animation_adjuster").toString(), AnimationAdjuster.class);
     public static final String TRIGGERED_ANIMATION_CONTROLLER = "Actions";
     public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
 

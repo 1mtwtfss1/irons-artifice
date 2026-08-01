@@ -144,12 +144,12 @@ public final class Guns {
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.05));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(4));
                 map.set(ShotComponents.SPREAD, Value.of(2));
-                map.set(ShotComponents.DAMAGE, Value.of(4));
+                map.set(ShotComponents.DAMAGE, Value.of(5));
                 return map;
             },
             10,
             6,
-            20,
+            30,
             FireMode.AUTO
     );
 

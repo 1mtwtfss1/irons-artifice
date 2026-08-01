@@ -1,9 +1,14 @@
 package com.example.examplemod.client.gun;
 
+import com.example.examplemod.ExampleMod;
+import com.example.examplemod.item.AnimationAdjuster;
 import com.example.examplemod.item.GunItem;
 import com.example.examplemod.item.MagazineContents;
+import com.example.examplemod.registry.ItemRegistry;
+import com.geckolib.animatable.GeoItem;
 import com.geckolib.animation.state.BoneSnapshot;
 import com.geckolib.constant.DataTickets;
+import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoItemRenderer;
 import com.geckolib.renderer.base.BoneSnapshots;
@@ -25,6 +30,7 @@ import org.jspecify.annotations.NonNull;
 import java.util.Optional;
 
 public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
+    public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(ExampleMod.id("magazine_state").toString(), MagazineContents.class);
 
 
     public GunInHandRenderer(GeoModel<GunItem> model) {
@@ -71,6 +77,14 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
         super.captureDefaultRenderState(animatable, renderData, renderState, partialTick);
         if (MagazineContents.has(renderData.itemStack())) {
             renderState.addGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET, MagazineContents.get(renderData.itemStack()));
+            // todo: not hardcode
+            if (animatable == ItemRegistry.CLOCKWORK_RIFLE.get()) {
+                var controller = animatable.getAnimatableInstanceCache().getManagerForId(GeoItem.getId(renderData.itemStack())).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
+                boolean ignoreForReload = controller.isTriggeredAnimation("reload") && controller.getCurrentAnimationTime() > 0.42;
+                if (!ignoreForReload) {
+                    renderState.addGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET, AnimationAdjuster.HARMONICA_MAGAZINE);
+                }
+            }
         }
     }
 
@@ -78,6 +92,20 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
     public void adjustModelBonesForRender(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
         super.adjustModelBonesForRender(renderPassInfo, snapshots);
         normalizeThirdPersonGunAnimations(renderPassInfo, snapshots);
+        AnimationAdjuster adjuster = renderPassInfo.getGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET);
+        if (adjuster == null || adjuster == AnimationAdjuster.NONE) {
+            return;
+        }
+        if (adjuster == AnimationAdjuster.HARMONICA_MAGAZINE) {
+            MagazineContents magazineContents = renderPassInfo.getGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET);
+            Optional<BoneSnapshot> magazineOpt = snapshots.get("magazine");
+            if (magazineOpt.isEmpty() || magazineContents == null) {
+                return;
+            }
+            float percent = 1 - magazineContents.count() / 10f;
+            BoneSnapshot magazine = magazineOpt.get();
+            magazine.setTranslation(4 * percent, 0, 0);
+        }
     }
 
     private void normalizeThirdPersonGunAnimations(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {

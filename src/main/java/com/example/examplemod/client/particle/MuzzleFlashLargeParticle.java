@@ -34,6 +34,11 @@ public class MuzzleFlashLargeParticle extends SingleQuadParticle {
         setSpriteFromAge(sprites);
     }
 
+//    @Override
+//    public float getQuadSize(float a) {
+//        return Mth.lerp(Mth.clamp((age + a) / lifetime, 0, 1), 0.75f, 1.5f);
+//    }
+
     @Override
     protected int getLightCoords(float a) {
         return LightCoordsUtil.FULL_BRIGHT;
