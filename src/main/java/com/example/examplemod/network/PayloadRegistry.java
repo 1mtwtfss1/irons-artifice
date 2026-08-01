@@ -19,6 +19,11 @@ public final class PayloadRegistry {
                 ServerboundOpenModifierMenuPacket.STREAM_CODEC,
                 ServerboundOpenModifierMenuPacket::handle
         );
+        registrar.playToServer(
+                ServerboundReloadGunPacket.TYPE,
+                ServerboundReloadGunPacket.STREAM_CODEC,
+                ServerboundReloadGunPacket::handle
+        );
 
         registrar.playToClient(
                 ClientboundBulletTrailPacket.TYPE,

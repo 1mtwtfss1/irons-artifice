@@ -11,5 +11,11 @@ public final class Keybinds {
             KeyMapping.Category.GAMEPLAY
     );
 
+    public static final KeyMapping RELOAD = new KeyMapping(
+            "key.examplemod.reload",
+            GLFW.GLFW_KEY_R,
+            KeyMapping.Category.GAMEPLAY
+    );
+
     private Keybinds() {}
 }

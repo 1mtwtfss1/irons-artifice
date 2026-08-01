@@ -133,13 +133,7 @@ public class GunItem extends BaseGeoItem {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (!level.isClientSide() && !isReloading(stack)) {
-            ReloadResult result = GunplayManager.attemptStartReload(player, stack);
-            playReloadFeedback(level, player, result);
-        }
-
-        return InteractionResult.CONSUME;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -175,7 +169,7 @@ public class GunItem extends BaseGeoItem {
         return slotChanged;
     }
 
-    private static void playReloadFeedback(Level level, Player player, ReloadResult result) {
+    public static void playReloadFeedback(Level level, Player player, ReloadResult result) {
         switch (result) {
             case NO_AMMO -> level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.DISPENSER_FAIL, SoundSource.PLAYERS, 0.6F, 1.0F);

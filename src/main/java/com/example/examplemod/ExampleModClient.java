@@ -90,6 +90,7 @@ public class ExampleModClient {
     @SubscribeEvent
     static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(Keybinds.OPEN_MODIFIER_MENU);
+        event.register(Keybinds.RELOAD);
     }
 
     @SubscribeEvent

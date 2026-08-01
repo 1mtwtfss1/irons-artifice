@@ -8,6 +8,7 @@ import com.example.examplemod.item.GunplayManager;
 import com.example.examplemod.menu.GunContainer;
 import com.example.examplemod.network.ServerboundFireGunPacket;
 import com.example.examplemod.network.ServerboundOpenModifierMenuPacket;
+import com.example.examplemod.network.ServerboundReloadGunPacket;
 import com.example.examplemod.recoil.RecoilHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -50,6 +51,13 @@ public final class InputHandler {
         while (Keybinds.OPEN_MODIFIER_MENU.consumeClick()) {
             if (player.getMainHandItem().getItem() instanceof GunItem) {
                 ClientPacketDistributor.sendToServer(ServerboundOpenModifierMenuPacket.INSTANCE);
+            }
+        }
+
+        while (Keybinds.RELOAD.consumeClick()) {
+            if (minecraft.screen == null && player.getMainHandItem().getItem() instanceof GunItem
+                    && !GunItem.isReloading(player.getMainHandItem())) {
+                ClientPacketDistributor.sendToServer(ServerboundReloadGunPacket.INSTANCE);
             }
         }
     }
