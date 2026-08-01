@@ -13,6 +13,7 @@ import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
 import com.example.examplemod.recoil.RecoilState;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.registry.ItemRegistry;
+import com.example.examplemod.registry.ParticleRegistry;
 import com.geckolib.animatable.GeoItem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -72,14 +73,6 @@ public final class GunplayManager {
         playFireAnimation(player, stack, gunItem, profile);
     }
 
-    /**
-     * Fires a shot using the given player's held gun profile, but from an explicit origin/direction rather than the
-     * player's actual eye position/look angle. Skips ammo, cooldown, and reload checks, and doesn't apply recoil -
-     * intended for debug/testing purposes (e.g. the {@code /irons_artifice debug shoot} command), so it plays nicely
-     * with {@code /execute positioned ... rotated ... run irons_artifice debug shoot}.
-     *
-     * @return whether the player was holding a gun and a shot was fired
-     */
     public static boolean debugFire(ServerLevel level, ServerPlayer player, Vec3 origin, Vec3 direction) {
         ItemStack stack = player.getMainHandItem();
         if (!(stack.getItem() instanceof GunItem gunItem)) {
@@ -102,7 +95,7 @@ public final class GunplayManager {
             return;
         }
         Vec3 look = player.getLookAngle();
-        // todo: factor in recoil
+        // todo: factor in recoil to push direction (looking down to counter recoil makes blast push us up)
         player.push(-look.x * strength, -look.y * strength * 0.5 + 0.05, -look.z * strength);
         player.hurtMarked = true;
     }
@@ -115,7 +108,6 @@ public final class GunplayManager {
     }
 
     private static void playReloadAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
-//        double reloadSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.value(ShotComponents.FIRE_DELAY);
         ReloadState existingState = ReloadState.get(stack);
         double speed = profile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
         double offsetSeconds = 0;
@@ -139,13 +131,15 @@ public final class GunplayManager {
             bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);
         }
+        Vec3 pos = player.getEyePosition().add(player.getForward().scale(1.5));
+        level.sendParticles(ParticleRegistry.MUZZLE_FLASH_LARGE.get(), true, true, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0);
     }
 
     public static float getSpreadForEntity(ShotProfile shotProfile, Entity entity) {
         float crouchingMultiplier = 0.5f;
         float inAirMultiplier = 1.5f;
-        float penaltyPerMovement = 3f;
-        float maxMovementPenalty = 15f;
+        float penaltyPerMovement = 12f;
+        float maxMovementPenalty = 25f;
 
         float spread = (float) shotProfile.value(ShotComponents.SPREAD);
         if (entity.isCrouching()) {
@@ -156,8 +150,8 @@ public final class GunplayManager {
         }
         float entitySpeed = (float) entity.getDeltaMovement().length();
         if (entitySpeed > 0.1) {
-            float penalty = Mth.clamp(1 + penaltyPerMovement * entitySpeed, 1, maxMovementPenalty);
-            spread *= penalty;
+            float penalty = Mth.clamp(penaltyPerMovement * entitySpeed - 0.05f, 0, maxMovementPenalty);
+            spread += penalty;
         }
         return spread;
     }
