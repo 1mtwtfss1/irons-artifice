@@ -44,6 +44,7 @@ import java.util.function.Consumer;
 public class GunItem extends BaseGeoItem {
     public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(ExampleMod.id("magazine_state").toString(), MagazineContents.class);
     public static final DataTicket<AnimationAdjuster> ANIMATION_ADJUSTER_TICKET = DataTicket.create(ExampleMod.id("animation_adjuster").toString(), AnimationAdjuster.class);
+    public static final DataTicket<Double> RELOAD_PROGRESS_SECONDS_TICKET = DataTicket.create(ExampleMod.id("reload_progress_seconds").toString(), Double.class);
     public static final String TRIGGERED_ANIMATION_CONTROLLER = "Actions";
     public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
 
@@ -52,19 +53,27 @@ public class GunItem extends BaseGeoItem {
     private final ArmPoseKind armPoseKind;
     private final ReloadCueStack reloadCues;
     private final @Nullable PlayableSound equipSound;
+    private final AnimationAdjuster animationAdjuster;
 
     public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
                    ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound) {
+        this(properties, gunProfile, geoModelId, armPoseKind, reloadCues, equipSound, AnimationAdjuster.NONE);
+    }
+
+    public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
+                   ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound,
+                   AnimationAdjuster animationAdjuster) {
         super(properties.component(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.CONTAINER, true)));
         this.gunProfile = gunProfile;
         this.geoModelId = geoModelId;
         this.armPoseKind = armPoseKind;
         this.reloadCues = reloadCues;
         this.equipSound = equipSound;
+        this.animationAdjuster = animationAdjuster;
     }
 
     public GunItem(Properties properties, GunProfile gunProfile, ArmPoseKind armPoseKind) {
-        this(properties, gunProfile, null, armPoseKind, ReloadCueStack.EMPTY, null);
+        this(properties, gunProfile, null, armPoseKind, ReloadCueStack.EMPTY, null, AnimationAdjuster.NONE);
     }
 
     public GunProfile getGun() {
@@ -212,16 +221,16 @@ public class GunItem extends BaseGeoItem {
     }
 
     private PlayState gunIdleHandler(AnimationTest<GunItem> animationTest) {
-        if (animationTest.hasData(MAGAZINE_ANIMATION_TICKET) && animationTest.getData(MAGAZINE_ANIMATION_TICKET).isEmpty()) {
-            animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle_magazine_empty"));
-        } else {
-            animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
-        }
+        animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
         return PlayState.CONTINUE;
     }
 
     public PlayableSound getEquipSound() {
         return this.equipSound;
+    }
+
+    public AnimationAdjuster getAnimationAdjuster() {
+        return this.animationAdjuster;
     }
 
     private static class OffsetableAnimationController<T extends GeoAnimatable> extends AnimationController<T> {

@@ -420,33 +420,6 @@
 					}
 				}
 			}
-		},
-		"idle_magazine_empty": {
-			"loop": true,
-			"animation_length": 3.0833,
-			"bones": {
-				"hammer": {
-					"rotation": {
-						"vector": [-60, 0, 0]
-					}
-				},
-				"right_arm": {
-					"rotation": {
-						"vector": [-100, 0, 0]
-					},
-					"position": {
-						"vector": [-0.5, -1, 0]
-					}
-				},
-				"left_arm": {
-					"rotation": {
-						"vector": [-107.5, 0, 0]
-					},
-					"position": {
-						"vector": [12, -8, 6]
-					}
-				}
-			}
 		}
 	}
 }

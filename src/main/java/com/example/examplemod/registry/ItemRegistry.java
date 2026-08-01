@@ -6,6 +6,7 @@ import com.example.examplemod.gun.ArmPoseKind;
 import com.example.examplemod.gun.Guns;
 import com.example.examplemod.gun.ReloadCue;
 import com.example.examplemod.gun.ReloadCueStack;
+import com.example.examplemod.item.AnimationAdjuster;
 import com.example.examplemod.item.GunItem;
 import com.example.examplemod.modifier.ModifierItem;
 import com.example.examplemod.modifier.modifiers.AntigravityModifier;
@@ -65,7 +66,7 @@ public final class ItemRegistry {
     );
 
     public static final DeferredItem<GunItem> FLINTLOCK_PISTOL = ITEMS.registerItem("flintlock",
-            properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL, ExampleMod.id("flintlock_pistol"), ArmPoseKind.PISTOL, MUZZLELOADER_RELOAD_CUES, null),
+            properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL, ExampleMod.id("flintlock_pistol"), ArmPoseKind.PISTOL, MUZZLELOADER_RELOAD_CUES, null, AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> BLACKPOWDER_REVOLVER = ITEMS.registerItem("blackpowder_revolver",
@@ -78,7 +79,7 @@ public final class ItemRegistry {
     public static final DeferredItem<GunItem> MUSKET = ITEMS.registerItem("musket",
             properties -> new GunItem(properties.stacksTo(1), Guns.MUSKET, ExampleMod.id("musket"), ArmPoseKind.RIFLE, ReloadCueStack.of(
                     new ReloadCue(3.1f / 3.42f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.75f, 0.9f, 1.1f))
-            ), null),
+            ), null, AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> SIX_SHOOTER = ITEMS.registerItem("six_shooter",
@@ -97,14 +98,14 @@ public final class ItemRegistry {
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> ARQUEBUS = ITEMS.registerItem("arquebus",
-            properties -> new GunItem(properties.stacksTo(1), Guns.ARQUEBUS, ExampleMod.id("musket"), ArmPoseKind.RIFLE, ReloadCueStack.of(), null),
+            properties -> new GunItem(properties.stacksTo(1), Guns.ARQUEBUS, ExampleMod.id("musket"), ArmPoseKind.RIFLE, ReloadCueStack.of(), null, AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> CLOCKWORK_RIFLE = ITEMS.registerItem("clockwork_rifle",
             properties -> new GunItem(properties.stacksTo(1), Guns.CLOCKWORK_RIFLE, ExampleMod.id("clockwork_rifle"), ArmPoseKind.RIFLE, ReloadCueStack.of(
                     new ReloadCue(0.38f / 1.63f, PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_EJECT_MAG, 0.75f, 0.9f, 1.1f)),
                     new ReloadCue(1.04f / 1.63f, PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_INSERT_MAG, 0.75f, 0.9f, 1.1f))
-            ), null),
+            ), null, AnimationAdjuster.HARMONICA_MAGAZINE),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<ModifierItem> HEAVY = ITEMS.registerItem(

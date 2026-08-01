@@ -89,29 +89,6 @@
 				}
 			}
 		},
-		"idle_magazine_empty": {
-			"loop": true,
-			"bones": {
-				"right_arm": {
-					"rotation": {
-						"vector": [-100, 0, 0]
-					},
-					"position": {
-						"vector": [-0.5, -1, 0]
-					}
-				},
-				"left_arm": {
-					"rotation": {
-						"vector": [-62.498, 17.5009, 89.998],
-						"easing": "easeOutSine"
-					},
-					"position": {
-						"vector": [0, 2, -16],
-						"easing": "easeOutSine"
-					}
-				}
-			}
-		},
 		"fire": {
 			"animation_length": 0.7083,
 			"bones": {

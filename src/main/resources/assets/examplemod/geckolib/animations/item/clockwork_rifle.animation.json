@@ -87,32 +87,6 @@
 				}
 			}
 		},
-		"idle_magazine_empty": {
-			"loop": true,
-			"bones": {
-				"right_arm": {
-					"rotation": {
-						"vector": [-100, 0, 0]
-					},
-					"position": {
-						"vector": [-0.5, -1, 0]
-					}
-				},
-				"left_arm": {
-					"rotation": {
-						"vector": [-59.8741, 29.9973, 92.5606]
-					},
-					"position": {
-						"vector": [0, 1, -18]
-					}
-				},
-				"magazine": {
-					"position": {
-						"vector": [4, 0, 0]
-					}
-				}
-			}
-		},
 		"fire": {
 			"animation_length": 0.375,
 			"bones": {

@@ -4,7 +4,6 @@ import com.example.examplemod.ExampleMod;
 import com.example.examplemod.item.AnimationAdjuster;
 import com.example.examplemod.item.GunItem;
 import com.example.examplemod.item.MagazineContents;
-import com.example.examplemod.registry.ItemRegistry;
 import com.geckolib.animatable.GeoItem;
 import com.geckolib.animation.state.BoneSnapshot;
 import com.geckolib.constant.DataTickets;
@@ -77,34 +76,50 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
         super.captureDefaultRenderState(animatable, renderData, renderState, partialTick);
         if (MagazineContents.has(renderData.itemStack())) {
             renderState.addGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET, MagazineContents.get(renderData.itemStack()));
-            // todo: not hardcode
-            if (animatable == ItemRegistry.CLOCKWORK_RIFLE.get()) {
-                var controller = animatable.getAnimatableInstanceCache().getManagerForId(GeoItem.getId(renderData.itemStack())).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
-                boolean ignoreForReload = controller.isTriggeredAnimation("reload") && controller.getCurrentAnimationTime() > 0.42;
-                if (!ignoreForReload) {
-                    renderState.addGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET, AnimationAdjuster.HARMONICA_MAGAZINE);
-                }
-            }
         }
+        var controller = animatable.getAnimatableInstanceCache().getManagerForId(GeoItem.getId(renderData.itemStack())).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
+        renderState.addGeckolibData(GunItem.RELOAD_PROGRESS_SECONDS_TICKET, controller.isTriggeredAnimation("reload") ? controller.getCurrentAnimationTime() : 0.0);
+        renderState.addGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET, animatable.getAnimationAdjuster());
     }
 
     @Override
     public void adjustModelBonesForRender(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
         super.adjustModelBonesForRender(renderPassInfo, snapshots);
         normalizeThirdPersonGunAnimations(renderPassInfo, snapshots);
+        handleGunAdjustments(renderPassInfo, snapshots);
+    }
+
+    private static void handleGunAdjustments(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
         AnimationAdjuster adjuster = renderPassInfo.getGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET);
         if (adjuster == null || adjuster == AnimationAdjuster.NONE) {
             return;
         }
-        if (adjuster == AnimationAdjuster.HARMONICA_MAGAZINE) {
-            MagazineContents magazineContents = renderPassInfo.getGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET);
-            Optional<BoneSnapshot> magazineOpt = snapshots.get("magazine");
-            if (magazineOpt.isEmpty() || magazineContents == null) {
-                return;
+        // todo: this really shouldnt be an enum. requires hardcode and is non-addon-extensible
+        switch (adjuster) {
+            case HARMONICA_MAGAZINE -> {
+                double reloadProgress = renderPassInfo.getOrDefaultGeckolibData(GunItem.RELOAD_PROGRESS_SECONDS_TICKET, 0.0);
+                MagazineContents magazineContents = renderPassInfo.getGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET);
+                Optional<BoneSnapshot> magazineOpt = snapshots.get("magazine");
+                if (magazineOpt.isEmpty() || magazineContents == null) {
+                    return;
+                }
+                boolean ignoreForReload = reloadProgress > 0.42;
+                if (!ignoreForReload) {
+                    float percent = 1 - magazineContents.count() / 10f;
+                    BoneSnapshot magazine = magazineOpt.get();
+                    magazine.setTranslation(4 * percent, 0, 0);
+                }
             }
-            float percent = 1 - magazineContents.count() / 10f;
-            BoneSnapshot magazine = magazineOpt.get();
-            magazine.setTranslation(4 * percent, 0, 0);
+            case LOWER_HAMMER -> {
+                MagazineContents magazineContents = renderPassInfo.getGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET);
+                double reloadProgress = renderPassInfo.getOrDefaultGeckolibData(GunItem.RELOAD_PROGRESS_SECONDS_TICKET, 0.0);
+                Optional<BoneSnapshot> boneOpt = snapshots.get("hammer");
+                if (boneOpt.isEmpty() || magazineContents == null) {
+                    return;
+                } else if (magazineContents.isEmpty() && reloadProgress <= 0) {
+                    boneOpt.get().setRotation(0, 0, 0);
+                }
+            }
         }
     }
 
