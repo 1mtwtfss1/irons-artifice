@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "io.redspace.irons_artifice.mixin",
+  "client": [
+    "GuiCrosshairMixin",
+    "ItemInHandRendererMixin",
+    "MinecraftMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

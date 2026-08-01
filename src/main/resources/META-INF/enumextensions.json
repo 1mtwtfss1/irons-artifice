@@ -2,19 +2,19 @@
     "entries": [
         {
             "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
-            "name": "EXAMPLEMOD_PISTOL",
+            "name": "IRONS_ARTIFICE_PISTOL",
             "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
             "parameters": {
-                "class": "com/example/examplemod/client/pose/GunArmPoses",
+                "class": "io/redspace/irons_artifice/client/pose/GunArmPoses",
                 "field": "PISTOL"
             }
         },
         {
             "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
-            "name": "EXAMPLEMOD_RIFLE",
+            "name": "IRONS_ARTIFICE_RIFLE",
             "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
             "parameters": {
-                "class": "com/example/examplemod/client/pose/GunArmPoses",
+                "class": "io/redspace/irons_artifice/client/pose/GunArmPoses",
                 "field": "RIFLE"
             }
         }

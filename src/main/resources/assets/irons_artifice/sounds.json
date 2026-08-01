@@ -1,0 +1,84 @@
+{
+  "entity.bullet.impact.generic": {
+    "sounds": [
+      "irons_artifice:bullet_impact_1_ardirt",
+      "irons_artifice:bullet_impact_2_ardirt",
+      "irons_artifice:bullet_impact_3_ardirt"
+    ]
+  },
+  "entity.bullet.impact.ricochet": {
+    "sounds": [
+      "irons_artifice:ricochet_1_pcon",
+      "irons_artifice:ricochet_2_pcon",
+      "irons_artifice:ricochet_3_pcon",
+      "irons_artifice:ricochet_4_pcon"
+    ]
+  },
+  "entity.bullet.echo.generic": {
+    "sounds": [
+      "irons_artifice:gunshot_far_echo"
+    ]
+  },
+  "item.example_revolver.shoot": {
+    "sounds": [
+      "irons_artifice:revolver_shoot"
+    ]
+  },
+  "item.generic.cock_hammer": {
+    "sounds": [
+      "irons_artifice:hammer/shortbow_load_1",
+      "irons_artifice:hammer/shortbow_shoot_1",
+      "irons_artifice:hammer/shortbow_shoot_2"
+    ]
+  },
+  "item.blackpowder_revolver.reload.start": {
+    "sounds": [
+      "irons_artifice:blackpowder_revolver_reload_start"
+    ]
+  },
+  "item.blackpowder_revolver.reload.mid": {
+    "sounds": [
+      "irons_artifice:blackpowder_revolver_reload_mid"
+    ]
+  },
+  "item.blackpowder_revolver.reload.end": {
+    "sounds": [
+      "irons_artifice:blackpowder_revolver_reload_end"
+    ]
+  },
+  "item.six_shooter.equip": {
+    "sounds": [
+      "irons_artifice:six_shooter_draw_spin"
+    ]
+  },
+  "item.six_shooter.holster": {
+    "sounds": [
+      "irons_artifice:step_leather_chain_light_4"
+    ]
+  },
+  "item.blunderbuss.reload.break_action_open": {
+    "sounds": [
+      "irons_artifice:blunderbuss_reload_break_action_open"
+    ]
+  },
+  "item.blunderbuss.reload.break_action_close": {
+    "sounds": [
+      "irons_artifice:blunderbuss_reload_break_action_close"
+    ]
+  },
+  "item.blunderbuss.reload.mid": {
+    "sounds": [
+      "irons_artifice:blunderbuss_reload_mid"
+    ]
+  },
+  "item.clockwork_rifle.reload.insert_mag": {
+    "sounds": [
+      "irons_artifice:clockwork_rifle_insert_mag"
+    ]
+  },
+  "item.clockwork_rifle.reload.eject_mag": {
+    "sounds": [
+      "irons_artifice:clockwork_rifle_eject_mag"
+    ]
+  }
+}

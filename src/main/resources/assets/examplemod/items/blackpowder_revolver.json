@@ -1,9 +1,0 @@
-{
-  "model": {
-    "type": "minecraft:special",
-    "base": "examplemod:item/example_gun_display",
-    "model": {
-      "type": "geckolib:geckolib"
-    }
-  }
-}
