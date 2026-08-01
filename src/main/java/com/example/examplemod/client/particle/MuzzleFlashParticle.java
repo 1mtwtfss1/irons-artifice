@@ -7,14 +7,17 @@ import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import org.jspecify.annotations.Nullable;
 
-public class MuzzleFlashLargeParticle extends SingleQuadParticle {
+public class MuzzleFlashParticle extends SingleQuadParticle {
     final SpriteSet sprites;
 
-    public MuzzleFlashLargeParticle(ClientLevel level, double x, double y, double z,
-                                    double xa, double ya, double za, SpriteSet sprites) {
+    final boolean mirrorHorizontal, mirrorVertical;
+
+    public MuzzleFlashParticle(ClientLevel level, double x, double y, double z,
+                               double xa, double ya, double za, SpriteSet sprites) {
         super(level, x, y, z, xa, ya, za, sprites.first());
         setSpriteFromAge(sprites);
         this.sprites = sprites;
@@ -26,6 +29,30 @@ public class MuzzleFlashLargeParticle extends SingleQuadParticle {
         this.rCol = 1;
         this.gCol = 0.77f;
         this.bCol = 0f;
+        this.mirrorHorizontal = level.getRandom().nextBoolean();
+        this.mirrorVertical = level.getRandom().nextBoolean();
+        this.roll = level.getRandom().nextInt(4) * Mth.HALF_PI; // 90 degrees
+        this.oRoll = roll;
+    }
+
+    @Override
+    protected float getU0() {
+        return mirrorHorizontal ? super.getU1() : super.getU0();
+    }
+
+    @Override
+    protected float getU1() {
+        return mirrorHorizontal ? super.getU0() : super.getU1();
+    }
+
+    @Override
+    protected float getV0() {
+        return mirrorVertical ? super.getV1() : super.getV0();
+    }
+
+    @Override
+    protected float getV1() {
+        return mirrorVertical ? super.getV0() : super.getV1();
     }
 
     @Override
@@ -60,7 +87,7 @@ public class MuzzleFlashLargeParticle extends SingleQuadParticle {
         public @Nullable Particle createParticle(SimpleParticleType options, ClientLevel level,
                                                  double x, double y, double z,
                                                  double xa, double ya, double za, RandomSource random) {
-            return new MuzzleFlashLargeParticle(level, x, y, z, xa, ya, za, this.sprite);
+            return new MuzzleFlashParticle(level, x, y, z, xa, ya, za, this.sprite);
         }
     }
 }

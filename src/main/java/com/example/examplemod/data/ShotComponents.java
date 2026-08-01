@@ -4,6 +4,7 @@ import com.example.examplemod.ExampleMod;
 import com.example.examplemod.client.GunShotSoundSettings;
 import com.example.examplemod.gun.GunShotSoundStack;
 import com.example.examplemod.gun.ImpactSoundStack;
+import com.example.examplemod.gun.MuzzleFlashSettings;
 import com.example.examplemod.gun.OnHitEffects;
 import com.example.examplemod.recoil.RecoilProfile;
 import com.example.examplemod.registry.SoundRegistry;
@@ -43,5 +44,6 @@ public final class ShotComponents {
             Optional.of(PlayableSound.of(SoundRegistry.BULLET_IMPACT_GENERIC, 2f, .8f, 1.2f)), Optional.empty()
     ));
     public static final ComponentType<ParticleStack> PARTICLE_TRAIL = new ComponentType<>(ExampleMod.id("particle_trail"), ParticleStack::new);
+    public static final ComponentType<MuzzleFlashSettings> MUZZLE_FLASH = new ComponentType<>(ExampleMod.id("muzzle_flash"), () -> MuzzleFlashSettings.DEFAULT);
 
 }

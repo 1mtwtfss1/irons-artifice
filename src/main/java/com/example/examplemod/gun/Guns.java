@@ -41,6 +41,7 @@ public final class Guns {
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.25));
                 map.set(ShotComponents.SPREAD, Value.of(3));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
+                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(1.5f, MuzzleFlashType.LARGE));
                 return map;
             },
             1,
@@ -59,6 +60,7 @@ public final class Guns {
                 map.set(ShotComponents.GUNSHOT_SOUND,
                         new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_BLAST, 0.75f, 0.85f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
                 );
+                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(1.5f, MuzzleFlashType.LARGE));
                 return map;
             },
             6,
@@ -93,6 +95,7 @@ public final class Guns {
                 map.set(ShotComponents.GUNSHOT_SOUND,
                         new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.9f, 1.1f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
                 );
+                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2.5f, MuzzleFlashType.LARGE));
                 return map;
             },
             1,
@@ -113,6 +116,7 @@ public final class Guns {
                 map.set(ShotComponents.GUNSHOT_SOUND,
                         new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.9f, 1.1f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
                 );
+                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.LARGE));
                 return map;
             },
             2,
@@ -129,6 +133,7 @@ public final class Guns {
                 map.set(ShotComponents.SPREAD, Value.of(1));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
                 map.set(ShotComponents.DAMAGE, Value.of(14));
+                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2.5f, MuzzleFlashType.LARGE));
                 return map;
             },
             1,
@@ -145,6 +150,7 @@ public final class Guns {
                 map.set(ShotComponents.FIRE_DELAY, Value.of(4));
                 map.set(ShotComponents.SPREAD, Value.of(2));
                 map.set(ShotComponents.DAMAGE, Value.of(5));
+                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.TRIANGLE));
                 return map;
             },
             10,

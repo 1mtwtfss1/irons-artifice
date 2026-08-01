@@ -10,6 +10,7 @@ import com.example.examplemod.network.ClientboundGunAnimationPacket;
 import com.example.examplemod.data.PlayableSound;
 import com.example.examplemod.network.ClientboundGunshotSoundPacket;
 import com.example.examplemod.network.ClientboundLocalSoundPacket;
+import com.example.examplemod.network.ClientboundMuzzleFlashPacket;
 import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
 import com.example.examplemod.registry.ParticleRegistry;
 import com.example.examplemod.utils.Utils;
@@ -91,6 +92,24 @@ public final class ClientHelper {
             motion = motion.scale(particleSpeed * 2);
             level.addParticle(new BlockParticleOption(ParticleRegistry.BLOCK_IMPACT.get(), blockState), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         }
+    }
+
+    public static void handleMuzzleFlash(ClientboundMuzzleFlashPacket msg) {
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+        Vec3 offset = msg.offset();
+        if (msg.entityId() == Minecraft.getInstance().player.getId() && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+            double length = offset.length();
+            offset = offset.scale(1 / length).scale(Math.max(1.25, 0.75 * length));
+            // fixme: main hand / right hand hardcode
+            offset = offset.add(Minecraft.getInstance().player.getForward().cross(new Vec3(0, 1, 0)).scale(0.25));
+        }
+        Vec3 pos = msg.position().add(offset);
+        Vec3 random = new Vec3(level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5).scale(2).scale(0.02);
+        Vec3 motion = msg.entityMotion().scale(0.5).add(random);
+        level.addAlwaysVisibleParticle(msg.particle(), true, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
     }
 
     public static void handleGunAnimationPacket(ClientboundGunAnimationPacket msg) {

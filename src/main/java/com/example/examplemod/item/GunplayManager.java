@@ -5,15 +5,17 @@ import com.example.examplemod.data.ShotComponentMap;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.entity.Bullet;
 import com.example.examplemod.gun.GunProfile;
+import com.example.examplemod.gun.MuzzleFlashSettings;
+import com.example.examplemod.gun.MuzzleFlashType;
 import com.example.examplemod.gun.ShotProfile;
 import com.example.examplemod.menu.GunContainer;
 import com.example.examplemod.modifier.ModifierItem;
 import com.example.examplemod.network.ClientboundGunAnimationPacket;
+import com.example.examplemod.network.ClientboundMuzzleFlashPacket;
 import com.example.examplemod.network.ClientboundReloadCrosshairAnimationPacket;
 import com.example.examplemod.recoil.RecoilState;
 import com.example.examplemod.registry.EntityRegistry;
 import com.example.examplemod.registry.ItemRegistry;
-import com.example.examplemod.registry.ParticleRegistry;
 import com.geckolib.animatable.GeoItem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -131,9 +133,24 @@ public final class GunplayManager {
             bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);
         }
-        Vec3 right = new Vec3(0, 0, 0);//player.getForward().cross(new Vec3(0, 1, 0));
-        Vec3 pos = player.getEyePosition().add(player.getForward().scale(1.5)).add(right.scale(0.5));
-        level.sendParticles(ParticleRegistry.MUZZLE_FLASH_LARGE.get(), true, true, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0);
+        spawnMuzzleFlash(level, player, direction, profile);
+    }
+
+    private static void spawnMuzzleFlash(ServerLevel level, ServerPlayer player, Vec3 direction, ShotProfile profile) {
+        MuzzleFlashSettings settings = profile.get(ShotComponents.MUZZLE_FLASH);
+        if (settings.types().isEmpty()) {
+            return;
+        }
+        MuzzleFlashType type = settings.pick(level.getRandom());
+        Vec3 position = player.getEyePosition();
+        Vec3 offset = direction.normalize().scale(settings.muzzleDistanceScalar());
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new ClientboundMuzzleFlashPacket(
+                type.particle(),
+                player.getId(),
+                player.getDeltaMovement(),
+                position,
+                offset
+        ));
     }
 
     public static float getSpreadForEntity(ShotProfile shotProfile, Entity entity) {

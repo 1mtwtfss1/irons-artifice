@@ -50,7 +50,9 @@ public final class ParticleRegistry {
             PARTICLE_TYPES.register("bullet_impact", () -> new BulletTrailParticleType(false));
 
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MUZZLE_FLASH_LARGE =
-            PARTICLE_TYPES.register("muzzle_flash_large", () -> new SimpleParticleType(false) {});
+            PARTICLE_TYPES.register("muzzle_flash_large", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MUZZLE_FLASH_TRIANGLE =
+            PARTICLE_TYPES.register("muzzle_flash_triangle", () -> new SimpleParticleType(false));
 
     public static void register(IEventBus modEventBus) {
         PARTICLE_TYPES.register(modEventBus);
