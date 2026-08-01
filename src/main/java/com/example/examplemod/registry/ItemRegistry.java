@@ -89,7 +89,12 @@ public final class ItemRegistry {
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> BLUNDERBUSS = ITEMS.registerItem("blunderbuss",
-            properties -> new GunItem(properties.stacksTo(1), Guns.BLUNDERBUSS, ExampleMod.id("blunderbuss"), ArmPoseKind.RIFLE, ReloadCueStack.of(), null),
+            properties -> new GunItem(properties.stacksTo(1), Guns.BLUNDERBUSS, ExampleMod.id("blunderbuss"), ArmPoseKind.RIFLE, ReloadCueStack.of(
+                    new ReloadCue(0.25f / 1.92f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_OPEN, 0.75f, 0.95f, 1.05f)),
+                    new ReloadCue(0.90f / 1.92f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_LOAD, 0.75f, 0.95f, 1.05f)),
+                    new ReloadCue(1.27f / 1.92f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_CLOSE, 0.75f, 0.95f, 1.05f))
+
+                    ), null),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> ARQUEBUS = ITEMS.registerItem("arquebus",

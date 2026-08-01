@@ -55,5 +55,20 @@
     "sounds": [
       "examplemod:step_leather_chain_light_4"
     ]
+  },
+  "item.blunderbuss.reload.break_action_open": {
+    "sounds": [
+      "examplemod:blunderbuss_reload_break_action_open"
+    ]
+  },
+  "item.blunderbuss.reload.break_action_close": {
+    "sounds": [
+      "examplemod:blunderbuss_reload_break_action_close"
+    ]
+  },
+  "item.blunderbuss.reload.mid": {
+    "sounds": [
+      "examplemod:blunderbuss_reload_mid"
+    ]
   }
 }

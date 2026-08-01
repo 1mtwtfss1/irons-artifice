@@ -131,7 +131,8 @@ public final class GunplayManager {
             bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);
         }
-        Vec3 pos = player.getEyePosition().add(player.getForward().scale(1.5));
+        Vec3 right = new Vec3(0, 0, 0);//player.getForward().cross(new Vec3(0, 1, 0));
+        Vec3 pos = player.getEyePosition().add(player.getForward().scale(1.5)).add(right.scale(0.5));
         level.sendParticles(ParticleRegistry.MUZZLE_FLASH_LARGE.get(), true, true, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0);
     }
 

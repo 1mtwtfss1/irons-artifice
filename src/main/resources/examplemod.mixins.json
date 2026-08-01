@@ -4,6 +4,7 @@
   "package": "com.example.examplemod.mixin",
   "client": [
     "GuiCrosshairMixin",
+    "ItemInHandRendererMixin",
     "MinecraftMixin"
   ],
   "injectors": {
