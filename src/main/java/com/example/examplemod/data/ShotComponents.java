@@ -32,6 +32,7 @@ public final class ShotComponents {
     public static final ComponentType<Value> RICOCHET = new ComponentType<>(ExampleMod.id("ricochet"), () -> Value.of(0));
     public static final ComponentType<OnHitEffects> ON_HIT = new ComponentType<>(ExampleMod.id("on_hit"), OnHitEffects::new);
     public static final ComponentType<Boolean> BREAKS_BLOCKS = new ComponentType<>(ExampleMod.id("breaks_blocks"), () -> false);
+    public static final ComponentType<Value> SEEKING = new ComponentType<>(ExampleMod.id("seeking"), () -> Value.of(0));
 
     // Effects
     public static final ComponentType<RecoilProfile> CAMERA_RECOIL = new ComponentType<>(ExampleMod.id("camera_recoil"), () -> RecoilProfile.simple(10, 0));

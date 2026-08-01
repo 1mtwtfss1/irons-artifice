@@ -1,5 +1,6 @@
 package com.example.examplemod.entity;
 
+import com.example.examplemod.ExampleMod;
 import com.example.examplemod.data.ShotComponents;
 import com.example.examplemod.gun.BlockDamageManager;
 import com.example.examplemod.gun.OnHitEffect;
@@ -116,14 +117,110 @@ public class Bullet extends Projectile {
                 }
             }
         }
-
         return hitEntity == null ? null : new EntityHitResult(hitEntity, nearestLocation.get());
+    }
+
+    private static final double MIN_SEEK_SPEED = 2.0;
+    private static final double SEEK_LOOK_AHEAD = 40.0;
+    private static final double SEEK_FORWARD_DOT = 0.2;
+
+    protected void handleSeeking() {
+        if (this.profile == null || level().isClientSide()) {
+            return;
+        }
+        double seeking = profile.value(ShotComponents.SEEKING);
+        if (seeking <= 0) {
+            return;
+        }
+        Vec3 motion = getDeltaMovement();
+        double speed = motion.length();
+        // At low speed look-ahead collapses and gravity/drag dominate; seeking then spikes into the ground.
+        if (speed < MIN_SEEK_SPEED) {
+            return;
+        }
+
+        float strength = Mth.clamp((float) seeking, 0.0F, 1.0F);
+        double range = 5;
+        Vec3 start = position();
+        Vec3 direction = motion.scale(1.0 / speed);
+        Vec3 end = level().clip(new ClipContext(
+                start,
+                start.add(direction.scale(SEEK_LOOK_AHEAD)),
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                CollisionContext.empty()
+        )).getLocation();
+        AABB targetSearchArea = new AABB(start, end).inflate(range);
+
+        Entity closest = null;
+        double closestDistSqr = Double.MAX_VALUE;
+        for (Entity entity : level().getEntities(this, targetSearchArea, this::canHitEntity)) {
+            Vec3 targetPos = entity.getBoundingBox().getCenter();
+            Vec3 toTarget = targetPos.subtract(start);
+            double toTargetLengthSqr = toTarget.lengthSqr();
+            if (toTargetLengthSqr < 1.0E-6) {
+                continue;
+            }
+            // Only home toward targets roughly in front of the bullet.
+            if (toTarget.normalize().dot(direction) < SEEK_FORWARD_DOT) {
+                continue;
+            }
+            if (distanceToSegmentSqr(targetPos, start, end) > range * range) {
+                continue;
+            }
+            if (toTargetLengthSqr < closestDistSqr) {
+                closest = entity;
+                closestDistSqr = toTargetLengthSqr;
+            }
+        }
+        if (closest == null) {
+            return;
+        }
+        setDeltaMovement(homeTowards(closest.getBoundingBox().getCenter(), strength));
+    }
+
+    private static double distanceToSegmentSqr(Vec3 point, Vec3 from, Vec3 to) {
+        Vec3 segment = to.subtract(from);
+        double lengthSqr = segment.lengthSqr();
+        if (lengthSqr < 1.0E-6) {
+            return point.distanceToSqr(from);
+        }
+        double t = Mth.clamp(point.subtract(from).dot(segment) / lengthSqr, 0.0, 1.0);
+        return point.distanceToSqr(from.add(segment.scale(t)));
+    }
+
+    protected Vec3 homeTowards(Vec3 target, float strength) {
+        double speed = this.getDeltaMovement().length();
+        Vec3 currentMotion = this.getDeltaMovement().normalize();
+        Vec3 wantedMotion = target.subtract(this.position()).normalize();
+        if (wantedMotion.lengthSqr() < 1.0E-6) {
+            return this.getDeltaMovement();
+        }
+        return slerp(strength, currentMotion, wantedMotion).scale(speed);
+    }
+
+    public static Vec3 slerp(double t, Vec3 from, Vec3 to) {
+        t = Mth.clamp(t, 0.0, 1.0);
+        from = from.normalize();
+        to = to.normalize();
+        double dot = Mth.clamp(from.dot(to), -1.0, 1.0);
+        if (dot > 0.9995) {
+            return from.lerp(to, t).normalize();
+        }
+        double theta = Math.acos(dot) * t;
+        Vec3 relative = to.subtract(from.scale(dot));
+        if (relative.lengthSqr() < 1.0E-6) {
+            return from;
+        }
+        relative = relative.normalize();
+        return from.scale(Math.cos(theta)).add(relative.scale(Math.sin(theta)));
     }
 
     @Override
     public void tick() {
         super.tick();
 
+        handleSeeking();
         Vec3 delta = getDeltaMovement();
         Vec3 position = position();
         Vec3 destination = position.add(delta);
@@ -151,6 +248,9 @@ public class Bullet extends Projectile {
                 discard();
                 break;
             }
+        }
+        if(i == 0){
+            ExampleMod.LOGGER.warn("Bullet ran to max iterations! Did something break, or did you just shoot 64 things?");
         }
 
         if (level() instanceof ServerLevel serverLevel && profile != null) {

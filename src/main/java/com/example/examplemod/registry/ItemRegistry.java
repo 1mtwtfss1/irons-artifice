@@ -19,6 +19,7 @@ import com.example.examplemod.modifier.modifiers.HeavyModifier;
 import com.example.examplemod.modifier.modifiers.LubricatedMechanismModifier;
 import com.example.examplemod.modifier.modifiers.OverchargedPowderModifier;
 import com.example.examplemod.modifier.modifiers.ScattershotModifier;
+import com.example.examplemod.modifier.modifiers.SeekingModifier;
 import com.example.examplemod.modifier.modifiers.SteelCoreModifier;
 import com.example.examplemod.modifier.modifiers.TrickshotModifier;
 import net.minecraft.core.component.DataComponents;
@@ -132,6 +133,8 @@ public final class ItemRegistry {
             "lubricated_mechanism_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
     public static final DeferredItem<ModifierItem> ANTIGRAVITY_MODIFIER = ITEMS.registerItem(
             "antigravity_modifier", properties -> new ModifierItem(properties.stacksTo(1), new AntigravityModifier()));
+    public static final DeferredItem<ModifierItem> SEEKING = ITEMS.registerItem(
+            "seeking_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SeekingModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
 }
