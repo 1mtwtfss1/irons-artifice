@@ -2,6 +2,7 @@ package io.redspace.irons_artifice;
 
 import io.redspace.irons_artifice.client.Keybinds;
 import io.redspace.irons_artifice.client.gun.GunInHandRenderer;
+import io.redspace.irons_artifice.client.hud.AmmoCountHudOverlay;
 import io.redspace.irons_artifice.client.particle.BlockDustParticle;
 import io.redspace.irons_artifice.client.particle.BulletImpactParticle;
 import io.redspace.irons_artifice.client.particle.BulletTrailParticle;
@@ -33,9 +34,11 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
@@ -52,6 +55,11 @@ import java.util.function.Supplier;
 public class IronsArtificeClient {
     public IronsArtificeClient(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+    }
+
+    @SubscribeEvent
+    public static void registerGuiLayers(RegisterGuiLayersEvent event) {
+        event.registerAbove(VanillaGuiLayers.HOTBAR, IronsArtifice.id("ammo_hud"), AmmoCountHudOverlay::render);
     }
 
     @SubscribeEvent

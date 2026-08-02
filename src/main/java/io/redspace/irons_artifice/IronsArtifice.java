@@ -1,5 +1,6 @@
 package io.redspace.irons_artifice;
 
+import io.redspace.irons_artifice.config.ClientConfig;
 import io.redspace.irons_artifice.network.PayloadRegistry;
 import io.redspace.irons_artifice.registry.DataAttachmentRegistry;
 import io.redspace.irons_artifice.registry.DataComponentRegistry;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class IronsArtifice {
         modEventBus.addListener(PayloadRegistry::register);
         CREATIVE_MODE_TABS.register(modEventBus);
 
-//        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
     }
 
     public static Identifier id(String path) {

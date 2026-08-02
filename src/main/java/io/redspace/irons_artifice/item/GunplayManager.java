@@ -239,7 +239,7 @@ public final class GunplayManager {
         return ReloadResult.STARTING_RELOAD;
     }
 
-    private static int countBullets(Player player) {
+    public static int countBullets(Player player) {
         Inventory inventory = player.getInventory();
         int total = 0;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
