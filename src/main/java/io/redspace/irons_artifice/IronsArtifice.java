@@ -32,7 +32,7 @@ public class IronsArtifice {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = CREATIVE_MODE_TABS.register("main", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.irons_artifice"))
             .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> ItemRegistry.GUN1.get().getDefaultInstance())
+            .icon(() -> ItemRegistry.FLINTLOCK_PISTOL.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 for (var i : ItemRegistry.ITEMS.getEntries()) {
                     output.accept(i.get());

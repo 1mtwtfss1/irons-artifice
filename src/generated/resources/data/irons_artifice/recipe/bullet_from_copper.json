@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "#c:ingots/copper",
+    "^": "irons_artifice:blackpowder"
+  },
+  "pattern": [
+    "#",
+    "^"
+  ],
+  "result": {
+    "count": 4,
+    "id": "irons_artifice:bullet"
+  }
+}

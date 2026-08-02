@@ -212,7 +212,6 @@ public final class AmmoCountHudOverlay {
             if (previousAmmoCount > 0 && loaded == 0 && ClientConfig.FLASH_ENABLED.get()) {
                 flashDuration = ClientConfig.FLASH_DURATION_TICKS.get();
                 flashTicksRemaining = flashDuration;
-                flashBaseScale = ClientConfig.LOADED_SCALE.get().floatValue();
             }
             previousAmmoCount = loaded;
         } else {

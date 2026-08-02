@@ -49,23 +49,6 @@ public final class ItemRegistry {
             new ReloadCue(0.90f, PlayableSound.of(SoundEvents.CROSSBOW_LOADING_END, 0.8f, 1.0f))
     );
 
-    public static final DeferredItem<GunItem> GUN = ITEMS.registerItem("gun",
-            properties -> new GunItem(properties.stacksTo(1), Guns.BASIC, IronsArtifice.id("example_revolver"), ArmPoseKind.PISTOL, REVOLVER_RELOAD_CUES, null),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-    );
-    public static final DeferredItem<GunItem> GUN1 = ITEMS.registerItem("gunbang",
-            properties -> new GunItem(properties.stacksTo(1), Guns.HAND_CANNON, ArmPoseKind.PISTOL),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-    );
-    public static final DeferredItem<GunItem> GUN2 = ITEMS.registerItem("shotgun",
-            properties -> new GunItem(properties.stacksTo(1), Guns.SHOTGUN, ArmPoseKind.PISTOL),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-    );
-    public static final DeferredItem<GunItem> GUN3 = ITEMS.registerItem("gunbip",
-            properties -> new GunItem(properties.stacksTo(1), Guns.HIGH_CAP, ArmPoseKind.RIFLE),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-    );
-
     public static final DeferredItem<GunItem> FLINTLOCK_PISTOL = ITEMS.registerItem("flintlock",
             properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL, IronsArtifice.id("flintlock_pistol"), ArmPoseKind.PISTOL, MUZZLELOADER_RELOAD_CUES, null, AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
@@ -117,7 +100,7 @@ public final class ItemRegistry {
             "trickshot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new TrickshotModifier()));
     public static final DeferredItem<ModifierItem> FIRE = ITEMS.registerItem(
             "fire_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FireModifier()));
-    public static final DeferredItem<ModifierItem> GRAVITY = ITEMS.registerItem(
+    public static final DeferredItem<ModifierItem> GRAVITY_WELL = ITEMS.registerItem(
             "gravity_well_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GravityWellModifier()));
     public static final DeferredItem<ModifierItem> BREACH = ITEMS.registerItem(
             "breach_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BreachModifier()));
@@ -137,4 +120,5 @@ public final class ItemRegistry {
             "seeking_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SeekingModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
+    public static final DeferredItem<Item> BLACKPOWDER = ITEMS.registerSimpleItem("blackpowder");
 }
