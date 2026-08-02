@@ -7,10 +7,11 @@ import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
 import io.redspace.irons_artifice.item.ReloadState;
 import io.redspace.irons_artifice.menu.GunContainer;
+import io.redspace.irons_artifice.network.ClientboundEquipSoundPacket;
 import io.redspace.irons_artifice.network.ClientboundGunAnimationPacket;
-import io.redspace.irons_artifice.network.ClientboundLocalSoundPacket;
 import com.geckolib.animatable.GeoItem;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -62,8 +63,8 @@ public class ServerEvents {
                 equippedStack == entity.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
                 "equip", 1.0, 0);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, packet);
-        if (gunItem.getEquipSound() != null) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new ClientboundLocalSoundPacket(SoundSource.PLAYERS, gunItem.getEquipSound()));
+        if (gunItem.getEquipSound() != null && entity instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new ClientboundEquipSoundPacket(SoundSource.PLAYERS, gunItem));
         }
     }
 

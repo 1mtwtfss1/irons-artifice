@@ -197,29 +197,15 @@
 					]
 				},
 				{
-					"name": "hammer",
+					"name": "switch",
 					"parent": "gun",
 					"pivot": [0, 3.75, 0.75],
 					"cubes": [
 						{
-							"origin": [-0.5, 4.5, 0],
-							"size": [1, 0, 1.75],
-							"pivot": [0, 5.5, -0.25],
-							"rotation": [22.5, 0, 0],
-							"uv": {
-								"north": {"uv": [15, 20], "uv_size": [1, 0]},
-								"east": {"uv": [21, 18], "uv_size": [2, 0]},
-								"south": {"uv": [22, 7], "uv_size": [1, 0]},
-								"west": {"uv": [26, 20], "uv_size": [2, 0]},
-								"up": {"uv": [29, 23], "uv_size": [1, 2]},
-								"down": {"uv": [29, 28], "uv_size": [1, -2]}
-							}
-						},
-						{
-							"origin": [-0.5, 5.5, 0],
+							"origin": [-0.5, 4, 0.5],
 							"size": [1, 0, 2],
-							"pivot": [0, 5.5, 0],
-							"rotation": [-67.5, 0, 0],
+							"pivot": [0, 4, 0.5],
+							"rotation": [0, 0, -90],
 							"uv": {
 								"north": {"uv": [15, 20], "uv_size": [1, 0]},
 								"east": {"uv": [21, 18], "uv_size": [2, 0]},

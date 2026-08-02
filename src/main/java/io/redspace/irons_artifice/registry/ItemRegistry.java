@@ -78,7 +78,7 @@ public final class ItemRegistry {
                     new ReloadCue(0.25f / 1.5f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_OPEN, 0.75f, 0.95f, 1.05f)),
                     new ReloadCue(0.90f / 1.5f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_LOAD, 0.75f, 0.95f, 1.05f)),
                     new ReloadCue(1.27f / 1.5f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_CLOSE, 0.75f, 0.95f, 1.05f))
-                    ), null),
+            ), PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_CLOSE, 0.75f, 0.9f,1.1f)),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> ARQUEBUS = ITEMS.registerItem("arquebus",

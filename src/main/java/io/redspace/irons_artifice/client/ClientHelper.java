@@ -1,20 +1,21 @@
 package io.redspace.irons_artifice.client;
 
+import com.geckolib.animation.AnimationController;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
 import io.redspace.irons_artifice.client.particle.ITrailParticle;
+import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.network.ClientboundBulletImpactPacket;
 import io.redspace.irons_artifice.network.ClientboundBulletTrailPacket;
+import io.redspace.irons_artifice.network.ClientboundEquipSoundPacket;
 import io.redspace.irons_artifice.network.ClientboundGunAnimationPacket;
-import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.network.ClientboundGunshotSoundPacket;
 import io.redspace.irons_artifice.network.ClientboundLocalSoundPacket;
 import io.redspace.irons_artifice.network.ClientboundMuzzleFlashPacket;
 import io.redspace.irons_artifice.network.ClientboundReloadCrosshairAnimationPacket;
 import io.redspace.irons_artifice.registry.ParticleRegistry;
 import io.redspace.irons_artifice.utils.Utils;
-import com.geckolib.animation.AnimationController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -177,5 +178,26 @@ public final class ClientHelper {
                 0.0,
                 true
         ));
+    }
+
+    public static void handleEquipSound(ClientboundEquipSoundPacket payload) {
+        if (!(payload.item() instanceof GunItem gunItem)) {
+            return;
+        }
+        PlayableSound sound = gunItem.getEquipSound();
+        if (sound == null) {
+            return;
+        }
+        int delay = 2;
+        RandomSource random = SoundInstance.createUnseededRandom();
+        Minecraft.getInstance().getSoundManager().playDelayed(new EquipSoundInstance(
+                sound.soundEventHolder().value(),
+                payload.source(),
+                sound.volume(),
+                sound.samplePitch(random),
+                random,
+                payload.item(),
+                delay
+        ), delay);
     }
 }

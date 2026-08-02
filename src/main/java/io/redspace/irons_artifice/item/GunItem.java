@@ -110,7 +110,7 @@ public class GunItem extends BaseGeoItem {
     }
 
     public static void startReload(ItemStack stack, int ticks, double speed) {
-        ReloadState.set(stack, new ReloadState(0, (int) (ticks / speed), 0, (float) speed));
+        ReloadState.set(stack, new ReloadState(0, (int) (ticks / speed), 0, (float) (speed + 2)/3F));
     }
 
     public static boolean isReloading(ItemStack stack) {
