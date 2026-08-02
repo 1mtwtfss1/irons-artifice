@@ -249,7 +249,7 @@ public class Bullet extends Projectile {
                 break;
             }
         }
-        if(i == 0){
+        if (i == 0) {
             IronsArtifice.LOGGER.warn("Bullet ran to max iterations! Did something break, or did you just shoot 64 things?");
         }
 
@@ -257,8 +257,13 @@ public class Bullet extends Projectile {
             Vec3 particleStart = position;
             Vec3 particleEnd = destination;
             if (tickCount < TRAIL_COMPENSATION_TICKS) {
-                particleStart = position.subtract(0, Mth.lerp(this.tickCount / (float) TRAIL_COMPENSATION_TICKS, 0.25, 0), 0);
-                particleEnd = destination.subtract(0, Mth.lerp((this.tickCount + 1) / (float) TRAIL_COMPENSATION_TICKS, 0.25, 0), 0);
+                Vec3 right = particleEnd.subtract(particleStart).cross(new Vec3(0, 1, 0)).normalize();
+                Vec3 offset = new Vec3(0, -0.25, 0).add(right.scale(0.25));
+                particleStart = position.add(offset.lerp(Vec3.ZERO, this.tickCount / (float) TRAIL_COMPENSATION_TICKS));
+                if (tickCount == 1) {
+                    particleStart = particleStart.add(delta.scale(0.1));
+                }
+                particleEnd = destination.add(offset.lerp(Vec3.ZERO, (this.tickCount + 1) / (float) TRAIL_COMPENSATION_TICKS));
             }
             emitTrail(serverLevel, particleStart, particleEnd);
         }

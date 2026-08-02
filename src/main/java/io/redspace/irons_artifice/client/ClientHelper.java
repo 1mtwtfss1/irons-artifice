@@ -104,7 +104,7 @@ public final class ClientHelper {
             double length = offset.length();
             offset = offset.scale(1 / length).scale(Math.max(1.25, 0.75 * length));
             // fixme: main hand / right hand hardcode
-            offset = offset.add(Minecraft.getInstance().player.getForward().cross(new Vec3(0, 1, 0)).scale(0.25));
+            offset = offset.add(Minecraft.getInstance().player.getForward().cross(new Vec3(0, 1, 0)).scale(0.5));
         }
         Vec3 pos = msg.position().add(offset);
         Vec3 random = new Vec3(level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5).scale(2).scale(0.02);
