@@ -41,6 +41,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class GunItem extends BaseGeoItem {
     public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(IronsArtifice.id("magazine_state").toString(), MagazineContents.class);
@@ -110,7 +111,7 @@ public class GunItem extends BaseGeoItem {
     }
 
     public static void startReload(ItemStack stack, int ticks, double speed) {
-        ReloadState.set(stack, new ReloadState(0, (int) (ticks / speed), 0, (float) (speed + 2)/3F));
+        ReloadState.set(stack, new ReloadState(0, (int) (ticks / speed), 0, (float) (speed + 2) / 3F));
     }
 
     public static boolean isReloading(ItemStack stack) {
@@ -145,6 +146,7 @@ public class GunItem extends BaseGeoItem {
     public void appendHoverText(@NonNull ItemStack itemStack, @NonNull TooltipContext context, @NonNull TooltipDisplay display, @NonNull Consumer<Component> builder, @NonNull TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, context, display, builder, tooltipFlag);
         Consumer<Component> statBuilder = (component) -> builder.accept(Component.literal(" ").append(component).withStyle(ChatFormatting.DARK_GREEN));
+        Function<String, Component> highlightText = s -> Component.literal(s).withStyle(ChatFormatting.GREEN);
         ShotProfile shotProfile = GunplayManager.compose(this.gunProfile, new GunContainer(itemStack), itemStack);
         String damage = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(shotProfile.value(ShotComponents.DAMAGE));
         int bulletCount = (int) shotProfile.value(ShotComponents.PROJECTILE_COUNT);
@@ -152,19 +154,19 @@ public class GunItem extends BaseGeoItem {
         String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20 / shotProfile.value(ShotComponents.FIRE_DELAY));
         String reloadTime = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(gunProfile.reloadTimeTicks() / 20f / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (bulletCount > 1) {
-            statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage_per_bullet", damage, Component.literal(String.valueOf(bulletCount)).withStyle(ChatFormatting.YELLOW)));
+            statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage_per_bullet", highlightText.apply(damage), Component.literal(String.valueOf(bulletCount)).withStyle(ChatFormatting.YELLOW)));
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.bullet_count", bulletCount).withStyle(ChatFormatting.YELLOW));
         } else {
-            statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage", damage));
+            statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage", highlightText.apply(damage)));
         }
         if (bulletSpeedPercent != 100) {
-            statBuilder.accept(Component.translatable("irons_artifice.tooltip.bullet_speed_percent", bulletSpeedPercent));
+            statBuilder.accept(Component.translatable("irons_artifice.tooltip.bullet_speed_percent", highlightText.apply(bulletSpeedPercent+"%")));
         }
         if (gunProfile.magazineCapacity() > 1) {
             // hide fire rate on single shot guns
-            statBuilder.accept(Component.translatable("irons_artifice.tooltip.fire_rate", fireRate));
+            statBuilder.accept(Component.translatable("irons_artifice.tooltip.fire_rate", highlightText.apply(fireRate)));
         }
-        statBuilder.accept(Component.translatable("irons_artifice.tooltip.reload_time", reloadTime));
+        statBuilder.accept(Component.translatable("irons_artifice.tooltip.reload_time", highlightText.apply(reloadTime+"s")));
         builder.accept(Component.translatable("irons_artifice.tooltip.modifier_count", gunProfile.modifierSlots()).withStyle(ChatFormatting.GOLD));
     }
 
