@@ -35,7 +35,7 @@ public class ItemModelDataGenerator extends ModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        for (DeferredItem<Item> item : List.of(ItemRegistry.BULLET, ItemRegistry.BLACKPOWDER)) {
+        for (DeferredItem<Item> item : List.of(ItemRegistry.BULLET, ItemRegistry.BLACKPOWDER, ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS, ItemRegistry.MECHANICAL_COMPONENTS, ItemRegistry.CLOCKWORK_COMPONENTS)) {
             generateTemplatedItem(itemModels, item.get(), itemTexture(item));
         }
 

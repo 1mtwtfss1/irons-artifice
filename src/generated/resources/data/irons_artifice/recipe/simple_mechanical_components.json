@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:copper_chain",
+    "I": "#c:ingots/copper",
+    "N": "#c:nuggets/copper",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "CNC",
+    "IRI",
+    "NCN"
+  ],
+  "result": {
+    "id": "irons_artifice:simple_mechanical_components"
+  }
+}

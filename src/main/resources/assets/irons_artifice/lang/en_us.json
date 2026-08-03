@@ -27,6 +27,10 @@
   "item.irons_artifice.gas_vent_modifier": "Gas Vent Modifier",
   "item.irons_artifice.blackpowder_payload_modifier": "Blackpowder Payload Modifier",
   "item.irons_artifice.mechanical_repeater_modifier": "Mechanical Repeater Modifier",
+  "item.irons_artifice.simple_mechanical_components": "Simple Mechanical Components",
+  "item.irons_artifice.mechanical_components": "Mechanical Components",
+  "item.irons_artifice.clockwork_components": "Clockwork Components",
+
   "container.irons_artifice.gun": "Gun",
   "key.irons_artifice.open_modifier_menu": "Open Gun Modifiers",
   "key.irons_artifice.reload": "Reload",

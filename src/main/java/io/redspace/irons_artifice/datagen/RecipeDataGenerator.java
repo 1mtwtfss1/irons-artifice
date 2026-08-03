@@ -53,6 +53,37 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('^', ItemRegistry.BLACKPOWDER.get())
                 .unlockedBy("has_blackpowder", this.has(ItemRegistry.BLACKPOWDER))
                 .save(this.output, recipeId("bullet_from_copper"));
+
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS.get())
+                .pattern("CNC")
+                .pattern("IRI")
+                .pattern("NCN")
+                .define('N', TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "nuggets/copper")))
+                .define('C', Items.COPPER_CHAIN.unaffected())
+                .define('I', TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "ingots/copper")))
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_copper_nugget", this.has(Items.COPPER_NUGGET))
+                .unlockedBy("has_redstone", this.has(Items.REDSTONE))
+                .save(this.output);
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.MECHANICAL_COMPONENTS.get())
+                .pattern("BC ")
+                .pattern("CMC")
+                .pattern(" CN")
+                .define('B', TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "storage_blocks/iron")))
+                .define('N', TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "nuggets/iron")))
+                .define('C', Items.IRON_CHAIN)
+                .define('M', ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS)
+                .unlockedBy("has_simple", this.has(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS))
+                .save(this.output);
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.CLOCKWORK_COMPONENTS.get())
+                .pattern("MI ")
+                .pattern("IRI")
+                .pattern(" IM")
+                .define('I', TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "ingots/gold")))
+                .define('R', Items.REDSTONE)
+                .define('M', ItemRegistry.MECHANICAL_COMPONENTS)
+                .unlockedBy("has_mechanical", this.has(ItemRegistry.MECHANICAL_COMPONENTS))
+                .save(this.output);
     }
 
     private static ResourceKey<Recipe<?>> recipeId(Identifier identifier) {
