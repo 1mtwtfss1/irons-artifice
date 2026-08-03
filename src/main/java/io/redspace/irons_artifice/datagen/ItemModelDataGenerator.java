@@ -88,6 +88,9 @@ public class ItemModelDataGenerator extends ModelProvider {
         map.put(ItemRegistry.LUBRICATED_MECHANISM, Identifier.withDefaultNamespace("honey_bottle"));
         map.put(ItemRegistry.ANTIGRAVITY_MODIFIER, Identifier.withDefaultNamespace("feather"));
         map.put(ItemRegistry.SEEKING, Identifier.withDefaultNamespace("ender_eye"));
+        map.put(ItemRegistry.WIND_CHAMBER, Identifier.withDefaultNamespace("wind_charge"));
+        map.put(ItemRegistry.GAS_VENT, Identifier.withDefaultNamespace("hopper"));
+        map.put(ItemRegistry.BLACKPOWDER_PAYLOAD, Identifier.withDefaultNamespace("fire_charge"));
         return map;
     }
 

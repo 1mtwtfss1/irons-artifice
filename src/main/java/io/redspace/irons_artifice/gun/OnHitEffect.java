@@ -2,12 +2,11 @@ package io.redspace.irons_artifice.gun;
 
 import io.redspace.irons_artifice.entity.Bullet;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 
 public interface OnHitEffect {
-    void onHit(ServerLevel level, Bullet bullet, HitResult hitResult);
+    /**
+     * Called on bullet hit. HitEntityAccumulator tracks damaged entities by previous OnHitEffects. Add damaged entities to the accumulator.
+     */
+    void onHit(ServerLevel level, Bullet bullet, HitResult hitResult, HitEntityAccumulator accumulator);
 }

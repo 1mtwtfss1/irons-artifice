@@ -40,6 +40,6 @@ public class Utils {
     }
 
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
-        level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, false, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
+        level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
     }
 }

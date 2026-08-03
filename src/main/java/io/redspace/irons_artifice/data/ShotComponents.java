@@ -6,6 +6,7 @@ import io.redspace.irons_artifice.gun.GunShotSoundStack;
 import io.redspace.irons_artifice.gun.ImpactSoundStack;
 import io.redspace.irons_artifice.gun.MuzzleFlashSettings;
 import io.redspace.irons_artifice.gun.OnHitEffects;
+import io.redspace.irons_artifice.gun.PostHitEffects;
 import io.redspace.irons_artifice.recoil.RecoilProfile;
 import io.redspace.irons_artifice.registry.SoundRegistry;
 import net.minecraft.sounds.SoundEvents;
@@ -16,6 +17,7 @@ public final class ShotComponents {
     // Shot Mechanics
     public static final ComponentType<Value> PROJECTILE_COUNT = new ComponentType<>(IronsArtifice.id("projectile_count"), () -> Value.of(1));
     public static final ComponentType<Value> SPREAD = new ComponentType<>(IronsArtifice.id("spread"), () -> Value.of(0));
+    public static final ComponentType<Value> IN_AIR_PENALTY = new ComponentType<>(IronsArtifice.id("in_air_penalty"), () -> Value.of(1.5));
     public static final ComponentType<Value> FIRE_DELAY = new ComponentType<>(IronsArtifice.id("fire_delay"), () -> Value.of(1));
 
     // Attributes
@@ -31,6 +33,7 @@ public final class ShotComponents {
     public static final ComponentType<Value> PIERCING = new ComponentType<>(IronsArtifice.id("piercing"), () -> Value.of(0));
     public static final ComponentType<Value> RICOCHET = new ComponentType<>(IronsArtifice.id("ricochet"), () -> Value.of(0));
     public static final ComponentType<OnHitEffects> ON_HIT = new ComponentType<>(IronsArtifice.id("on_hit"), OnHitEffects::new);
+    public static final ComponentType<PostHitEffects> POST_HIT_EFFECTS = new ComponentType<>(IronsArtifice.id("post_hit_effects"), PostHitEffects::new);
     public static final ComponentType<Boolean> BREAKS_BLOCKS = new ComponentType<>(IronsArtifice.id("breaks_blocks"), () -> false);
     public static final ComponentType<Value> SEEKING = new ComponentType<>(IronsArtifice.id("seeking"), () -> Value.of(0));
 

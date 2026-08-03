@@ -10,9 +10,11 @@ import io.redspace.irons_artifice.item.AnimationAdjuster;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.modifier.modifiers.AntigravityModifier;
+import io.redspace.irons_artifice.modifier.modifiers.BlackpowderPayloadModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BreachModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
 import io.redspace.irons_artifice.modifier.modifiers.FireModifier;
+import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GravityWellModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyModifier;
@@ -22,6 +24,7 @@ import io.redspace.irons_artifice.modifier.modifiers.ScattershotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SeekingModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SteelCoreModifier;
 import io.redspace.irons_artifice.modifier.modifiers.TrickshotModifier;
+import io.redspace.irons_artifice.modifier.modifiers.WindChamberModifier;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
@@ -54,7 +57,7 @@ public final class ItemRegistry {
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> BLACKPOWDER_REVOLVER = ITEMS.registerItem("blackpowder_revolver",
-            properties -> new GunItem(properties, Guns.BLACKPOWDER_REVOLVER, IronsArtifice.id("hand_cannon"), ArmPoseKind.PISTOL, ReloadCueStack.of(
+            properties -> new GunItem(properties, Guns.BLACKPOWDER_REVOLVER, IronsArtifice.id("blackpowder_revolver"), ArmPoseKind.PISTOL, ReloadCueStack.of(
                     new ReloadCue(0f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_START, 0.75f, 0.95f, 1.05f)),
                     new ReloadCue(1.33f / 2f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_MID, 0.75f, 0.95f, 1.05f))
             ), null),
@@ -118,6 +121,12 @@ public final class ItemRegistry {
             "antigravity_modifier", properties -> new ModifierItem(properties.stacksTo(1), new AntigravityModifier()));
     public static final DeferredItem<ModifierItem> SEEKING = ITEMS.registerItem(
             "seeking_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SeekingModifier()));
+    public static final DeferredItem<ModifierItem> WIND_CHAMBER = ITEMS.registerItem(
+            "wind_chamber_modifier", properties -> new ModifierItem(properties.stacksTo(1), new WindChamberModifier()));
+    public static final DeferredItem<ModifierItem> GAS_VENT = ITEMS.registerItem(
+            "gas_vent_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GasVentModifier()));
+    public static final DeferredItem<ModifierItem> BLACKPOWDER_PAYLOAD = ITEMS.registerItem(
+            "blackpowder_payload_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BlackpowderPayloadModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
     public static final DeferredItem<Item> BLACKPOWDER = ITEMS.registerSimpleItem("blackpowder");

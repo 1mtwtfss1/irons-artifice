@@ -155,7 +155,6 @@ public final class GunplayManager {
 
     public static float getSpreadForEntity(ShotProfile shotProfile, Entity entity) {
         float crouchingMultiplier = 0.5f;
-        float inAirMultiplier = 1.5f;
         float penaltyPerMovement = 12f;
         float maxMovementPenalty = 25f;
 
@@ -164,7 +163,7 @@ public final class GunplayManager {
             spread *= crouchingMultiplier;
         }
         if (!entity.onGround()) {
-            spread *= inAirMultiplier;
+            spread *= (float) shotProfile.value(ShotComponents.IN_AIR_PENALTY);
         }
         float entitySpeed = (float) entity.getDeltaMovement().length();
         if (entitySpeed > 0.1) {

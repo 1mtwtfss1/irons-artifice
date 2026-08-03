@@ -3,8 +3,9 @@ package io.redspace.irons_artifice.entity;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.gun.BlockDamageManager;
+import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
-import io.redspace.irons_artifice.gun.OnHitEffects;
+import io.redspace.irons_artifice.gun.PostHitEffect;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.network.ClientboundBulletImpactPacket;
 import io.redspace.irons_artifice.network.ClientboundBulletTrailPacket;
@@ -299,9 +300,18 @@ public class Bullet extends Projectile {
             return;
         }
         if (level() instanceof ServerLevel serverLevel) {
-            OnHitEffects onHitEffects = profile.get(ShotComponents.ON_HIT);
-            for (OnHitEffect effect : onHitEffects.all()) {
-                effect.onHit(serverLevel, this, hitResult);
+            HitEntityAccumulator accumulator = new HitEntityAccumulator();
+            if (hitResult instanceof EntityHitResult entityHit) {
+                accumulator.add(entityHit.getEntity());
+            }
+            for (OnHitEffect effect : profile.get(ShotComponents.ON_HIT).all()) {
+                effect.onHit(serverLevel, this, hitResult, accumulator);
+            }
+            var postHitEffects = profile.get(ShotComponents.POST_HIT_EFFECTS).all();
+            for (Entity entity : accumulator.all()) {
+                for (PostHitEffect effect : postHitEffects) {
+                    effect.postHit(serverLevel, this, hitResult, entity);
+                }
             }
             profile.get(ShotComponents.IMPACT_SOUND).playImpactSound(serverLevel, hitResult.getLocation(), hitResult.getType() == HitResult.Type.ENTITY);
         }
