@@ -3,10 +3,11 @@ package io.redspace.irons_artifice.registry;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.particle.BulletTrailParticleType;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
+import io.redspace.irons_artifice.client.particle.MuzzleFlashParticleOption;
+import io.redspace.irons_artifice.client.particle.MuzzleFlashParticleType;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -49,12 +50,12 @@ public final class ParticleRegistry {
     public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> BULLET_IMPACT =
             PARTICLE_TYPES.register("bullet_impact", () -> new BulletTrailParticleType(false));
 
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MUZZLE_FLASH_LARGE =
-            PARTICLE_TYPES.register("muzzle_flash_large", () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MUZZLE_FLASH_TRIANGLE =
-            PARTICLE_TYPES.register("muzzle_flash_triangle", () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MUZZLE_FLASH_SMALL_STAR =
-            PARTICLE_TYPES.register("muzzle_flash_small_star", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<MuzzleFlashParticleOption>> MUZZLE_FLASH_LARGE =
+            PARTICLE_TYPES.register("muzzle_flash_large", () -> new MuzzleFlashParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<MuzzleFlashParticleOption>> MUZZLE_FLASH_TRIANGLE =
+            PARTICLE_TYPES.register("muzzle_flash_triangle", () -> new MuzzleFlashParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<MuzzleFlashParticleOption>> MUZZLE_FLASH_SMALL_STAR =
+            PARTICLE_TYPES.register("muzzle_flash_small_star", () -> new MuzzleFlashParticleType(false));
 
     public static void register(IEventBus modEventBus) {
         PARTICLE_TYPES.register(modEventBus);
