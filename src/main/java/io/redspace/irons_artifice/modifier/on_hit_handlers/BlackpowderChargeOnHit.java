@@ -15,7 +15,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class BlackpowderPayloadOnHit implements OnHitEffect {
+public class BlackpowderChargeOnHit implements OnHitEffect {
     private static final float RADIUS = 3f;
     private static final float DAMAGE_FRACTION = 1f;
 

@@ -10,7 +10,7 @@ import io.redspace.irons_artifice.item.AnimationAdjuster;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.modifier.modifiers.AntigravityModifier;
-import io.redspace.irons_artifice.modifier.modifiers.BlackpowderPayloadModifier;
+import io.redspace.irons_artifice.modifier.modifiers.BlackpowderChargeModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BreachModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainShotModifier;
@@ -127,8 +127,8 @@ public final class ItemRegistry {
             "wind_chamber_modifier", properties -> new ModifierItem(properties.stacksTo(1), new WindChamberModifier()));
     public static final DeferredItem<ModifierItem> GAS_VENT = ITEMS.registerItem(
             "gas_vent_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GasVentModifier()));
-    public static final DeferredItem<ModifierItem> BLACKPOWDER_PAYLOAD = ITEMS.registerItem(
-            "blackpowder_payload_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BlackpowderPayloadModifier()));
+    public static final DeferredItem<ModifierItem> BLACKPOWDER_CHARGE = ITEMS.registerItem(
+            "blackpowder_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BlackpowderChargeModifier()));
     public static final DeferredItem<ModifierItem> MECHANICAL_REPEATER = ITEMS.registerItem(
             "mechanical_repeater_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalRepeaterModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_SHOT = ITEMS.registerItem(

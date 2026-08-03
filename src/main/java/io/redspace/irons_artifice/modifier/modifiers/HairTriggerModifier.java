@@ -6,11 +6,10 @@ import io.redspace.irons_artifice.modifier.ValueStackModifier;
 
 import java.util.Map;
 
-// fixme: fix this awful name
 public final class HairTriggerModifier extends ValueStackModifier {
     public HairTriggerModifier() {
         super(Map.of(
-                ShotComponents.FIRE_RATE, new ValueModifier(0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL)
+                ShotComponents.FIRE_RATE, new ValueModifier(0.375, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL)
         ));
     }
 }
