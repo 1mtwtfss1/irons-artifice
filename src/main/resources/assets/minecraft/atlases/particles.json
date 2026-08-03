@@ -1,0 +1,10 @@
+{
+  "sources": [
+    {
+      "type": "neoforge:directory_paletted_permutations",
+      "textures": "muzzle_flash/particle",
+      "palette_key": "irons_artifice:muzzle_flash/palettes/tinted",
+      "palettes": "muzzle_flash/palettes"
+    }
+  ]
+}

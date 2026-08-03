@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 public record MuzzleFlashSettings(Set<MuzzleFlashType> types, float muzzleDistanceScalar) {
-    public static final MuzzleFlashSettings DEFAULT = of(1.5f, MuzzleFlashType.TRIANGLE);
+    public static final MuzzleFlashSettings DEFAULT = of(1.5f, MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR);
 
     public MuzzleFlashSettings {
         types = Set.copyOf(types);

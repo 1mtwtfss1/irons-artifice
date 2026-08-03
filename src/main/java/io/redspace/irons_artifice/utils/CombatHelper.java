@@ -4,12 +4,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Shared combat filters for on-hit effects. Other handlers with friendly-fire TODOs can migrate here later.
- */
 public final class CombatHelper {
-    private CombatHelper() {
-    }
 
     public static boolean canHarm(@Nullable Entity attacker, @Nullable Entity target) {
         if (attacker == null || target == null || attacker == target) {
@@ -21,7 +16,7 @@ public final class CombatHelper {
         if (target.isAlliedTo(attacker) || attacker.isAlliedTo(target)) {
             return false;
         }
-        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
+        if (target instanceof Player player && attacker instanceof Player player1 && !player1.canHarmPlayer(player)) {
             return false;
         }
         return true;

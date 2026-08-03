@@ -117,8 +117,6 @@ public final class ItemRegistry {
             "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_LIGHTNING = ITEMS.registerItem(
             "chain_lightning_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
-    public static final DeferredItem<ModifierItem> CHAIN_SHOT = ITEMS.registerItem(
-            "chain_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainShotModifier()));
     public static final DeferredItem<ModifierItem> LUBRICATED_MECHANISM = ITEMS.registerItem(
             "lubricated_mechanism_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
     public static final DeferredItem<ModifierItem> ANTIGRAVITY_MODIFIER = ITEMS.registerItem(
@@ -133,6 +131,8 @@ public final class ItemRegistry {
             "blackpowder_payload_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BlackpowderPayloadModifier()));
     public static final DeferredItem<ModifierItem> MECHANICAL_REPEATER = ITEMS.registerItem(
             "mechanical_repeater_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalRepeaterModifier()));
+    public static final DeferredItem<ModifierItem> CHAIN_SHOT = ITEMS.registerItem(
+            "chain_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainShotModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
     public static final DeferredItem<Item> BLACKPOWDER = ITEMS.registerSimpleItem("blackpowder");

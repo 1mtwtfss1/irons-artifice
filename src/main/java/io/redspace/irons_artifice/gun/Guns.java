@@ -150,7 +150,7 @@ public final class Guns {
                 map.set(ShotComponents.FIRE_DELAY, Value.of(4));
                 map.set(ShotComponents.SPREAD, Value.of(2));
                 map.set(ShotComponents.DAMAGE, Value.of(5));
-                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.TRIANGLE));
+                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR));
                 return map;
             },
             10,

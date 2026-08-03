@@ -27,8 +27,8 @@ public class MuzzleFlashParticle extends SingleQuadParticle {
         this.zd = za;
         this.quadSize = 1;
         this.rCol = 1;
-        this.gCol = 0.77f;
-        this.bCol = 0f;
+        this.gCol = 1f;//0.77f;
+        this.bCol = 1f;//0f;
         this.mirrorHorizontal = level.getRandom().nextBoolean();
         this.mirrorVertical = level.getRandom().nextBoolean();
         this.roll = level.getRandom().nextInt(4) * Mth.HALF_PI; // 90 degrees

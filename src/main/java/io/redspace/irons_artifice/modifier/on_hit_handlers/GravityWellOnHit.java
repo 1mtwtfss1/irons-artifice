@@ -3,6 +3,7 @@ package io.redspace.irons_artifice.modifier.on_hit_handlers;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
+import io.redspace.irons_artifice.utils.CombatHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
@@ -14,8 +15,10 @@ public class GravityWellOnHit implements OnHitEffect {
     public void onHit(ServerLevel level, Bullet bullet, HitResult hitResult, HitEntityAccumulator accumulator) {
         Vec3 center = hitResult.getLocation();
         AABB area = AABB.ofSize(center, 4, 4, 4);
-        // todo: friendlyfire or something
-        bullet.level().getEntities(bullet, area, Entity::canBeHitByProjectile).forEach(
+        Entity owner = bullet.getOwner();
+        bullet.level().getEntities(bullet, area, entity ->
+                entity.canBeHitByProjectile() && CombatHelper.canHarm(owner, entity)
+        ).forEach(
                 entity -> {
                     if (entity.getBoundingBox().getCenter().distanceToSqr(center) < 3 * 3) {
                         entity.setDeltaMovement(entity.getDeltaMovement().add(center.subtract(entity.position())).scale(0.5));

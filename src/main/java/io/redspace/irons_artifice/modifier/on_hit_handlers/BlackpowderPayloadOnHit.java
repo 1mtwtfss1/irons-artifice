@@ -3,6 +3,7 @@ package io.redspace.irons_artifice.modifier.on_hit_handlers;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
+import io.redspace.irons_artifice.utils.CombatHelper;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -26,8 +27,8 @@ public class BlackpowderPayloadOnHit implements OnHitEffect {
         float baseDamage = bullet.resolveDamage() * DAMAGE_FRACTION;
         Entity owner = bullet.getOwner();
 
-        // todo: friendlyfire or something
-        for (Entity entity : level.getEntities(bullet, area, Entity::canBeHitByProjectile)) {
+        for (Entity entity : level.getEntities(bullet, area, e ->
+                e.canBeHitByProjectile() && CombatHelper.canHarm(owner, e))) {
             if (accumulator.contains(entity)) {
                 continue;
             }
@@ -45,7 +46,7 @@ public class BlackpowderPayloadOnHit implements OnHitEffect {
             }
         }
 
-        level.playSound(null, center.x, center.y, center.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 0.45f, 1.4f);
+        level.playSound(null, center.x, center.y, center.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 2.5f, 1.4f);
         Utils.spawnParticles(level, ParticleTypes.EXPLOSION, center.x, center.y, center.z, 1, 0, 0, 0, 0, true);
         Utils.spawnParticles(level, ParticleTypes.SMOKE, center.x, center.y, center.z, 8, 0.4, 0.4, 0.4, 0.02, false);
         Utils.spawnParticles(level, ParticleTypes.LAVA, center.x, center.y, center.z, 6, 0.35, 0.35, 0.35, 0.01, false);
