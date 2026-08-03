@@ -2,6 +2,7 @@ package io.redspace.irons_artifice.registry;
 
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.entity.Bullet;
+import io.redspace.irons_artifice.entity.ChainEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
@@ -15,7 +16,14 @@ public final class EntityRegistry {
             "bullet",
             Bullet::new,
             MobCategory.MISC,
-            builder->builder.sized(0.25f,0.25f)
+            builder -> builder.sized(0.25f, 0.25f)
+    );
+
+    public static final DeferredHolder<EntityType<?>, EntityType<ChainEntity>> CHAIN = ENTITY_TYPES.registerEntityType(
+            "chain",
+            ChainEntity::new,
+            MobCategory.MISC,
+            builder -> builder.sized(0.5f, 0.5f).clientTrackingRange(64).updateInterval(1)
     );
 
     public static void register(IEventBus modEventBus) {

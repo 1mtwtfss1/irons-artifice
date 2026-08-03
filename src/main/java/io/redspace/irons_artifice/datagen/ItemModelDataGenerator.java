@@ -85,6 +85,7 @@ public class ItemModelDataGenerator extends ModelProvider {
         map.put(ItemRegistry.STEEL_CORE, Identifier.withDefaultNamespace("netherite_ingot"));
         map.put(ItemRegistry.HAIR_TRIGGER, Identifier.withDefaultNamespace("breeze_rod"));
         map.put(ItemRegistry.CHAIN_LIGHTNING, Identifier.withDefaultNamespace("copper_ingot"));
+        map.put(ItemRegistry.CHAIN_SHOT, Identifier.withDefaultNamespace("chain"));
         map.put(ItemRegistry.LUBRICATED_MECHANISM, Identifier.withDefaultNamespace("honey_bottle"));
         map.put(ItemRegistry.ANTIGRAVITY_MODIFIER, Identifier.withDefaultNamespace("feather"));
         map.put(ItemRegistry.SEEKING, Identifier.withDefaultNamespace("ender_eye"));

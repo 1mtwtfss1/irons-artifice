@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice;
 
 import io.redspace.irons_artifice.client.Keybinds;
+import io.redspace.irons_artifice.client.entity.ChainEntityRenderer;
 import io.redspace.irons_artifice.client.gun.GunInHandRenderer;
 import io.redspace.irons_artifice.client.hud.AmmoCountHudOverlay;
 import io.redspace.irons_artifice.client.particle.BlockDustParticle;
@@ -93,6 +94,7 @@ public class IronsArtificeClient {
     @SubscribeEvent
     static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityRegistry.BULLET.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.CHAIN.get(), ChainEntityRenderer::new);
     }
 
     @SubscribeEvent

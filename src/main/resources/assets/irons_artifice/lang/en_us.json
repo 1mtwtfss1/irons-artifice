@@ -19,6 +19,7 @@
   "item.irons_artifice.steel_core_modifier": "Steel-Cored Modifier",
   "item.irons_artifice.hair_trigger_modifier": "Hair Trigger Modifier",
   "item.irons_artifice.chain_lightning_modifier": "Arc Tip Modifier",
+  "item.irons_artifice.chain_shot_modifier": "Chain Shot Modifier",
   "item.irons_artifice.lubricated_mechanism_modifier": "Lubricated Mechanism Modifier",
   "item.irons_artifice.antigravity_modifer": "Antigravity Modifier",
   "item.irons_artifice.seeking_modifier": "Seeker Tip Modifier",
@@ -50,6 +51,7 @@
   "irons_artifice.component_type.gravity": "Gravity",
   "irons_artifice.modifier.blackpowder_payload": "Radial Damage on Hit",
   "irons_artifice.modifier.chain_lightning": "+%s Lightning Chains on Hit (%s%% Damage Each)",
+  "irons_artifice.modifier.chain_shot": "Consecutive Hit Enemies are Chained Together",
 
   "irons_artifice.value_modifier.plus": "+%s %s",
   "irons_artifice.value_modifier.minus": "-%s %s",

@@ -130,7 +130,7 @@ dependencies {
     implementation "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
     runtimeOnly "curse.maven:spark-361579:8275631"
     runtimeOnly "curse.maven:jei-238222:8548511"
-    runtimeOnly "curse.maven:irons-simple-blood-1579118:8480387"
+//    runtimeOnly "curse.maven:irons-simple-blood-1579118:8480387"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

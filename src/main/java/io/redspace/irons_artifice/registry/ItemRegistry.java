@@ -13,6 +13,7 @@ import io.redspace.irons_artifice.modifier.modifiers.AntigravityModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BlackpowderPayloadModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BreachModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
+import io.redspace.irons_artifice.modifier.modifiers.ChainShotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.FireModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GravityWellModifier;
@@ -116,6 +117,8 @@ public final class ItemRegistry {
             "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_LIGHTNING = ITEMS.registerItem(
             "chain_lightning_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
+    public static final DeferredItem<ModifierItem> CHAIN_SHOT = ITEMS.registerItem(
+            "chain_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainShotModifier()));
     public static final DeferredItem<ModifierItem> LUBRICATED_MECHANISM = ITEMS.registerItem(
             "lubricated_mechanism_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
     public static final DeferredItem<ModifierItem> ANTIGRAVITY_MODIFIER = ITEMS.registerItem(
