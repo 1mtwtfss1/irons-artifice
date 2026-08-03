@@ -111,7 +111,7 @@ public final class Guns {
                 map.set(ShotComponents.PROJECTILE_COUNT, Value.of(6));
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(30f, .35f, 2f, 999));
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.75));
-                map.set(ShotComponents.SPREAD, Value.of(8));
+                map.set(ShotComponents.SPREAD, Value.of(12));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
                 map.set(ShotComponents.GUNSHOT_SOUND,
                         new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.9f, 1.1f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))

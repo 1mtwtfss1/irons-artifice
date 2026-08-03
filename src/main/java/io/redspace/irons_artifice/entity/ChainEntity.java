@@ -22,10 +22,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class ChainEntity extends Entity {
-    public static final float SPAWN_RANGE = 5f;
-    public static final float BREAK_RANGE = 10f;
+    public static final float SPAWN_RANGE = 8f;
+    public static final float BREAK_RANGE = 16f;
     public static final int DURATION = 200;
-    public static final float STRENGTH = 0.02f;
+    public static final float STRENGTH = 0.05f;
     public static final int VISUAL_WARMUP_TIME = 3;
 
     private static final EntityDataAccessor<Integer> DATA_FIRST_ID =
