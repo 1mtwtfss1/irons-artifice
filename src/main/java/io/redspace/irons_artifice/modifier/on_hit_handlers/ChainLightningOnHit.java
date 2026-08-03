@@ -12,6 +12,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class ChainLightningOnHit implements OnHitEffect {
+    public static final int CHAIN_COUNT = 2;
+    public static final float DAMAGE_MULTIPLIER = 0.5f;
+
     @Override
     public void onHit(ServerLevel level, Bullet bullet, HitResult hitResult, HitEntityAccumulator accumulator) {
         Vec3 center = hitResult.getLocation();
@@ -26,20 +29,22 @@ public class ChainLightningOnHit implements OnHitEffect {
                 !accumulator.contains(entity)
                         && entity.canBeHitByProjectile()
                         && entity.getBoundingBox().getCenter().distanceToSqr(center) < range * range);
-        Vec3 visualAnchor = center.add(new Vec3(random.nextFloat(), random.nextFloat(), random.nextFloat()).scale(range).subtract(new Vec3(range, range, range).scale(0.5)));
-        if (!targets.isEmpty()) {
-            Entity entity = targets.get(random.nextInt(targets.size()));
-            // todo: damage number?
-            float damage = bullet.resolveDamage() * 0.25f;
-            if (entity.hurtServer(level, bullet.damageSources().indirectMagic(bullet, bullet.getOwner()), damage)) {
-                accumulator.add(entity);
+        for (int i = 0; i < CHAIN_COUNT; i++) {
+            Vec3 visualAnchor = center.add(new Vec3(random.nextFloat(), random.nextFloat(), random.nextFloat()).scale(range).subtract(new Vec3(range, range, range).scale(0.5)).scale(2));
+            if (!targets.isEmpty()) {
+                Entity entity = targets.get(random.nextInt(targets.size()));
+                float damage = bullet.resolveDamage() * DAMAGE_MULTIPLIER;
+                if (entity.hurtServer(level, bullet.damageSources().indirectMagic(bullet, bullet.getOwner()), damage)) {
+                    accumulator.add(entity);
+                }
+                visualAnchor = entity.getBoundingBox().getCenter();
+                targets.remove(entity);
             }
-            visualAnchor = entity.getBoundingBox().getCenter();
-        }
-        float particles = range * 2;
-        for (int i = 0; i < particles; i++) {
-            Vec3 pos = center.lerp(visualAnchor, i / particles);
-            Utils.spawnParticles(level, ParticleTypes.SCULK_CHARGE_POP, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
+            float particles = range * 2;
+            for (int j = 0; j < particles; j++) {
+                Vec3 pos = center.lerp(visualAnchor, j / particles);
+                Utils.spawnParticles(level, ParticleTypes.SCULK_CHARGE_POP, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
+            }
         }
     }
 }

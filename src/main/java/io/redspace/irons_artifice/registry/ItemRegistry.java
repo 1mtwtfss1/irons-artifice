@@ -19,6 +19,7 @@ import io.redspace.irons_artifice.modifier.modifiers.GravityWellModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyModifier;
 import io.redspace.irons_artifice.modifier.modifiers.LubricatedMechanismModifier;
+import io.redspace.irons_artifice.modifier.modifiers.MechanicalRepeaterModifier;
 import io.redspace.irons_artifice.modifier.modifiers.OverchargedPowderModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ScattershotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SeekingModifier;
@@ -127,6 +128,8 @@ public final class ItemRegistry {
             "gas_vent_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GasVentModifier()));
     public static final DeferredItem<ModifierItem> BLACKPOWDER_PAYLOAD = ITEMS.registerItem(
             "blackpowder_payload_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BlackpowderPayloadModifier()));
+    public static final DeferredItem<ModifierItem> MECHANICAL_REPEATER = ITEMS.registerItem(
+            "mechanical_repeater_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalRepeaterModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
     public static final DeferredItem<Item> BLACKPOWDER = ITEMS.registerSimpleItem("blackpowder");

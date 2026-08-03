@@ -1,7 +1,6 @@
 package io.redspace.irons_artifice.client;
 
 import io.redspace.irons_artifice.IronsArtifice;
-import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
@@ -9,7 +8,6 @@ import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.network.ServerboundFireGunPacket;
 import io.redspace.irons_artifice.network.ServerboundOpenModifierMenuPacket;
 import io.redspace.irons_artifice.network.ServerboundReloadGunPacket;
-import io.redspace.irons_artifice.recoil.RecoilHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -70,25 +68,26 @@ public final class InputHandler {
             attackHeldLastTick = attackHeld;
             return;
         }
+        ItemStack held = player.getMainHandItem();
+        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), held);
 
-        boolean triggerPulled = switch (gunItem.getGun().fireMode()) {
+        boolean triggerPulled = switch (profile.fireMode()) {
             case SEMI -> attackHeld && !attackHeldLastTick;
             case AUTO -> attackHeld;
         };
         attackHeldLastTick = attackHeld;
 
         if (triggerPulled) {
-            tryFire(player, gunItem);
+            tryFire(profile, player, gunItem);
         }
     }
 
-    private static void tryFire(LocalPlayer player, GunItem gunItem) {
+    private static void tryFire(ShotProfile profile, LocalPlayer player, GunItem gunItem) {
         ItemStack held = player.getMainHandItem();
         // fixme: these conditions are thin and must be manually kept in sync
         if (player.getCooldowns().isOnCooldown(held) || GunItem.isReloading(held)) {
             return;
         }
-        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), held);
         ClientPacketDistributor.sendToServer(new ServerboundFireGunPacket(player.getLookAngle()));
         // fixme: another thin client-server manually synced thingie
         if (!GunItem.getMagazine(held).isEmpty()) {

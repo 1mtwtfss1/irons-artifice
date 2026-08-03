@@ -14,14 +14,14 @@ import java.util.Map;
 public final class BreachModifier extends ValueStackModifier {
     public BreachModifier() {
         super(Map.of(
-                ShotComponents.BLOCK_DAMAGE_MULTIPLIER, new ValueModifier(0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL)
+                ShotComponents.BLOCK_DAMAGE_MULTIPLIER, new ValueModifier(0.5, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL)
         ));
     }
 
     @Override
     public List<Component> getDescriptionText() {
         var text = new ArrayList<>(super.getDescriptionText());
-        text.add(0, Component.translatable("irons_artifice.component_type.enables_block_damage").withStyle(ChatFormatting.GREEN));
+        text.add(0, Component.translatable("irons_artifice.component_type.enables_block_damage").withStyle(ChatFormatting.AQUA));
         return text;
     }
 

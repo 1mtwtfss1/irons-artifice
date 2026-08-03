@@ -71,7 +71,7 @@ public final class GunplayManager {
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, player.position());
         applyCharacterRecoil(player, profile);
         RecoilState.addImpulse(player, now, profile);
-        player.getCooldowns().addCooldown(stack, (int) Math.round(profile.value(ShotComponents.FIRE_DELAY)));
+        player.getCooldowns().addCooldown(stack, (int) Math.round(profile.fireDelayTicks()));
         playFireAnimation(player, stack, gunItem, profile);
     }
 
@@ -103,7 +103,7 @@ public final class GunplayManager {
     }
 
     private static void playFireAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
-        double fireSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.value(ShotComponents.FIRE_DELAY);
+        double fireSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.fireDelayTicks();
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
                 "fire", fireSpeedMultiplier, 0);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);

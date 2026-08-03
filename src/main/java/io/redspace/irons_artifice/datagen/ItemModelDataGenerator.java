@@ -91,6 +91,7 @@ public class ItemModelDataGenerator extends ModelProvider {
         map.put(ItemRegistry.WIND_CHAMBER, Identifier.withDefaultNamespace("wind_charge"));
         map.put(ItemRegistry.GAS_VENT, Identifier.withDefaultNamespace("hopper"));
         map.put(ItemRegistry.BLACKPOWDER_PAYLOAD, Identifier.withDefaultNamespace("fire_charge"));
+        map.put(ItemRegistry.MECHANICAL_REPEATER, Identifier.withDefaultNamespace("repeater"));
         return map;
     }
 

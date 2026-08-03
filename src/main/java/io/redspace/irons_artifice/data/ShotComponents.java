@@ -19,6 +19,8 @@ public final class ShotComponents {
     public static final ComponentType<Value> SPREAD = new ComponentType<>(IronsArtifice.id("spread"), () -> Value.of(0));
     public static final ComponentType<Value> IN_AIR_PENALTY = new ComponentType<>(IronsArtifice.id("in_air_penalty"), () -> Value.of(1.5));
     public static final ComponentType<Value> FIRE_DELAY = new ComponentType<>(IronsArtifice.id("fire_delay"), () -> Value.of(1));
+    public static final ComponentType<Value> FIRE_RATE = new ComponentType<>(IronsArtifice.id("fire_rate"), () -> Value.of(1));
+    public static final ComponentType<Boolean> FORCE_AUTO_FIRE = new ComponentType<>(IronsArtifice.id("force_auto_fire"), () -> false);
 
     // Attributes
     public static final ComponentType<Value> DAMAGE = new ComponentType<>(IronsArtifice.id("damage"), () -> Value.of(0));
