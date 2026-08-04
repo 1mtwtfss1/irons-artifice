@@ -26,6 +26,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> FLINTLOCK_EQUIP = registerSoundEvent("item.flintlock.equip");
 
     public static DeferredHolder<SoundEvent, SoundEvent> MUSKET_SHOOT = registerSoundEvent("item.musket.shoot");
+    public static DeferredHolder<SoundEvent, SoundEvent> MUSKET_EQUIP = registerSoundEvent("item.musket.equip");
 
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_RELOAD_START = registerSoundEvent("item.blackpowder_revolver.reload.start");
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_RELOAD_MID = registerSoundEvent("item.blackpowder_revolver.reload.mid");
@@ -33,6 +34,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_SHOOT = registerSoundEvent("item.blackpowder_revolver.shoot");
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_EQUIP = registerSoundEvent("item.blackpowder_revolver.equip");
 
+    public static DeferredHolder<SoundEvent, SoundEvent> SIX_SHOOTER_SHOOT = registerSoundEvent("item.six_shooter.shoot");
     public static DeferredHolder<SoundEvent, SoundEvent> SIX_SHOOTER_EQUIP = registerSoundEvent("item.six_shooter.equip");
     public static DeferredHolder<SoundEvent, SoundEvent> SIX_SHOOTER_HOLSTER = registerSoundEvent("item.six_shooter.holster");
 
@@ -43,6 +45,8 @@ public class SoundRegistry {
 
     public static DeferredHolder<SoundEvent, SoundEvent> CLOCKWORK_RIFLE_INSERT_MAG = registerSoundEvent("item.clockwork_rifle.reload.insert_mag");
     public static DeferredHolder<SoundEvent, SoundEvent> CLOCKWORK_RIFLE_EJECT_MAG = registerSoundEvent("item.clockwork_rifle.reload.eject_mag");
+    public static DeferredHolder<SoundEvent, SoundEvent> CLOCKWORK_RIFLE_SHOOT = registerSoundEvent("item.clockwork_rifle.shoot");
+    public static DeferredHolder<SoundEvent, SoundEvent> CLOCKWORK_RIFLE_EQUIP = registerSoundEvent("item.clockwork_rifle.equip");
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String name) {
         return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(IronsArtifice.id(name)));

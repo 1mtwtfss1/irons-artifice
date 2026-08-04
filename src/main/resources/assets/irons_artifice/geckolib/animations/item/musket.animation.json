@@ -94,8 +94,15 @@
 			"bones": {
 				"gun": {
 					"rotation": {
+						"0.4167": {
+							"vector": [0, -4, 0]
+						},
 						"0.5833": {
-							"vector": [0, -4, 0],
+							"vector": [-2.2968, -3.2759, 35.0656],
+							"easing": "easeOutSine"
+						},
+						"0.7083": {
+							"vector": [-1.2046, -3.8147, 17.5401],
 							"easing": "easeOutSine"
 						},
 						"0.9167": {
@@ -187,6 +194,10 @@
 							"vector": [0, 1, -24]
 						},
 						"1.0": {
+							"vector": [-0.25, 1, -16],
+							"easing": "easeInOutSine"
+						},
+						"1.1667": {
 							"vector": [0, 1, -16],
 							"easing": "easeInOutSine"
 						}

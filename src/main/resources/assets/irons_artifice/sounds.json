@@ -44,6 +44,11 @@
       "irons_artifice:musket_shoot"
     ]
   },
+  "item.musket.equip": {
+    "sounds": [
+      "irons_artifice:musket_equip"
+    ]
+  },
   "item.generic.cock_hammer": {
     "sounds": [
       "irons_artifice:hammer/shortbow_load_1",
@@ -75,6 +80,12 @@
   "item.blackpowder_revolver.equip": {
     "sounds": [
       "irons_artifice:step_leather_chain_light_8"
+    ]
+  },
+  "item.six_shooter.shoot": {
+    "sounds": [
+      "irons_artifice:six_shooter_shoot_1",
+      "irons_artifice:six_shooter_shoot_2"
     ]
   },
   "item.six_shooter.equip": {
@@ -115,6 +126,16 @@
   "item.clockwork_rifle.reload.eject_mag": {
     "sounds": [
       "irons_artifice:clockwork_rifle_eject_mag"
+    ]
+  },
+  "item.clockwork_rifle.shoot": {
+    "sounds": [
+      "irons_artifice:clockwork_rifle_shoot"
+    ]
+  },
+  "item.clockwork_rifle.equip": {
+    "sounds": [
+      "irons_artifice:clockwork_rifle_equip"
     ]
   }
 }

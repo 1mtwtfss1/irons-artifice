@@ -78,6 +78,11 @@ public final class Guns {
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(15f, .5f, 2.7f, 465));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(3));
                 map.set(ShotComponents.DAMAGE, Value.of(6));
+                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
+                        new GunShotSoundSettings(SoundRegistry.SIX_SHOOTER_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_GENERIC, 0.9f, 1.1f, 48f, 96f, 192f),
+                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
+                ));
                 return map;
             },
             6,
@@ -157,64 +162,16 @@ public final class Guns {
                 map.set(ShotComponents.SPREAD, Value.of(2));
                 map.set(ShotComponents.DAMAGE, Value.of(5));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR));
+                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
+                        new GunShotSoundSettings(SoundRegistry.CLOCKWORK_RIFLE_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_GENERIC, 0.9f, 1.1f, 48f, 96f, 192f),
+                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
+                ));
                 return map;
             },
             10,
             6,
             30,
-            FireMode.AUTO
-    );
-
-    public static final GunProfile HAND_CANNON = new GunProfile(
-            () -> {
-                var map = basicGun();
-                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(25f, .33f, 1.7f, 0));
-                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.125));
-                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
-                map.set(ShotComponents.DAMAGE, Value.of(10));
-                map.set(ShotComponents.GUNSHOT_SOUND,
-                        new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_BLAST, 0.75f, 0.85f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
-                );
-                return map;
-            },
-            6,
-            5,
-            20,
-            FireMode.SEMI
-    );
-
-    public static final GunProfile SHOTGUN = new GunProfile(
-            () -> {
-                var map = basicGun();
-                map.set(ShotComponents.DAMAGE, Value.of(18));
-                map.set(ShotComponents.PROJECTILE_COUNT, Value.of(6));
-                map.set(ShotComponents.SPREAD, Value.of(5));
-                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.simple(30f, 999));
-                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(1.5));
-                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
-                map.set(ShotComponents.GUNSHOT_SOUND,
-                        new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.9f, 1.1f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
-                );
-                return map;
-            },
-            6,
-            5,
-            20,
-            FireMode.SEMI
-    );
-
-    public static final GunProfile HIGH_CAP = new GunProfile(
-            () -> {
-                var map = basicGun();
-                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(7.5f, .45f, 0.3f, 69));
-                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.05));
-                map.set(ShotComponents.FIRE_DELAY, Value.of(2));
-                map.set(ShotComponents.DAMAGE, Value.of(3));
-                return map;
-            },
-            30,
-            5,
-            20,
             FireMode.AUTO
     );
 
