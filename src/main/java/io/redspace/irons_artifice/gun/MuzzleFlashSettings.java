@@ -1,5 +1,6 @@
 package io.redspace.irons_artifice.gun;
 
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import org.joml.Vector3f;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public record MuzzleFlashSettings(
         Set<MuzzleFlashType> types,
@@ -14,13 +16,14 @@ public record MuzzleFlashSettings(
         List<Vector3f> tints
 ) {
     public static final Vector3f WHITE = new Vector3f(1f, 1f, 1f);
-    public static final MuzzleFlashSettings DEFAULT = of(1.5f, MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR);
+    public static final Vector3f UNTINTED = new Vector3f(-1f, -1f, -1f);
+    public static final Supplier<MuzzleFlashSettings> DEFAULT = ()->of(1.5f, MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR);
 
     public static MuzzleFlashSettings of(float muzzleDistanceScalar, MuzzleFlashType... types) {
         if (types.length == 0) {
-            return new MuzzleFlashSettings(Set.of(), muzzleDistanceScalar, List.of());
+            throw new IllegalArgumentException("Nonzero type count required");
         }
-        return new MuzzleFlashSettings(EnumSet.copyOf(List.of(types)), muzzleDistanceScalar, List.of());
+        return new MuzzleFlashSettings(EnumSet.copyOf(List.of(types)), muzzleDistanceScalar, new ArrayList<>());
     }
 
 //    /** Replaces the tint list with a single tint. */
@@ -28,19 +31,17 @@ public record MuzzleFlashSettings(
 //        return new MuzzleFlashSettings(types, muzzleDistanceScalar, List.of(new Vector3f(tint)));
 //    }
 
-    /**
-     * Appends a tint to the list.
-     */
-    public MuzzleFlashSettings addTint(Vector3f tint) {
-        List<Vector3f> next = new ArrayList<>(tints.size() + 1);
-        next.addAll(tints);
-        next.add(new Vector3f(tint));
-        return new MuzzleFlashSettings(types, muzzleDistanceScalar, next);
+    public void addTint(Vector3f tint) {
+        tints.add(tint);
+    }
+
+    public void addTint(int tint) {
+        addTint(ARGB.vector3fFromRGB24(tint));
     }
 
     public Vector3f pickTint(RandomSource random) {
         if (tints.isEmpty()) {
-            return WHITE;
+            return UNTINTED;
         }
         return tints.get(random.nextInt(tints.size()));
     }

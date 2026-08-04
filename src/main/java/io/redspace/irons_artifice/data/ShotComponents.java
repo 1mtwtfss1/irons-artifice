@@ -50,6 +50,6 @@ public final class ShotComponents {
             Optional.of(PlayableSound.of(SoundRegistry.BULLET_IMPACT_GENERIC, 2f, .8f, 1.2f)), Optional.empty()
     ));
     public static final ComponentType<ParticleStack> PARTICLE_TRAIL = new ComponentType<>(IronsArtifice.id("particle_trail"), ParticleStack::new);
-    public static final ComponentType<MuzzleFlashSettings> MUZZLE_FLASH = new ComponentType<>(IronsArtifice.id("muzzle_flash"), () -> MuzzleFlashSettings.DEFAULT);
+    public static final ComponentType<MuzzleFlashSettings> MUZZLE_FLASH = new ComponentType<>(IronsArtifice.id("muzzle_flash"), MuzzleFlashSettings.DEFAULT);
 
 }

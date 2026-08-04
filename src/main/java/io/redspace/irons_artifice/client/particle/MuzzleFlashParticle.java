@@ -35,7 +35,7 @@ public class MuzzleFlashParticle extends SingleQuadParticle {
                                float tintR, float tintG, float tintB) {
         super(level, x, y, z, xa, ya, za, sprites.first());
         this.sprites = sprites;
-        this.tinted = tintR != 1f || tintG != 1f || tintB != 1f;
+        this.tinted = !(tintR < 0f || tintG < 0 || tintB < 0);
         this.lifetime = 3;
         this.xd = xa;
         this.yd = ya;
