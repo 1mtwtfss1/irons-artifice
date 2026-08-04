@@ -30,7 +30,7 @@ public final class ChainLightningModifier implements GunModifier {
 
         MuzzleFlashSettings flash = components.getOrDefault(ShotComponents.MUZZLE_FLASH);
         Vector3f color = ARGB.vector3fFromRGB24(0x00f8ff);
-        components.set(ShotComponents.MUZZLE_FLASH, flash.withTint(color.x, color.y, color.z));
+        components.set(ShotComponents.MUZZLE_FLASH, flash.addTint(color));
     }
 
     @Override

@@ -15,6 +15,7 @@ import io.redspace.irons_artifice.modifier.modifiers.BreachModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainShotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.FireModifier;
+import io.redspace.irons_artifice.modifier.modifiers.FrozenJacketModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GravityWellModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
@@ -133,6 +134,8 @@ public final class ItemRegistry {
             "mechanical_repeater_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalRepeaterModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_SHOT = ITEMS.registerItem(
             "chain_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainShotModifier()));
+    public static final DeferredItem<ModifierItem> FROZEN_JACKET = ITEMS.registerItem(
+            "frozen_jacket_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FrozenJacketModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
     public static final DeferredItem<Item> BLACKPOWDER = ITEMS.registerSimpleItem("blackpowder");

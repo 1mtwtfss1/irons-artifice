@@ -160,14 +160,20 @@ public class GunItem extends BaseGeoItem {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage", highlightText.apply(damage)));
         }
         if (bulletSpeedPercent != 100) {
-            statBuilder.accept(Component.translatable("irons_artifice.tooltip.bullet_speed_percent", highlightText.apply(bulletSpeedPercent+"%")));
+            statBuilder.accept(Component.translatable("irons_artifice.tooltip.bullet_speed_percent", highlightText.apply(bulletSpeedPercent + "%")));
         }
         if (gunProfile.magazineCapacity() > 1) {
             // hide fire rate on single shot guns
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.fire_rate", highlightText.apply(fireRate)));
         }
-        statBuilder.accept(Component.translatable("irons_artifice.tooltip.reload_time", highlightText.apply(reloadTime+"s")));
+        statBuilder.accept(Component.translatable("irons_artifice.tooltip.reload_time", highlightText.apply(reloadTime + "s")));
         builder.accept(Component.translatable("irons_artifice.tooltip.modifier_count", gunProfile.modifierSlots()).withStyle(ChatFormatting.GOLD));
+        GunContainer container = new GunContainer(itemStack);
+        for (var item : container.getItems()) {
+            if (!item.isEmpty()) {
+                builder.accept(Component.literal(" * ").withStyle(ChatFormatting.DARK_GRAY).append(item.getHoverName().copy().withStyle(ChatFormatting.GRAY)));
+            }
+        }
     }
 
     @Override

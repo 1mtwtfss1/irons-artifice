@@ -145,7 +145,7 @@ public final class GunplayManager {
         Vec3 position = player.getEyePosition();
         Vec3 offset = direction.normalize().scale(settings.muzzleDistanceScalar());
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new ClientboundMuzzleFlashPacket(
-                type.particle(settings.tintR(), settings.tintG(), settings.tintB()),
+                type.particle(settings.pickTint(level.getRandom())),
                 player.getId(),
                 player.getDeltaMovement(),
                 position,

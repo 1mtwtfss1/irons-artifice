@@ -4,6 +4,7 @@ import io.redspace.irons_artifice.client.particle.MuzzleFlashParticleOption;
 import io.redspace.irons_artifice.registry.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import org.joml.Vector3f;
 
 public enum MuzzleFlashType {
     LARGE,
@@ -19,7 +20,7 @@ public enum MuzzleFlashType {
         };
     }
 
-    public ParticleOptions particle(float tintR, float tintG, float tintB) {
-        return new MuzzleFlashParticleOption(particleType(), tintR, tintG, tintB);
+    public ParticleOptions particle(Vector3f tint) {
+        return new MuzzleFlashParticleOption(particleType(), tint.x, tint.y, tint.z);
     }
 }

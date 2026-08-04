@@ -80,6 +80,14 @@ public class Bullet extends Projectile {
         this.entityData.set(DATA_DRAG, (float) profile.value(ShotComponents.BULLET_DRAG));
     }
 
+    public @Nullable ShotProfile getProfile() {
+        return profile;
+    }
+
+    public void markPierced(Entity entity) {
+        piercedEntities.add(entity.getId());
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(DATA_GRAVITY, 0.05f);
