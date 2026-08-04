@@ -26,7 +26,7 @@ public class GunShotSoundStack {
     }
 
     public GunShotSoundStack(GunShotSoundSettings baseSound, PlayableSound dryFireSound) {
-        this(baseSound, new GunShotSoundSettings(SoundRegistry.GENERIC_BULLET_ECHO, 0.7f, 0.9f, 64f, 128f, 192f), dryFireSound);
+        this(baseSound, new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_GENERIC, 0.7f, 0.9f, 64f, 128f, 192f), dryFireSound);
     }
 
     public void addAccent(PlayableSound options) {

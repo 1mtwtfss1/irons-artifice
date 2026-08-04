@@ -17,7 +17,7 @@ public final class Guns {
                 var map = basicGun();
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
                         new GunShotSoundSettings(SoundRegistry.REVOLVER_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
-                        new GunShotSoundSettings(SoundRegistry.GENERIC_BULLET_ECHO, 0.6f, 0.7f, 48f, 112f, 192f),
+                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_GENERIC, 0.6f, 0.7f, 48f, 112f, 192f),
                         PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
                 ));
                 return map;
@@ -33,8 +33,8 @@ public final class Guns {
                 var map = basicGun();
                 map.set(ShotComponents.DAMAGE, Value.of(14));
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
-                        new GunShotSoundSettings(SoundRegistry.REVOLVER_SHOOT, 0.7f, 0.9f, -1f, 0f, 128f),
-                        new GunShotSoundSettings(SoundRegistry.GENERIC_BULLET_ECHO, 0.5f, 0.6f, 48f, 112f, 192f),
+                        new GunShotSoundSettings(SoundRegistry.FLINTLOCK_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_MUZZLELOADER, 0.9f, 1.1f, 48f, 96f, 192f),
                         PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
                 ));
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(35f, .45f, 1.7f, 0));
@@ -57,9 +57,11 @@ public final class Guns {
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.125));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(10));
                 map.set(ShotComponents.DAMAGE, Value.of(10));
-                map.set(ShotComponents.GUNSHOT_SOUND,
-                        new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_BLAST, 0.75f, 0.85f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
-                );
+                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
+                        new GunShotSoundSettings(SoundRegistry.BLACKPOWDER_REVOLVER_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_GENERIC, 0.5f, 0.7f, 48f, 96f, 192f),
+                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
+                ));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(1.5f, MuzzleFlashType.LARGE));
                 return map;
             },
@@ -92,9 +94,11 @@ public final class Guns {
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.25));
                 map.set(ShotComponents.SPREAD, Value.of(0.5));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
-                map.set(ShotComponents.GUNSHOT_SOUND,
-                        new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.9f, 1.1f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
-                );
+                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
+                        new GunShotSoundSettings(SoundRegistry.MUSKET_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_MUZZLELOADER, 1f, 1.3f, 48f, 96f, 192f),
+                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
+                ));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2.5f, MuzzleFlashType.LARGE));
                 return map;
             },
@@ -113,9 +117,11 @@ public final class Guns {
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.75));
                 map.set(ShotComponents.SPREAD, Value.of(12));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
-                map.set(ShotComponents.GUNSHOT_SOUND,
-                        new GunShotSoundStack(GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.9f, 1.1f, -1f, 0f, 48f), PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f))
-                );
+                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
+                        new GunShotSoundSettings(SoundRegistry.BLUNDERBUSS_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_MUZZLELOADER, 0.7f, 0.8f, 48f, 96f, 192f),
+                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
+                ));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.LARGE));
                 return map;
             },

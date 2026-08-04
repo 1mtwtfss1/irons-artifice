@@ -56,14 +56,15 @@ public final class ItemRegistry {
     );
 
     public static final DeferredItem<GunItem> FLINTLOCK_PISTOL = ITEMS.registerItem("flintlock",
-            properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL, IronsArtifice.id("flintlock_pistol"), ArmPoseKind.PISTOL, MUZZLELOADER_RELOAD_CUES, null, AnimationAdjuster.LOWER_HAMMER),
+            properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL, IronsArtifice.id("flintlock_pistol"), ArmPoseKind.PISTOL,
+                    MUZZLELOADER_RELOAD_CUES, PlayableSound.of(SoundRegistry.FLINTLOCK_EQUIP, 0.75f, 0.9f, 1.1f), AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> BLACKPOWDER_REVOLVER = ITEMS.registerItem("blackpowder_revolver",
             properties -> new GunItem(properties, Guns.BLACKPOWDER_REVOLVER, IronsArtifice.id("blackpowder_revolver"), ArmPoseKind.PISTOL, ReloadCueStack.of(
                     new ReloadCue(0f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_START, 0.75f, 0.95f, 1.05f)),
                     new ReloadCue(1.33f / 2f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_MID, 0.75f, 0.95f, 1.05f))
-            ), null),
+            ),  PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_EQUIP, 0.75f, 0.9f, 1.1f)),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> MUSKET = ITEMS.registerItem("musket",

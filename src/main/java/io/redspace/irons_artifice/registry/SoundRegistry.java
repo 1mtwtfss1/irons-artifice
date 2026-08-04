@@ -17,13 +17,21 @@ public class SoundRegistry {
 
     public static DeferredHolder<SoundEvent, SoundEvent> BULLET_IMPACT_GENERIC = registerSoundEvent("entity.bullet.impact.generic");
     public static DeferredHolder<SoundEvent, SoundEvent> BULLET_IMPACT_RICOCHET = registerSoundEvent("entity.bullet.impact.ricochet");
-    public static DeferredHolder<SoundEvent, SoundEvent> GENERIC_BULLET_ECHO = registerSoundEvent("entity.bullet.echo.generic");
+    public static DeferredHolder<SoundEvent, SoundEvent> BULLET_ECHO_GENERIC = registerSoundEvent("entity.bullet.echo.generic");
+    public static DeferredHolder<SoundEvent, SoundEvent> BULLET_ECHO_MUZZLELOADER = registerSoundEvent("entity.bullet.echo.muzzleloader");
     public static DeferredHolder<SoundEvent, SoundEvent> REVOLVER_SHOOT = registerSoundEvent("item.example_revolver.shoot");
     public static DeferredHolder<SoundEvent, SoundEvent> COCK_HAMMER = registerSoundEvent("item.generic.cock_hammer");
+
+    public static DeferredHolder<SoundEvent, SoundEvent> FLINTLOCK_SHOOT = registerSoundEvent("item.flintlock.shoot");
+    public static DeferredHolder<SoundEvent, SoundEvent> FLINTLOCK_EQUIP = registerSoundEvent("item.flintlock.equip");
+
+    public static DeferredHolder<SoundEvent, SoundEvent> MUSKET_SHOOT = registerSoundEvent("item.musket.shoot");
 
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_RELOAD_START = registerSoundEvent("item.blackpowder_revolver.reload.start");
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_RELOAD_MID = registerSoundEvent("item.blackpowder_revolver.reload.mid");
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_RELOAD_END = registerSoundEvent("item.blackpowder_revolver.reload.end");
+    public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_SHOOT = registerSoundEvent("item.blackpowder_revolver.shoot");
+    public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_EQUIP = registerSoundEvent("item.blackpowder_revolver.equip");
 
     public static DeferredHolder<SoundEvent, SoundEvent> SIX_SHOOTER_EQUIP = registerSoundEvent("item.six_shooter.equip");
     public static DeferredHolder<SoundEvent, SoundEvent> SIX_SHOOTER_HOLSTER = registerSoundEvent("item.six_shooter.holster");
@@ -31,6 +39,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> BLUNDERBUSS_RELOAD_OPEN = registerSoundEvent("item.blunderbuss.reload.break_action_open");
     public static DeferredHolder<SoundEvent, SoundEvent> BLUNDERBUSS_RELOAD_LOAD = registerSoundEvent("item.blunderbuss.reload.mid");
     public static DeferredHolder<SoundEvent, SoundEvent> BLUNDERBUSS_RELOAD_CLOSE = registerSoundEvent("item.blunderbuss.reload.break_action_close");
+    public static DeferredHolder<SoundEvent, SoundEvent> BLUNDERBUSS_SHOOT = registerSoundEvent("item.blunderbuss.shoot");
 
     public static DeferredHolder<SoundEvent, SoundEvent> CLOCKWORK_RIFLE_INSERT_MAG = registerSoundEvent("item.clockwork_rifle.reload.insert_mag");
     public static DeferredHolder<SoundEvent, SoundEvent> CLOCKWORK_RIFLE_EJECT_MAG = registerSoundEvent("item.clockwork_rifle.reload.eject_mag");

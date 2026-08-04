@@ -19,9 +19,29 @@
       "irons_artifice:gunshot_far_echo"
     ]
   },
+  "entity.bullet.echo.muzzleloader": {
+    "sounds": [
+      "irons_artifice:muzzleloader_shot_echo"
+    ]
+  },
   "item.example_revolver.shoot": {
     "sounds": [
       "irons_artifice:revolver_shoot"
+    ]
+  },
+  "item.flintlock.shoot": {
+    "sounds": [
+      "irons_artifice:flintlock_shoot"
+    ]
+  },
+  "item.flintlock.equip": {
+    "sounds": [
+      "irons_artifice:flintlock_equip"
+    ]
+  },
+  "item.musket.shoot": {
+    "sounds": [
+      "irons_artifice:musket_shoot"
     ]
   },
   "item.generic.cock_hammer": {
@@ -44,6 +64,17 @@
   "item.blackpowder_revolver.reload.end": {
     "sounds": [
       "irons_artifice:blackpowder_revolver_reload_end"
+    ]
+  },
+  "item.blackpowder_revolver.shoot": {
+    "sounds": [
+      "irons_artifice:blackpowder_revolver_shoot_1",
+      "irons_artifice:blackpowder_revolver_shoot_2"
+    ]
+  },
+  "item.blackpowder_revolver.equip": {
+    "sounds": [
+      "irons_artifice:step_leather_chain_light_8"
     ]
   },
   "item.six_shooter.equip": {
@@ -69,6 +100,11 @@
   "item.blunderbuss.reload.mid": {
     "sounds": [
       "irons_artifice:blunderbuss_reload_mid"
+    ]
+  },
+  "item.blunderbuss.shoot": {
+    "sounds": [
+      "irons_artifice:blunderbuss_shoot"
     ]
   },
   "item.clockwork_rifle.reload.insert_mag": {
