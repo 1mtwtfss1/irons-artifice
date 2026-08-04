@@ -3,6 +3,7 @@ package io.redspace.irons_artifice.client.particle;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.irons_artifice.registry.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -77,6 +78,12 @@ public class ColorTransitionParticleOption implements ParticleOptions {
         this.fromScale = fromScale;
         this.toScale = toScale;
         this.offset = offset;
+    }
+
+    public static ColorTransitionParticleOption bulletTrail(int fromColor, int toColor){
+        return new ColorTransitionParticleOption(ParticleRegistry.BULLET_TRAIL.get(), fromColor, toColor,
+                1f, 0f, 1f, 1f, 0.5f, 0f, 0
+        );
     }
 
     public Vector3f getFromColor() {

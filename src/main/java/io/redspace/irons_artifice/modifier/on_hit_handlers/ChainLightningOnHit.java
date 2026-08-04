@@ -1,11 +1,13 @@
 package io.redspace.irons_artifice.modifier.on_hit_handlers;
 
+import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
+import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
+import io.redspace.irons_artifice.registry.ParticleRegistry;
 import io.redspace.irons_artifice.utils.CombatHelper;
 import io.redspace.irons_artifice.utils.Utils;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
@@ -42,10 +44,12 @@ public class ChainLightningOnHit implements OnHitEffect {
                 visualAnchor = entity.getBoundingBox().getCenter();
                 targets.remove(entity);
             }
-            float particles = range * 2;
+            int particles = (int)visualAnchor.distanceTo(center) * 6;
             for (int j = 0; j < particles; j++) {
-                Vec3 pos = center.lerp(visualAnchor, j / particles);
-                Utils.spawnParticles(level, ParticleTypes.SCULK_CHARGE_POP, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
+                Vec3 pos = center.lerp(visualAnchor, j / (float) particles);
+                Utils.spawnParticles(level, new ColorTransitionParticleOption(
+                        ParticleRegistry.BULLET_TRAIL.get(), ChainLightningModifier.LIGHTNING_COLOR, ChainLightningModifier.LIGHTNING_FADE_COLOR, 1f, 0f, 1f, 1f, 0.5f, 0f, 0
+                ), pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
             }
         }
     }
