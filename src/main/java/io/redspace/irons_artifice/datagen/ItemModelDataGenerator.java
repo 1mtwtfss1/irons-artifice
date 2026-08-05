@@ -75,18 +75,18 @@ public class ItemModelDataGenerator extends ModelProvider {
 
     private static Map<DeferredItem<ModifierItem>, Identifier> modifiers() {
         Map<DeferredItem<ModifierItem>, Identifier> map = new HashMap<>();
-        map.put(ItemRegistry.HEAVY, Identifier.withDefaultNamespace("iron_ingot"));
+        map.put(ItemRegistry.HEAVY, IronsArtifice.id("lead_core"));
         map.put(ItemRegistry.SCATTERSHOT, Identifier.withDefaultNamespace("gunpowder"));
         map.put(ItemRegistry.TRICKSHOT, Identifier.withDefaultNamespace("ender_pearl"));
-        map.put(ItemRegistry.FIRE, Identifier.withDefaultNamespace("blaze_powder"));
+        map.put(ItemRegistry.FIRE, IronsArtifice.id("incendiary_tip"));
         map.put(ItemRegistry.GRAVITY_WELL, Identifier.withDefaultNamespace("nether_star"));
         map.put(ItemRegistry.BREACH, Identifier.withDefaultNamespace("flint"));
         map.put(ItemRegistry.OVERCHARGED_POWDER, Identifier.withDefaultNamespace("redstone"));
-        map.put(ItemRegistry.STEEL_CORE, Identifier.withDefaultNamespace("netherite_ingot"));
+        map.put(ItemRegistry.STEEL_CORE, IronsArtifice.id("steel_core"));
         map.put(ItemRegistry.HAIR_TRIGGER, Identifier.withDefaultNamespace("breeze_rod"));
         map.put(ItemRegistry.CHAIN_LIGHTNING, Identifier.withDefaultNamespace("copper_ingot"));
         map.put(ItemRegistry.CHAIN_SHOT, Identifier.withDefaultNamespace("iron_chain"));
-        map.put(ItemRegistry.FROZEN_JACKET, Identifier.withDefaultNamespace("diamond"));
+        map.put(ItemRegistry.FROZEN_JACKET, IronsArtifice.id("frozen_jacket"));
         map.put(ItemRegistry.FAIRY_DUST, Identifier.withDefaultNamespace("glow_berries"));
         map.put(ItemRegistry.VENOM_CAPSULE, Identifier.withDefaultNamespace("spider_eye"));
         map.put(ItemRegistry.LUBRICATED_MECHANISM, Identifier.withDefaultNamespace("honey_bottle"));

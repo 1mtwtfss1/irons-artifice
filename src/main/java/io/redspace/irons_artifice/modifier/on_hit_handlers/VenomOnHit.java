@@ -38,7 +38,7 @@ public class VenomOnHit implements OnHitEffect {
     @Override
     public void onHit(ServerLevel level, Bullet bullet, HitResult hitResult, HitEntityAccumulator accumulator) {
         Vec3 center = hitResult.getLocation();
-        Vec3 spawn = level.clip(new ClipContext(center, center.add(0, -5, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty())).getLocation();
+        Vec3 spawn = level.clip(new ClipContext(center, center.add(0, -5, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty())).getLocation().add(0, 0.05, 0);
         int duration = Math.max(1, durationTicks);
         int poisonColor = MobEffects.POISON.value().getColor();
 

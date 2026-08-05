@@ -75,7 +75,7 @@ public final class ItemRegistry {
                     new ReloadCue(3.1f / 3.42f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.75f, 0.9f, 1.1f))
             ), PlayableSound.of(SoundRegistry.MUSKET_EQUIP, 0.75f, 0.9f, 1.1f), AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-    );//////////////
+    );///////////////
     public static final DeferredItem<GunItem> SIX_SHOOTER = ITEMS.registerItem("six_shooter",
             properties -> new GunItem(properties.stacksTo(1), Guns.SIX_SHOOTER, IronsArtifice.id("six_shooter"), ArmPoseKind.PISTOL, ReloadCueStack.of(
                     new ReloadCue(0.1f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 0.75f, 0.95f, 1.05f)),
