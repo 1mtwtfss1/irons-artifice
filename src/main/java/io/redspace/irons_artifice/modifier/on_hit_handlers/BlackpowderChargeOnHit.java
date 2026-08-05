@@ -3,7 +3,6 @@ package io.redspace.irons_artifice.modifier.on_hit_handlers;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
-import io.redspace.irons_artifice.utils.CombatHelper;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -28,7 +27,7 @@ public class BlackpowderChargeOnHit implements OnHitEffect {
         Entity owner = bullet.getOwner();
 
         for (Entity entity : level.getEntities(bullet, area, e ->
-                e.canBeHitByProjectile() && CombatHelper.canHarm(owner, e))) {
+                e.canBeHitByProjectile() && Utils.canHarm(owner, e))) {
             if (accumulator.contains(entity)) {
                 continue;
             }

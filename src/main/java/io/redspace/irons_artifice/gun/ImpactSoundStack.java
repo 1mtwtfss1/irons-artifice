@@ -5,15 +5,15 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class ImpactSoundStack {
     Optional<PlayableSound> baseBlockImpact;
     Optional<PlayableSound> baseEntityImpact;
-    private final List<PlayableSound> blockAccents = new ArrayList<>();
-    private final List<PlayableSound> entityAccents = new ArrayList<>();
+    private final Set<PlayableSound> blockAccents = new HashSet<>();
+    private final Set<PlayableSound> entityAccents = new HashSet<>();
 
     public ImpactSoundStack(Optional<PlayableSound> baseBlockImpact, Optional<PlayableSound> baseEntityImpact) {
         this.baseBlockImpact = baseBlockImpact;

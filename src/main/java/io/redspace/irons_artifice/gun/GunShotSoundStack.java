@@ -10,14 +10,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GunShotSoundStack {
     GunShotSoundSettings baseSound;
     GunShotSoundSettings echoSound;
     PlayableSound dryFireSound;
-    private final List<PlayableSound> accents = new ArrayList<>();
+    private final Set<PlayableSound> accents = new HashSet<>();
 
     public GunShotSoundStack(GunShotSoundSettings baseSound, GunShotSoundSettings echoSound, PlayableSound dryFireSound) {
         this.baseSound = baseSound;

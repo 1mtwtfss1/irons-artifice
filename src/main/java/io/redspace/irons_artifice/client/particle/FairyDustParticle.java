@@ -46,7 +46,7 @@ public class FairyDustParticle extends SingleQuadParticle {
         this.hasPhysics = false;
         this.gravity = 0f;
         this.friction = 1f;
-        this.lifetime = 40;
+        this.lifetime = 30;
         this.quadSize = 0.12f;
         this.rCol = 1f;
         this.gCol = 0.85f;
@@ -79,6 +79,16 @@ public class FairyDustParticle extends SingleQuadParticle {
         setSpriteFromAge(spriteSet);
         float life = (float) this.age / this.lifetime;
         this.alpha = 1f - life * life;
+        if (age < 5) {
+            float f = Mth.lerp(age / 5f, 0.5f, 1f);
+            this.rCol = 1f * f;
+            this.gCol = 0.85f * f;
+            this.bCol = 1f * f;
+        } else {
+            this.rCol = 1f;
+            this.gCol = 0.85f;
+            this.bCol = 1f;
+        }
     }
 
     private void applyOrbit(float partialTick) {
@@ -92,7 +102,6 @@ public class FairyDustParticle extends SingleQuadParticle {
         this.y = this.centerY + this.u.y * cos * radius + this.v.y * sin * radius;
         this.z = this.centerZ + this.u.z * cos * radius + this.v.z * sin * radius;
     }
-
 
     @Override
     protected int getLightCoords(float a) {

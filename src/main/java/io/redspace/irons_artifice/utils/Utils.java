@@ -6,9 +6,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import org.jspecify.annotations.Nullable;
 
 public class Utils {
 
@@ -49,5 +55,36 @@ public class Utils {
                 (Math.random() - 0.5) * 2 * scale,
                 (Math.random() - 0.5) * 2 * scale
         );
+    }
+
+    public static float triangleInterpolate(float x, float start, float peak, float end) {
+        if (x <= start || x >= end) {
+            return 0.0f;
+        }
+        if (x <= peak) {
+            return (x - start) / (peak - start);
+        } else {
+            return (end - x) / (end - peak);
+        }
+    }
+
+    public static boolean canHarm(@Nullable Entity attacker, @Nullable Entity target) {
+        if (attacker == null || target == null || attacker == target) {
+            return false;
+        }
+        if (!target.isAlive()) {
+            return false;
+        }
+        if (target.isAlliedTo(attacker) || attacker.isAlliedTo(target)) {
+            return false;
+        }
+        if (target instanceof Player player && attacker instanceof Player player1 && !player1.canHarmPlayer(player)) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean hasLineOfSight(Entity a, Entity b) {
+        return a.level().clip(new ClipContext(a.getBoundingBox().getCenter(), b.getBoundingBox().getCenter(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS;
     }
 }

@@ -9,7 +9,9 @@ import io.redspace.irons_artifice.client.particle.BulletImpactParticle;
 import io.redspace.irons_artifice.client.particle.BulletTrailParticle;
 import io.redspace.irons_artifice.client.particle.FairyDustParticle;
 import io.redspace.irons_artifice.client.particle.ImpactBlockParticle;
+import io.redspace.irons_artifice.client.particle.LightningTrailEmitterParticle;
 import io.redspace.irons_artifice.client.particle.MuzzleFlashParticle;
+import io.redspace.irons_artifice.client.particle.SplashParticle;
 import io.redspace.irons_artifice.client.pose.GunArmPoses;
 import io.redspace.irons_artifice.gun.ArmPoseKind;
 import io.redspace.irons_artifice.item.GunItem;
@@ -114,6 +116,9 @@ public class IronsArtificeClient {
         event.registerSpriteSet(ParticleRegistry.MUZZLE_FLASH_TRIANGLE.get(), MuzzleFlashParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.MUZZLE_FLASH_SMALL_STAR.get(), MuzzleFlashParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.FAIRY_DUST.get(), FairyDustParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.LIGHTNING_TRAIL.get(), LightningTrailEmitterParticle.Provider::new);
+
+        event.registerSpecial(ParticleRegistry.SPLASH.get(), new SplashParticle.Provider());
     }
 
     @SubscribeEvent

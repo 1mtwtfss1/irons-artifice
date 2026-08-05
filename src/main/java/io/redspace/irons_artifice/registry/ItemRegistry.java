@@ -28,6 +28,7 @@ import io.redspace.irons_artifice.modifier.modifiers.ScattershotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SeekingModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SteelCoreModifier;
 import io.redspace.irons_artifice.modifier.modifiers.TrickshotModifier;
+import io.redspace.irons_artifice.modifier.modifiers.VenomCapsuleModifier;
 import io.redspace.irons_artifice.modifier.modifiers.WindChamberModifier;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
@@ -141,6 +142,8 @@ public final class ItemRegistry {
             "frozen_jacket_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FrozenJacketModifier()));
     public static final DeferredItem<ModifierItem> FAIRY_DUST = ITEMS.registerItem(
             "fairy_dust_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FairyDustModifier()));
+    public static final DeferredItem<ModifierItem> VENOM_CAPSULE = ITEMS.registerItem(
+            "venom_capsule_modifier", properties -> new ModifierItem(properties.stacksTo(1), new VenomCapsuleModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
     public static final DeferredItem<Item> BLACKPOWDER = ITEMS.registerSimpleItem("blackpowder");

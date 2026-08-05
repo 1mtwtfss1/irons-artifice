@@ -9,7 +9,6 @@ import io.redspace.irons_artifice.gun.PostHitEffect;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.network.ClientboundBulletImpactPacket;
 import io.redspace.irons_artifice.network.ClientboundBulletTrailPacket;
-import io.redspace.irons_artifice.utils.CombatHelper;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

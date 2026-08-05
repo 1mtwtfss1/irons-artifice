@@ -5,7 +5,7 @@ import io.redspace.irons_artifice.entity.ChainEntity;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.LastHitTarget;
 import io.redspace.irons_artifice.gun.OnHitEffect;
-import io.redspace.irons_artifice.utils.CombatHelper;
+import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -32,8 +32,8 @@ public class ChainShotOnHit implements OnHitEffect {
             if (previous instanceof LivingEntity last
                     && !last.isRemoved()
                     && last != current
-                    && CombatHelper.canHarm(player, last)
-                    && CombatHelper.canHarm(player, current)) {
+                    && Utils.canHarm(player, last)
+                    && Utils.canHarm(player, current)) {
                 double distSq = last.getBoundingBox().getCenter().distanceToSqr(current.getBoundingBox().getCenter());
                 if (distSq <= ChainEntity.SPAWN_RANGE * ChainEntity.SPAWN_RANGE) {
                     level.addFreshEntity(new ChainEntity(level, last, current));

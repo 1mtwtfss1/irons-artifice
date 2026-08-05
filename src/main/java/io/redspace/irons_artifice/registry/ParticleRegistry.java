@@ -9,6 +9,7 @@ import io.redspace.irons_artifice.client.particle.MuzzleFlashParticleOption;
 import io.redspace.irons_artifice.client.particle.MuzzleFlashParticleType;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -49,6 +50,7 @@ public final class ParticleRegistry {
     public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> BULLET_TRAIL =
             PARTICLE_TYPES.register("bullet_trail", () -> new BulletTrailParticleType(false));
 
+
     public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> BULLET_IMPACT =
             PARTICLE_TYPES.register("bullet_impact", () -> new BulletTrailParticleType(false));
 
@@ -59,8 +61,24 @@ public final class ParticleRegistry {
     public static final DeferredHolder<ParticleType<?>, ParticleType<MuzzleFlashParticleOption>> MUZZLE_FLASH_SMALL_STAR =
             PARTICLE_TYPES.register("muzzle_flash_small_star", () -> new MuzzleFlashParticleType(false));
 
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> LIGHTNING_TRAIL =
+            PARTICLE_TYPES.register("lightning_trail", () -> new BulletTrailParticleType(false));
+
     public static final DeferredHolder<ParticleType<?>, ParticleType<FairyDustParticleOption>> FAIRY_DUST =
             PARTICLE_TYPES.register("fairy_dust", () -> new FairyDustParticleType(false));
+
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorParticleOption>> SPLASH =
+            PARTICLE_TYPES.register("splash", () -> new ParticleType<ColorParticleOption>(false) {
+                @Override
+                public MapCodec<ColorParticleOption> codec() {
+                    return ColorParticleOption.codec(this);
+                }
+
+                @Override
+                public StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec() {
+                    return ColorParticleOption.streamCodec(this);
+                }
+            });
 
     public static void register(IEventBus modEventBus) {
         PARTICLE_TYPES.register(modEventBus);

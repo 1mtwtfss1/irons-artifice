@@ -2,12 +2,28 @@ package io.redspace.irons_artifice.gun;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public final class PostHitEffects {
     private final List<PostHitEffect> effects = new ArrayList<>();
 
     public void add(PostHitEffect effect) {
         this.effects.add(effect);
+    }
+
+    /**
+     * Returns the first effect of {@code type}, or creates/stores one via {@code factory} if absent.
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends PostHitEffect> T getOrCreate(Class<T> type, Supplier<T> factory) {
+        for (PostHitEffect effect : effects) {
+            if (type.isInstance(effect)) {
+                return (T) effect;
+            }
+        }
+        T created = factory.get();
+        effects.add(created);
+        return created;
     }
 
     public boolean contains(PostHitEffect effect) {

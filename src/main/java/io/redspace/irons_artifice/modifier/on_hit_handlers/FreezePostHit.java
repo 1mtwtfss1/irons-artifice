@@ -2,7 +2,6 @@ package io.redspace.irons_artifice.modifier.on_hit_handlers;
 
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.PostHitEffect;
-import io.redspace.irons_artifice.utils.CombatHelper;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -15,7 +14,7 @@ public class FreezePostHit implements PostHitEffect {
 
     @Override
     public void postHit(ServerLevel level, Bullet bullet, HitResult hitResult, Entity entity) {
-        if (!CombatHelper.canHarm(bullet.getOwner(), entity)) {
+        if (!Utils.canHarm(bullet.getOwner(), entity)) {
             return;
         }
         entity.setTicksFrozen(Math.min(entity.getTicksRequiredToFreeze() * 5,

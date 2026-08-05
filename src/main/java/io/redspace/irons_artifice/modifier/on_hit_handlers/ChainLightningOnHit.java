@@ -1,14 +1,14 @@
 package io.redspace.irons_artifice.modifier.on_hit_handlers;
 
-import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
-import io.redspace.irons_artifice.registry.ParticleRegistry;
-import io.redspace.irons_artifice.utils.CombatHelper;
+import io.redspace.irons_artifice.registry.SoundRegistry;
 import io.redspace.irons_artifice.utils.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -23,18 +23,17 @@ public class ChainLightningOnHit implements OnHitEffect {
         Vec3 center = hitResult.getLocation();
         float range = 6;
         AABB area = AABB.ofSize(center, range, range, range).inflate(1);
-        // todo: vfx/sound
-        // todo: multiple chains per modifier?
         var random = bullet.getRandom();
         Entity owner = bullet.getOwner();
-        // todo: line of sight check
         var targets = bullet.level().getEntities(bullet, area, entity ->
                 !accumulator.contains(entity)
                         && entity.canBeHitByProjectile()
-                        && CombatHelper.canHarm(owner, entity)
-                        && entity.getBoundingBox().getCenter().distanceToSqr(center) < range * range);
+                        && Utils.canHarm(owner, entity)
+                        && entity.getBoundingBox().getCenter().distanceToSqr(center) < range * range
+                        && Utils.hasLineOfSight(bullet, entity)
+        );
         for (int i = 0; i < CHAIN_COUNT; i++) {
-            Vec3 visualAnchor = center.add(new Vec3(random.nextFloat(), random.nextFloat(), random.nextFloat()).scale(range).subtract(new Vec3(range, range, range).scale(0.5)).scale(2));
+            Vec3 visualAnchor = center.add(new Vec3(random.nextFloat(), random.nextFloat(), random.nextFloat()).scale(range).subtract(new Vec3(range, range, range).scale(0.5)).scale(1));
             if (!targets.isEmpty()) {
                 Entity entity = targets.get(random.nextInt(targets.size()));
                 float damage = bullet.resolveDamage() * DAMAGE_MULTIPLIER;
@@ -44,12 +43,11 @@ public class ChainLightningOnHit implements OnHitEffect {
                 visualAnchor = entity.getBoundingBox().getCenter();
                 targets.remove(entity);
             }
-            int particles = (int)visualAnchor.distanceTo(center) * 6;
+            int particles = (int) visualAnchor.distanceTo(center) * 6;
+            Vec3 motion = visualAnchor.subtract(center).normalize().scale(0.05);
             for (int j = 0; j < particles; j++) {
                 Vec3 pos = center.lerp(visualAnchor, j / (float) particles);
-                Utils.spawnParticles(level, new ColorTransitionParticleOption(
-                        ParticleRegistry.BULLET_TRAIL.get(), ChainLightningModifier.LIGHTNING_COLOR, ChainLightningModifier.LIGHTNING_FADE_COLOR, 1f, 0f, 1f, 1f, 0.5f, 0f, 0
-                ), pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
+                Utils.spawnParticles(level, ChainLightningModifier.LIGHTNING_TRAIL, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0.01, false);
             }
         }
     }
