@@ -7,6 +7,7 @@ import io.redspace.irons_artifice.client.hud.AmmoCountHudOverlay;
 import io.redspace.irons_artifice.client.particle.BlockDustParticle;
 import io.redspace.irons_artifice.client.particle.BulletImpactParticle;
 import io.redspace.irons_artifice.client.particle.BulletTrailParticle;
+import io.redspace.irons_artifice.client.particle.FairyDustParticle;
 import io.redspace.irons_artifice.client.particle.ImpactBlockParticle;
 import io.redspace.irons_artifice.client.particle.MuzzleFlashParticle;
 import io.redspace.irons_artifice.client.pose.GunArmPoses;
@@ -112,6 +113,7 @@ public class IronsArtificeClient {
         event.registerSpriteSet(ParticleRegistry.MUZZLE_FLASH_LARGE.get(), MuzzleFlashParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.MUZZLE_FLASH_TRIANGLE.get(), MuzzleFlashParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.MUZZLE_FLASH_SMALL_STAR.get(), MuzzleFlashParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.FAIRY_DUST.get(), FairyDustParticle.Provider::new);
     }
 
     @SubscribeEvent

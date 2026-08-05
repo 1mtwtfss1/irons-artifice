@@ -42,4 +42,12 @@ public class Utils {
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
         level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
     }
+
+    public static Vec3 randomVec3(double scale) {
+        return new Vec3(
+                (Math.random() - 0.5) * 2 * scale,
+                (Math.random() - 0.5) * 2 * scale,
+                (Math.random() - 0.5) * 2 * scale
+        );
+    }
 }

@@ -27,8 +27,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -134,11 +132,6 @@ public class GunItem extends BaseGeoItem {
             ReloadResult result = GunplayManager.attemptFinishReload(player, itemStack);
             playReloadFeedback(level, player, result);
         }
-    }
-
-    @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        return InteractionResult.PASS;
     }
 
     @Override

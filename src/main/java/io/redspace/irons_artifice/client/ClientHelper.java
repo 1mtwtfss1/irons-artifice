@@ -2,6 +2,7 @@ package io.redspace.irons_artifice.client;
 
 import com.geckolib.animation.AnimationController;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
+import io.redspace.irons_artifice.client.particle.FairyDustParticleOption;
 import io.redspace.irons_artifice.client.particle.ITrailParticle;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.entity.Bullet;
@@ -57,6 +58,9 @@ public final class ClientHelper {
             ParticleOptions particle = particles.get(i % particles.size());
             if (particle.getType() instanceof ITrailParticle trailParticle) {
                 particle = trailParticle.applyTrailInterpolation(particle, (1 - f));
+            }
+            if (particle instanceof FairyDustParticleOption fairy) {
+                particle = new FairyDustParticleOption(fairy.getType(), fairy.getPhase(), fairy.getRadius(), dir);
             }
             level.addAlwaysVisibleParticle(particle, true,
                     pos.x, pos.y, pos.z,

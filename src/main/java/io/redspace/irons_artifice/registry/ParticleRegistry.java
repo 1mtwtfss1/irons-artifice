@@ -3,6 +3,8 @@ package io.redspace.irons_artifice.registry;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.particle.BulletTrailParticleType;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
+import io.redspace.irons_artifice.client.particle.FairyDustParticleOption;
+import io.redspace.irons_artifice.client.particle.FairyDustParticleType;
 import io.redspace.irons_artifice.client.particle.MuzzleFlashParticleOption;
 import io.redspace.irons_artifice.client.particle.MuzzleFlashParticleType;
 import com.mojang.serialization.MapCodec;
@@ -56,6 +58,9 @@ public final class ParticleRegistry {
             PARTICLE_TYPES.register("muzzle_flash_triangle", () -> new MuzzleFlashParticleType(false));
     public static final DeferredHolder<ParticleType<?>, ParticleType<MuzzleFlashParticleOption>> MUZZLE_FLASH_SMALL_STAR =
             PARTICLE_TYPES.register("muzzle_flash_small_star", () -> new MuzzleFlashParticleType(false));
+
+    public static final DeferredHolder<ParticleType<?>, ParticleType<FairyDustParticleOption>> FAIRY_DUST =
+            PARTICLE_TYPES.register("fairy_dust", () -> new FairyDustParticleType(false));
 
     public static void register(IEventBus modEventBus) {
         PARTICLE_TYPES.register(modEventBus);

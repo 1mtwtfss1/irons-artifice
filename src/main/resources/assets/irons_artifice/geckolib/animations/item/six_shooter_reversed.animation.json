@@ -6,7 +6,7 @@
 			"bones": {
 				"hammer": {
 					"rotation": {
-						"vector": [-60, 0, 0]
+						"vector": [0, 0, 0]
 					}
 				},
 				"right_arm": {
@@ -50,21 +50,21 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.125": {
-							"vector": [0, 0, 0]
-						},
-						"0.2917": {
+						"0.0417": {
 							"vector": [-60, 0, 0],
 							"easing": "easeInOutSine"
+						},
+						"0.2917": {
+							"vector": [0, 0, 0]
 						}
 					}
 				},
 				"cylinder_spin": {
 					"rotation": {
-						"0.125": {
+						"0.0": {
 							"vector": [0, 0, 90]
 						},
-						"0.2917": {
+						"0.1667": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutSine"
 						}
@@ -81,29 +81,23 @@
 				"left_arm": {
 					"rotation": {
 						"0.0": {
-							"vector": [-131.2644, -15.1428, -52.3907]
+							"vector": [-153.7676, -15.147, -52.394]
 						},
-						"0.0833": {
-							"vector": [-131.2676, -15.147, -52.394]
-						},
-						"0.25": {
+						"0.1667": {
 							"vector": [-182.7234, 25.5118, -44.6413],
 							"easing": "easeInOutSine"
 						}
 					},
 					"position": {
 						"0.0": {
-							"vector": [9.23, 2.89, -8.41]
-						},
-						"0.0833": {
-							"vector": [1, 7, -9],
+							"vector": [1, 7, -12],
 							"easing": "easeInSine"
 						},
-						"0.1667": {
+						"0.0833": {
 							"vector": [-2, 6, 3],
 							"easing": "linear"
 						},
-						"0.4167": {
+						"0.3333": {
 							"vector": [2, -9, 16],
 							"easing": "easeOutSine"
 						}
@@ -162,7 +156,7 @@
 				},
 				"hammer": {
 					"rotation": {
-						"vector": [-60, 0, 0]
+						"vector": [0, 0, 0]
 					}
 				},
 				"right_arm": {
@@ -303,7 +297,7 @@
 				},
 				"hammer": {
 					"rotation": {
-						"vector": [-60, 0, 0]
+						"vector": [0, 0, 0]
 					}
 				},
 				"right_arm": {
