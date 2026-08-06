@@ -120,6 +120,22 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
                     boneOpt.get().setRotation(0, 0, 0);
                 }
             }
+            case DOUBLE_BARREL_HAMMER -> {
+                MagazineContents magazineContents = renderPassInfo.getGeckolibData(GunItem.MAGAZINE_ANIMATION_TICKET);
+                double reloadProgress = renderPassInfo.getOrDefaultGeckolibData(GunItem.RELOAD_PROGRESS_SECONDS_TICKET, 0.0);
+                Optional<BoneSnapshot> leftOpt = snapshots.get("hammer_left");
+                Optional<BoneSnapshot> rightOpt = snapshots.get("hammer_right");
+                if (leftOpt.isEmpty() || rightOpt.isEmpty() || magazineContents == null) {
+                    return;
+                } else if (reloadProgress <= 1.17) {
+                    if (magazineContents.count() <= 1) {
+                        leftOpt.get().setRotation(0, 0, 0);
+                    }
+                    if (magazineContents.isEmpty()) {
+                        rightOpt.get().setRotation(0, 0, 0);
+                    }
+                }
+            }
         }
     }
 
