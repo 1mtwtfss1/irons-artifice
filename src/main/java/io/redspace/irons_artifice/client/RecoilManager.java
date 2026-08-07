@@ -67,6 +67,9 @@ public final class RecoilManager {
 
     @SubscribeEvent
     static void onClientTick(ClientTickEvent.Post event) {
+        if (Minecraft.getInstance().isPaused()) {
+            return;
+        }
         pitchCursorO = pitchCursor;
         yawCursorO = yawCursor;
         pitch = decay(pitch);

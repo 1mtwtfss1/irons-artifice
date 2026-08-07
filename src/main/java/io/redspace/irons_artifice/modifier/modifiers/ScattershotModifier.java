@@ -11,7 +11,7 @@ public final class ScattershotModifier extends ValueStackModifier {
         super(Map.of(
                 ShotComponents.PROJECTILE_COUNT, new ValueModifier(3, ValueModifier.Operation.ADD, ValueModifier.Type.BENEFICIAL),
                 ShotComponents.DAMAGE, new ValueModifier(0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL),
-                ShotComponents.SPREAD, new ValueModifier(4, ValueModifier.Operation.ADD, ValueModifier.Type.HARMFUL)
+                ShotComponents.SPREAD, new ValueModifier(3, ValueModifier.Operation.ADD, ValueModifier.Type.HARMFUL)
         ));
     }
 }

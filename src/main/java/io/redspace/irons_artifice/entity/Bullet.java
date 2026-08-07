@@ -293,11 +293,25 @@ public class Bullet extends Projectile {
 
     @Override
     public Vec3 getMovementToShoot(double xd, double yd, double zd, float pow, float uncertainty) {
-        return new Vec3(xd, yd, zd)
-                .normalize()
-                .add(new Vec3(distribution(random), distribution(random), distribution(random))
-                        .scale(uncertainty * Mth.DEG_TO_RAD * 0.75))
-                .scale(pow);
+        Vec3 direction = new Vec3(xd, yd, zd);
+        Vec3 n = direction.normalize();
+        Vec3 arbitrary = Math.abs(n.y) < 0.99 ? new Vec3(0, 1, 0) : new Vec3(1, 0, 0);
+        Vec3 u = n.cross(arbitrary).normalize();
+        Vec3 v = n.cross(u).normalize();
+
+        float cosHalf = Mth.cos(uncertainty * Mth.DEG_TO_RAD);
+        float z = Mth.lerp(random.nextFloat(), cosHalf, 1f);
+        float r = Mth.sqrt(1f - z * z);
+        float phi = random.nextFloat() * Mth.TWO_PI;
+        float cosPhi = Mth.cos(phi);
+        float sinPhi = Mth.sin(phi);
+
+        return n.scale(z).add(u.scale(r * cosPhi)).add(v.scale(r * sinPhi)).normalize().scale(pow);
+//        return new Vec3(xd, yd, zd)
+//                .normalize()
+//                .add(new Vec3(distribution(random), distribution(random), distribution(random))
+//                        .scale(uncertainty * Mth.DEG_TO_RAD * 0.75))
+//                .scale(pow);
     }
 
     @Override

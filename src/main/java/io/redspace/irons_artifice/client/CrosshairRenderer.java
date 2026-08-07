@@ -24,7 +24,6 @@ public final class CrosshairRenderer {
     private static final int THICKNESS = 1;
     private static final int LENGTH = 3;
     private static final float GAP_BASE = 0.0F;
-    private static final float GAP_PER_DEGREE = 1.90915243f; // magic number taking from in game measurements
 
     private static float crosshairGapCursor = 0.0F;
     private static float crosshairGapCursorO = 0.0F;
@@ -54,7 +53,7 @@ public final class CrosshairRenderer {
 
         float partialTick = deltaTracker.getGameTimeDeltaPartialTick(false);
         float degreesSpread = localCrosshairGap(partialTick);
-        float gap = Math.max(GAP_BASE + degreesSpread * GAP_PER_DEGREE, 0);
+        float gap = Math.max(GAP_BASE + degreesToGuiPixels(degreesSpread, graphics.guiHeight(), minecraft.gameRenderer.getMainCamera().getFov()), 0);
         graphics.nextStratum();
         Matrix3x2fStack poseStack = graphics.pose();
         poseStack.pushMatrix();
@@ -77,6 +76,19 @@ public final class CrosshairRenderer {
 //        return (float) Mth.smoothstep(percent);
         percent = 1 - percent;
         return 1 - (percent * percent * percent * percent * percent);
+    }
+
+    private static float degreesToGuiPixels(float degreesSpread, int guiHeight, float fovDegrees) {
+        if (degreesSpread <= 0 || guiHeight <= 0 || fovDegrees <= 0) {
+            return 0;
+        }
+        float halfFovRad = fovDegrees * Mth.DEG_TO_RAD * 0.5f;
+        float spreadRad = degreesSpread * Mth.DEG_TO_RAD;
+        float denom = (float) Math.tan(halfFovRad);
+        if (denom <= 1.0E-6f) {
+            return 0;
+        }
+        return (guiHeight * 0.5f) * (float) Math.tan(spreadRad) / denom;
     }
 
     private static void updateCrosshairCursor() {
@@ -106,6 +118,9 @@ public final class CrosshairRenderer {
 
     @SubscribeEvent
     static void onClientTick(ClientTickEvent.Post event) {
+        if (Minecraft.getInstance().isPaused()) {
+            return;
+        }
         crosshairGapCursorO = crosshairGapCursor;
         if (reloadAnimationTick > 0) {
             reloadAnimationTick--;
@@ -115,26 +130,26 @@ public final class CrosshairRenderer {
 
     private static void drawCross(GuiGraphicsExtractor graphics, float gap) {
         Matrix3x2fStack poseStack = graphics.pose();
-
+        int length = LENGTH + (int) (gap / 40);
         // left prong;
         poseStack.pushMatrix();
-        poseStack.translate(-gap - LENGTH, 0);
-        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, LENGTH, THICKNESS, COLOR);
+        poseStack.translate(-gap - length, 0);
+        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, length, THICKNESS, COLOR);
         poseStack.popMatrix();
         // right prong
         poseStack.pushMatrix();
         poseStack.translate(1 + gap, 0);
-        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, LENGTH, THICKNESS, COLOR);
+        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, length, THICKNESS, COLOR);
         poseStack.popMatrix();
         // top prong;
         poseStack.pushMatrix();
-        poseStack.translate(0, -gap - LENGTH);
-        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, THICKNESS, LENGTH, COLOR);
+        poseStack.translate(0, -gap - length);
+        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, THICKNESS, length, COLOR);
         poseStack.popMatrix();
         // down prong
         poseStack.pushMatrix();
         poseStack.translate(0, 1 + gap);
-        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, THICKNESS, LENGTH, COLOR);
+        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, THICKNESS, length, COLOR);
         poseStack.popMatrix();
 
     }
