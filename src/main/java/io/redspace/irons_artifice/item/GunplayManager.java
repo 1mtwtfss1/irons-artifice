@@ -64,13 +64,18 @@ public final class GunplayManager {
         // todo: add config for authority
         Vec3 authoritativeDirection = direction;
         Vec2 rotation = authoritativeDirection.rotation();
+        // order here is very important:
+        //  - calculate direction
+        //  - then update recoil
+        //  - then fire shot
+        //  - then apply character motion
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
-        fireShot(level, player, player.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
         GunItem.setMagazine(stack, magazine.deplete());
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, player.position());
-        applyCharacterRecoil(player, profile);
         RecoilState.addImpulse(player, now, profile);
+        fireShot(level, player, player.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
+        applyCharacterRecoil(player, profile);
         player.getCooldowns().addCooldown(stack, (int) Math.round(profile.fireDelayTicks()));
         playFireAnimation(player, stack, gunItem, profile);
     }
