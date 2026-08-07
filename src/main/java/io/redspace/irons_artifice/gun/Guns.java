@@ -149,7 +149,7 @@ public final class Guns {
             },
             1,
             7,
-            20,
+            30,
             FireMode.SEMI
     );
 
