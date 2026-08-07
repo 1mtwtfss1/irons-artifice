@@ -75,7 +75,7 @@ public final class ItemRegistry {
                     new ReloadCue(3.1f / 3.42f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.75f, 0.9f, 1.1f))
             ), PlayableSound.of(SoundRegistry.MUSKET_EQUIP, 0.75f, 0.9f, 1.1f), AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-    );////////////////////////
+    );/////////////////////////
     public static final DeferredItem<GunItem> SIX_SHOOTER = ITEMS.registerItem("six_shooter",
             properties -> new GunItem(properties.stacksTo(1), Guns.SIX_SHOOTER, IronsArtifice.id("six_shooter"), ArmPoseKind.PISTOL, ReloadCueStack.of(
                     new ReloadCue(0.1f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 0.75f, 0.95f, 1.05f)),
@@ -93,7 +93,13 @@ public final class ItemRegistry {
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> ARQUEBUS = ITEMS.registerItem("arquebus",
-            properties -> new GunItem(properties.stacksTo(1), Guns.ARQUEBUS, IronsArtifice.id("arquebus"), ArmPoseKind.RIFLE, ReloadCueStack.of(), null, AnimationAdjuster.LOWER_HAMMER),
+            properties -> new GunItem(properties.stacksTo(1), Guns.ARQUEBUS, IronsArtifice.id("arquebus"), ArmPoseKind.RIFLE,
+                    ReloadCueStack.of(
+                            new ReloadCue(0.0f / 1.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_OPEN_BREECH, 0.75f, 0.95f, 1.05f)),
+                            new ReloadCue(0.6f / 1.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 0.75f, 0.9f, 1.1f)),
+                            new ReloadCue(1f / 1.5f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.75f, 1f, 1.1f)),
+                            new ReloadCue(1.3f / 1.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_CLOSE_BREECH, 0.75f, 0.95f, 1.1f))
+                    ), PlayableSound.of(SoundRegistry.ARQUEBUS_EQUIP, 0.5f, 0.9f,1.1f), AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> CLOCKWORK_RIFLE = ITEMS.registerItem("clockwork_rifle",

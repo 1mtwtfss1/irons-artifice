@@ -51,7 +51,6 @@
   },
   "item.generic.cock_hammer": {
     "sounds": [
-      "irons_artifice:hammer/shortbow_load_1",
       "irons_artifice:hammer/shortbow_shoot_1",
       "irons_artifice:hammer/shortbow_shoot_2"
     ]
@@ -136,6 +135,32 @@
   "item.clockwork_rifle.equip": {
     "sounds": [
       "irons_artifice:clockwork_rifle_equip"
+    ]
+  },
+  "item.arquebus.equip": {
+    "sounds": [
+      "irons_artifice:arquebus_equip"
+    ]
+  },
+  "item.arquebus.open_breech": {
+    "sounds": [
+      "irons_artifice:arquebus_open_breech"
+    ]
+  },
+  "item.arquebus.close_breech": {
+    "sounds": [
+      "irons_artifice:arquebus_close_breech"
+    ]
+  },
+  "item.arquebus.shoot": {
+    "sounds": [
+      "irons_artifice:arquebus_shoot_1",
+      "irons_artifice:arquebus_shoot_2"
+    ]
+  },
+  "item.arquebus.load_breech": {
+    "sounds": [
+      "irons_artifice:arquebus_load_breech"
     ]
   },
   "modifier.chain_lightning.impact": {

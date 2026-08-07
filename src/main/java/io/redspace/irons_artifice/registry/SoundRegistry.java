@@ -30,6 +30,12 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> MUSKET_SHOOT = registerSoundEvent("item.musket.shoot");
     public static DeferredHolder<SoundEvent, SoundEvent> MUSKET_EQUIP = registerSoundEvent("item.musket.equip");
 
+    public static DeferredHolder<SoundEvent, SoundEvent> ARQUEBUS_EQUIP = registerSoundEvent("item.arquebus.equip");
+    public static DeferredHolder<SoundEvent, SoundEvent> ARQUEBUS_OPEN_BREECH = registerSoundEvent("item.arquebus.open_breech");
+    public static DeferredHolder<SoundEvent, SoundEvent> ARQUEBUS_CLOSE_BREECH = registerSoundEvent("item.arquebus.close_breech");
+    public static DeferredHolder<SoundEvent, SoundEvent> ARQUEBUS_LOAD = registerSoundEvent("item.arquebus.load_breech");
+    public static DeferredHolder<SoundEvent, SoundEvent> ARQUEBUS_SHOOT = registerSoundEvent("item.arquebus.shoot");
+
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_RELOAD_START = registerSoundEvent("item.blackpowder_revolver.reload.start");
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_RELOAD_MID = registerSoundEvent("item.blackpowder_revolver.reload.mid");
     public static DeferredHolder<SoundEvent, SoundEvent> BLACKPOWDER_REVOLVER_RELOAD_END = registerSoundEvent("item.blackpowder_revolver.reload.end");

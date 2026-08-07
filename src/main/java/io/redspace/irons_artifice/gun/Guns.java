@@ -144,7 +144,12 @@ public final class Guns {
                 map.set(ShotComponents.SPREAD, Value.of(1));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
                 map.set(ShotComponents.DAMAGE, Value.of(14));
-                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2.5f, MuzzleFlashType.LARGE));
+                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.LARGE));
+                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
+                        new GunShotSoundSettings(SoundRegistry.ARQUEBUS_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_GENERIC, 1.2f, 1.5f, 48f, 96f, 192f),
+                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
+                ));
                 return map;
             },
             1,
