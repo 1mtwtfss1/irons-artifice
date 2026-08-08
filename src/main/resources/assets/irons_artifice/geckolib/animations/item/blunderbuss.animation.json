@@ -35,7 +35,7 @@
 			}
 		},
 		"equip": {
-			"animation_length": 0.7083,
+			"animation_length": 0.75,
 			"bones": {
 				"gun": {
 					"rotation": {
@@ -69,7 +69,11 @@
 						"0.0": {
 							"vector": [-130.8316, -0.0775, 68.5106]
 						},
-						"0.5417": {
+						"0.5": {
+							"vector": [-62.498, 17.5009, 89.998],
+							"easing": "easeInOutSine"
+						},
+						"0.7083": {
 							"vector": [-62.498, 17.5009, 89.998],
 							"easing": "easeInOutSine"
 						}
@@ -78,7 +82,11 @@
 						"0.0": {
 							"vector": [21.17, -8.52, -0.22]
 						},
-						"0.5417": {
+						"0.5": {
+							"vector": [0, -1, -16],
+							"easing": "easeInOutSine"
+						},
+						"0.7083": {
 							"vector": [0, 0, -16],
 							"easing": "easeInOutSine"
 						}
