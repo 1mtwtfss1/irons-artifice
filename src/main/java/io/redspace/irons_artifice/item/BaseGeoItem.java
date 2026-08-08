@@ -11,7 +11,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.function.Consumer;
 
-public class BaseGeoItem  extends Item implements GeoItem {
+public class BaseGeoItem extends Item implements GeoItem {
     public final MutableObject<GeoRenderProvider> geoRenderProvider = new MutableObject<>();
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
@@ -33,4 +33,5 @@ public class BaseGeoItem  extends Item implements GeoItem {
     public @NonNull AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.geoCache;
     }
+
 }

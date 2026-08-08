@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.client;
 
 import com.geckolib.animation.AnimationController;
+import com.geckolib.constant.DataTickets;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
 import io.redspace.irons_artifice.client.particle.FairyDustParticleOption;
 import io.redspace.irons_artifice.client.particle.ITrailParticle;
@@ -27,6 +28,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -134,6 +136,8 @@ public final class ClientHelper {
     }
 
     public static void playClientGunAnimation(GunItem gun, long instanceId, String animName, double speed, double offsetSeconds) {
+        var manager = gun.getAnimatableInstanceCache().getManagerForId(instanceId);
+        manager.setAnimatableData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
         AnimationController<?> controller = gun.getAnimatableInstanceCache().getManagerForId(instanceId).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
         if (controller == null) {
             return;

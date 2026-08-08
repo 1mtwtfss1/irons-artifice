@@ -1,11 +1,8 @@
 package io.redspace.irons_artifice.client.gun;
 
-import io.redspace.irons_artifice.IronsArtifice;
-import io.redspace.irons_artifice.item.AnimationAdjuster;
-import io.redspace.irons_artifice.item.GunItem;
-import io.redspace.irons_artifice.item.MagazineContents;
 import com.geckolib.animatable.GeoItem;
 import com.geckolib.animation.state.BoneSnapshot;
+import com.geckolib.cache.model.GeoBone;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.GeoModel;
@@ -14,6 +11,10 @@ import com.geckolib.renderer.base.BoneSnapshots;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.item.AnimationAdjuster;
+import io.redspace.irons_artifice.item.GunItem;
+import io.redspace.irons_artifice.item.MagazineContents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
@@ -26,7 +27,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jspecify.annotations.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
     public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(IronsArtifice.id("magazine_state").toString(), MagazineContents.class);
@@ -85,11 +89,53 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
     @Override
     public void adjustModelBonesForRender(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
         super.adjustModelBonesForRender(renderPassInfo, snapshots);
-        normalizeThirdPersonGunAnimations(renderPassInfo, snapshots);
+        handlePerspectiveAdjustments(renderPassInfo, snapshots);
         handleGunAdjustments(renderPassInfo, snapshots);
     }
 
-    private static void handleGunAdjustments(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
+    private void handlePerspectiveAdjustments(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
+        var perspective = renderPassInfo.renderState().getGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE);
+        if (perspective == null) {
+            return;
+        }
+        Set<ItemDisplayContext> allowed = Set.of(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, ItemDisplayContext.FIRST_PERSON_LEFT_HAND, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND);
+        if (allowed.contains(perspective)) {
+            normalizeThirdPersonGunAnimations(renderPassInfo, snapshots);
+        } else {
+            silenceAnimations(renderPassInfo, snapshots);
+        }
+    }
+
+    private void silenceAnimations(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
+        // silence it all (for gui, ground, and other perspectives where animations shouldn't be visible)
+        List<String> bones = collectBones(renderPassInfo.model().topLevelBones(), new ArrayList<>());
+        bones.forEach(boneName -> {
+            if (!boneName.contains("hammer")) {
+                silenceBone(boneName, snapshots);
+            }
+        });
+    }
+
+    private List<String> collectBones(GeoBone[] bones, List<String> collector) {
+        for (GeoBone bone : bones) {
+            if (bone == null) continue;
+            collector.add(bone.name());
+            collectBones(bone.children(), collector);
+        }
+        return collector;
+    }
+
+    private void silenceBone(String name, BoneSnapshots snapshots) {
+        Optional<BoneSnapshot> opt = snapshots.get(name);
+        if (opt.isEmpty()) {
+            return;
+        }
+        BoneSnapshot root = opt.get();
+        root.setTranslation(0, 0, 0);
+        root.setRotation(0, 0, 0);
+    }
+
+    private void handleGunAdjustments(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull BoneSnapshots snapshots) {
         AnimationAdjuster adjuster = renderPassInfo.getGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET);
         if (adjuster == null || adjuster == AnimationAdjuster.NONE) {
             return;
