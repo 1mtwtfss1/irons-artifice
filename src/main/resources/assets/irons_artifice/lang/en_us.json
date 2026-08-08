@@ -33,6 +33,7 @@
   "item.irons_artifice.simple_mechanical_components": "Simple Mechanical Components",
   "item.irons_artifice.mechanical_components": "Mechanical Components",
   "item.irons_artifice.clockwork_components": "Clockwork Components",
+  "item.irons_artifice.antigravity_powder_modifier": "Antigravity Powder Modifier",
 
   "container.irons_artifice.gun": "Gun",
   "key.irons_artifice.open_modifier_menu": "Open Gun Modifiers",

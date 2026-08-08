@@ -1,5 +1,6 @@
 package io.redspace.irons_artifice.gun;
 
+import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.network.ClientboundLocalSoundPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,6 +63,7 @@ public class ReloadCueStack {
                 PacketDistributor.sendToPlayer(serverPlayer, new ClientboundLocalSoundPacket(source, adjustedSound));
             }
             cueIndex++;
+            IronsArtifice.LOGGER.debug("{}", (Object) Thread.currentThread().getStackTrace());
         }
         return cueIndex;
     }

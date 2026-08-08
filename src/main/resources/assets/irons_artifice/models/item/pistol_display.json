@@ -1,0 +1,13 @@
+{
+	"parent": "irons_artifice:item/gun_display",
+	"display": {
+		"firstperson_righthand": {
+			"rotation": [0, 0, 8],
+			"translation": [-1, 0, -4]
+		},
+		"thirdperson_righthand": {
+			"translation": [0, -1.25, -1],
+			"scale": [0.7, 0.7, 0.7]
+		}
+	}
+}

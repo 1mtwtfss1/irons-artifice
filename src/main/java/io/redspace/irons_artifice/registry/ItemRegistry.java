@@ -132,7 +132,7 @@ public final class ItemRegistry {
     public static final DeferredItem<ModifierItem> LUBRICATED_MECHANISM = ITEMS.registerItem(
             "lubricated_mechanism_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
     public static final DeferredItem<ModifierItem> ANTIGRAVITY_MODIFIER = ITEMS.registerItem(
-            "antigravity_modifier", properties -> new ModifierItem(properties.stacksTo(1), new AntigravityModifier()));
+            "antigravity_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new AntigravityModifier()));
     public static final DeferredItem<ModifierItem> SEEKING = ITEMS.registerItem(
             "seeking_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SeekingModifier()));
     public static final DeferredItem<ModifierItem> WIND_CHAMBER = ITEMS.registerItem(

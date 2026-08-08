@@ -96,7 +96,7 @@ public class Bullet extends Projectile {
 
     @Override
     protected boolean canHitEntity(@NonNull Entity entity) {
-        return super.canHitEntity(entity) && !piercedEntities.contains(entity.getId());
+        return super.canHitEntity(entity) && !piercedEntities.contains(entity.getId()) && Utils.canHarm(getOwner(), entity);
     }
 
     public float resolveDamage() {
