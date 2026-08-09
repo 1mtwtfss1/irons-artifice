@@ -51,6 +51,7 @@ public class Bullet extends Projectile {
     private static final EntityDataAccessor<Float> DATA_DRAG =
             SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
 
+    public static final double BASE_SPEED = 12;
     public static final double TRAIL_DENSITY = 3.0;
 
     @Nullable
@@ -58,7 +59,7 @@ public class Bullet extends Projectile {
     private int piercingRemaining = 0;
     private final Set<Integer> piercedEntities = new HashSet<>();
     private HitState hitState = HitState.CONTINUE;
-    private final int TRAIL_COMPENSATION_TICKS = 5;
+    private static final int TRAIL_COMPENSATION_TICKS = 5;
 
     public Bullet(EntityType<? extends Bullet> type, Level level) {
         super(type, level);

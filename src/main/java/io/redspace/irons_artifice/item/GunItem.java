@@ -13,6 +13,7 @@ import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponents;
+import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.ArmPoseKind;
 import io.redspace.irons_artifice.gun.GunProfile;
 import io.redspace.irons_artifice.gun.ReloadCueStack;
@@ -143,7 +144,7 @@ public class GunItem extends BaseGeoItem {
         ShotProfile shotProfile = GunplayManager.compose(this.gunProfile, new GunContainer(itemStack), itemStack);
         String damage = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(shotProfile.value(ShotComponents.DAMAGE));
         int bulletCount = (int) shotProfile.value(ShotComponents.PROJECTILE_COUNT);
-        int bulletSpeedPercent = (int) (100 * shotProfile.value(ShotComponents.BULLET_SPEED) / shotProfile.get(ShotComponents.BULLET_SPEED).base());
+        int bulletSpeedPercent = (int) (100 * shotProfile.value(ShotComponents.BULLET_SPEED) / Bullet.BASE_SPEED);
         String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20 / shotProfile.fireDelayTicks());
         String reloadTime = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(gunProfile.reloadTimeTicks() / 20f / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (bulletCount > 1) {
@@ -152,7 +153,7 @@ public class GunItem extends BaseGeoItem {
         } else {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage", highlightText.apply(damage)));
         }
-        if (bulletSpeedPercent != 100) {
+        if (bulletSpeedPercent != 100 || Bullet.BASE_SPEED != shotProfile.get(ShotComponents.BULLET_SPEED).base()) {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.bullet_speed_percent", highlightText.apply(bulletSpeedPercent + "%")));
         }
         if (gunProfile.magazineCapacity() > 1) {

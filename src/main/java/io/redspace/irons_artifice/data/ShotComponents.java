@@ -2,6 +2,7 @@ package io.redspace.irons_artifice.data;
 
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.GunShotSoundSettings;
+import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.GunShotSoundStack;
 import io.redspace.irons_artifice.gun.ImpactSoundStack;
 import io.redspace.irons_artifice.gun.MuzzleFlashSettings;
@@ -24,7 +25,7 @@ public final class ShotComponents {
 
     // Attributes
     public static final ComponentType<Value> DAMAGE = new ComponentType<>(IronsArtifice.id("damage"), () -> Value.of(0));
-    public static final ComponentType<Value> BULLET_SPEED = new ComponentType<>(IronsArtifice.id("bullet_speed"), () -> Value.of(15));
+    public static final ComponentType<Value> BULLET_SPEED = new ComponentType<>(IronsArtifice.id("bullet_speed"), () -> Value.of(Bullet.BASE_SPEED));
     public static final ComponentType<Value> GRAVITY = new ComponentType<>(IronsArtifice.id("gravity"), () -> Value.of(0.05));
     public static final ComponentType<Value> KNOCKBACK = new ComponentType<>(IronsArtifice.id("knockback"), () -> Value.of(0));
     public static final ComponentType<Value> BULLET_DRAG = new ComponentType<>(IronsArtifice.id("bullet_drag"), () -> Value.of(.98));

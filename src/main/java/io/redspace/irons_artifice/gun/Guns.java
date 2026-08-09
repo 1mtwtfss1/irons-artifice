@@ -5,6 +5,7 @@ import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.Value;
+import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.recoil.RecoilProfile;
 import io.redspace.irons_artifice.registry.SoundRegistry;
 import net.minecraft.sounds.SoundEvents;
@@ -32,6 +33,7 @@ public final class Guns {
             () -> {
                 var map = basicGun();
                 map.set(ShotComponents.DAMAGE, Value.of(20));
+                map.set(ShotComponents.BULLET_SPEED, Value.of(Bullet.BASE_SPEED * 0.75));
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
                         new GunShotSoundSettings(SoundRegistry.FLINTLOCK_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
                         new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_MUZZLELOADER, 0.9f, 1.1f, 48f, 96f, 192f),
@@ -42,6 +44,28 @@ public final class Guns {
                 map.set(ShotComponents.SPREAD, Value.of(3));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(1.5f, MuzzleFlashType.LARGE));
+                return map;
+            },
+            1,
+            5,
+            60,
+            FireMode.SEMI
+    );
+
+    public static final GunProfile MUSKET = new GunProfile(
+            () -> {
+                var map = basicGun();
+                map.set(ShotComponents.DAMAGE, Value.of(18));
+                map.set(ShotComponents.BULLET_SPEED, Value.of(Bullet.BASE_SPEED * 1.5));
+                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(30f, .45f, 1.9f, 111));
+                map.set(ShotComponents.SPREAD, Value.of(0.5));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
+                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
+                        new GunShotSoundSettings(SoundRegistry.MUSKET_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
+                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_MUZZLELOADER, 1f, 1.3f, 48f, 96f, 192f),
+                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
+                ));
+                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2.5f, MuzzleFlashType.LARGE));
                 return map;
             },
             1,
@@ -91,26 +115,6 @@ public final class Guns {
             FireMode.SEMI
     );
 
-    public static final GunProfile MUSKET = new GunProfile(
-            () -> {
-                var map = basicGun();
-                map.set(ShotComponents.DAMAGE, Value.of(18));
-                map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(30f, .45f, 1.9f, 111));
-                map.set(ShotComponents.SPREAD, Value.of(0.5));
-                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
-                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
-                        new GunShotSoundSettings(SoundRegistry.MUSKET_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
-                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_MUZZLELOADER, 1f, 1.3f, 48f, 96f, 192f),
-                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
-                ));
-                map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2.5f, MuzzleFlashType.LARGE));
-                return map;
-            },
-            1,
-            5,
-            60,
-            FireMode.SEMI
-    );
 
     public static final GunProfile BLUNDERBUSS = new GunProfile(
             () -> {
@@ -184,7 +188,7 @@ public final class Guns {
         map.set(ShotComponents.PROJECTILE_COUNT, Value.of(1));
         map.set(ShotComponents.SPREAD, Value.of(1.0));
         map.set(ShotComponents.DAMAGE, Value.of(6.0));
-        map.set(ShotComponents.BULLET_SPEED, Value.of(15.0));
+        map.set(ShotComponents.BULLET_SPEED, Value.of(Bullet.BASE_SPEED));
         map.set(ShotComponents.GRAVITY, Value.of(0.05));
         map.set(ShotComponents.KNOCKBACK, Value.of(0.3));
         map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(10f, .33f, 1.7f, 431));
