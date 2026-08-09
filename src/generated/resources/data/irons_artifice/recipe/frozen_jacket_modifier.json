@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "irons_artifice:blackpowder",
+    "R": "minecraft:blue_ice"
+  },
+  "pattern": [
+    " R ",
+    "RBR"
+  ],
+  "result": {
+    "id": "irons_artifice:frozen_jacket_modifier"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "irons_artifice:item/chain_lightning_modifier"
+    "layer0": "irons_artifice:item/arc_jacket_modifier"
   }
 }

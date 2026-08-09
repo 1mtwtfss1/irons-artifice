@@ -88,8 +88,6 @@ public class ItemModelDataGenerator extends ModelProvider {
         Map<DeferredItem<ModifierItem>, Identifier> map = new HashMap<>();
         map.put(ItemRegistry.HEAVY, IronsArtifice.id("lead_core_modifier"));
         map.put(ItemRegistry.SCATTERSHOT, Identifier.withDefaultNamespace("gunpowder"));
-//        map.put(ItemRegistry.TRICKSHOT, Identifier.withDefaultNamespace("ender_pearl"));
-        map.put(ItemRegistry.FIRE, IronsArtifice.id("incendiary_tip_modifier"));
         map.put(ItemRegistry.GRAVITY_WELL, Identifier.withDefaultNamespace("nether_star"));
         map.put(ItemRegistry.BREACH, Identifier.withDefaultNamespace("flint"));
         map.put(ItemRegistry.HAIR_TRIGGER, Identifier.withDefaultNamespace("breeze_rod"));

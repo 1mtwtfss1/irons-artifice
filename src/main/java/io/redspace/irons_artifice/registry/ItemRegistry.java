@@ -107,8 +107,8 @@ public final class ItemRegistry {
             "scattershot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ScattershotModifier()));
 //    public static final DeferredItem<ModifierItem> TRICKSHOT = ITEMS.registerItem(
 //            "trickshot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new TrickshotModifier()));
-    public static final DeferredItem<ModifierItem> FIRE = ITEMS.registerItem(
-            "fire_modifier", properties -> new ModifierItem(properties.stacksTo(1), new IncendiaryTipModifier()));
+    public static final DeferredItem<ModifierItem> INCENDIARY_TIP_MODIFIER = ITEMS.registerItem(
+            "incendiary_tip_modifier", properties -> new ModifierItem(properties.stacksTo(1), new IncendiaryTipModifier()));
     public static final DeferredItem<ModifierItem> GRAVITY_WELL = ITEMS.registerItem(
             "gravity_well_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GravityWellModifier()));
     public static final DeferredItem<ModifierItem> BREACH = ITEMS.registerItem(
@@ -120,7 +120,7 @@ public final class ItemRegistry {
     public static final DeferredItem<ModifierItem> HAIR_TRIGGER = ITEMS.registerItem(
             "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_LIGHTNING = ITEMS.registerItem(
-            "chain_lightning_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
+            "arc_jacket_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
     public static final DeferredItem<ModifierItem> LUBRICATED_MECHANISM = ITEMS.registerItem(
             "lubricated_mechanism_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
     public static final DeferredItem<ModifierItem> ANTIGRAVITY_MODIFIER = ITEMS.registerItem(
