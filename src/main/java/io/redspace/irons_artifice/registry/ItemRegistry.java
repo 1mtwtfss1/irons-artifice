@@ -101,8 +101,8 @@ public final class ItemRegistry {
             ), PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_EQUIP, 0.75f, 0.9f, 1.1f), AnimationAdjuster.HARMONICA_MAGAZINE),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
-    public static final DeferredItem<ModifierItem> HEAVY = ITEMS.registerItem(
-            "heavy_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
+    public static final DeferredItem<ModifierItem> LEAD_CORE = ITEMS.registerItem(
+            "lead_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
     public static final DeferredItem<ModifierItem> SCATTERSHOT = ITEMS.registerItem(
             "scattershot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ScattershotModifier()));
 //    public static final DeferredItem<ModifierItem> TRICKSHOT = ITEMS.registerItem(
@@ -111,8 +111,8 @@ public final class ItemRegistry {
             "incendiary_tip_modifier", properties -> new ModifierItem(properties.stacksTo(1), new IncendiaryTipModifier()));
     public static final DeferredItem<ModifierItem> GRAVITY_WELL = ITEMS.registerItem(
             "gravity_well_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GravityWellModifier()));
-    public static final DeferredItem<ModifierItem> BREACH = ITEMS.registerItem(
-            "breach_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BreachModifier()));
+    public static final DeferredItem<ModifierItem> BREACHING_SHELL = ITEMS.registerItem(
+            "breaching_shell_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BreachModifier()));
     public static final DeferredItem<ModifierItem> OVERCHARGED_POWDER = ITEMS.registerItem(
             "overcharged_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new OverchargedPowderModifier()));
     public static final DeferredItem<ModifierItem> STEEL_CORE = ITEMS.registerItem(

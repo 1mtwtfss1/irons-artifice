@@ -286,6 +286,46 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('B', ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS)
                 .unlockedBy("has_precursor", this.has(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS))
                 .save(this.output);
+        // Breaching
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.BREACHING_SHELL.get())
+                .pattern(" R ")
+                .pattern("RBR")
+                .pattern("III")
+                .define('R', Items.FLINT)
+                .define('B', ItemRegistry.BLACKPOWDER)
+                .define('I', commonTag("ingots/copper"))
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
+        // Venom
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.VENOM_CAPSULE.get())
+                .pattern(" EE")
+                .pattern(" GE")
+                .pattern("B  ")
+                .define('E', Items.SPIDER_EYE)
+                .define('G', Items.GLASS_BOTTLE)
+                .define('B', ItemRegistry.BULLET)
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BULLET))
+                .save(this.output);
+        // Scattershot
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.SCATTERSHOT.get())
+                .pattern(" BB")
+                .pattern("#PB")
+                .pattern(" # ")
+                .define('#', Items.STRING)
+                .define('P', ItemRegistry.BLACKPOWDER)
+                .define('B', ItemRegistry.BULLET)
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BULLET))
+                .save(this.output);
+        // Lead Core
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.LEAD_CORE.get())
+                .pattern(" I ")
+                .pattern(" S ")
+                .pattern("IBI")
+                .define('S', commonTag("storage_blocks/raw_iron"))
+                .define('B', ItemRegistry.BLACKPOWDER)
+                .define('I', commonTag("ingots/iron"))
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
     }
 
     private static TagKey<Item> commonTag(String path) {
