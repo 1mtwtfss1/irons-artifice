@@ -5,7 +5,7 @@ import com.google.common.collect.Multimap;
 
 import java.util.Collection;
 
-public record Value(double base, Multimap<ValueModifier.Operation, ValueModifier> modifiersByOperation) {
+public record Value(double base, Multimap<ValueModifier.Operation, ValueModifier> modifiersByOperation) implements Copyable<Value> {
     public Collection<ValueModifier> modifiers() {
         return modifiersByOperation.values();
     }
@@ -20,6 +20,13 @@ public record Value(double base, Multimap<ValueModifier.Operation, ValueModifier
 
     public Value withBase(double base) {
         return new Value(base, modifiersByOperation);
+    }
+
+    @Override
+    public Value copy() {
+        ArrayListMultimap<ValueModifier.Operation, ValueModifier> copied = ArrayListMultimap.create();
+        copied.putAll(this.modifiersByOperation);
+        return new Value(base, copied);
     }
 
     public double compute() {

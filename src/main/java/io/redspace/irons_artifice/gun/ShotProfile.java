@@ -22,10 +22,14 @@ public record ShotProfile(ItemStack itemStack, GunProfile gun, MagazineContents 
         return components.getOrDefault(type).compute();
     }
 
-    /**
-     * Effective ticks between shots: {@code FIRE_DELAY / FIRE_RATE}.
-     * Fire rate modifiers are the multiplicative inverse of fire delay modifiers.
-     */
+    public ShotProfile copy() {
+        return new ShotProfile(itemStack, gun, magazineContents, components.copy());
+    }
+
+    public ShotProfile deepCopy() {
+        return new ShotProfile(itemStack, gun, magazineContents, components.deepCopy());
+    }
+
     public double fireDelayTicks() {
         return value(ShotComponents.FIRE_DELAY) / Math.max(1e-6, value(ShotComponents.FIRE_RATE));
     }

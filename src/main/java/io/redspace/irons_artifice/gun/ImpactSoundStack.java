@@ -9,7 +9,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class ImpactSoundStack {
+import io.redspace.irons_artifice.data.Copyable;
+
+public class ImpactSoundStack implements Copyable<ImpactSoundStack> {
     Optional<PlayableSound> baseBlockImpact;
     Optional<PlayableSound> baseEntityImpact;
     private final Set<PlayableSound> blockAccents = new HashSet<>();
@@ -49,5 +51,13 @@ public class ImpactSoundStack {
         for (PlayableSound sound : accents) {
             sound.play(level, pos, SoundSource.NEUTRAL);
         }
+    }
+
+    @Override
+    public ImpactSoundStack copy() {
+        ImpactSoundStack copy = new ImpactSoundStack(this.baseBlockImpact, this.baseEntityImpact);
+        copy.blockAccents.addAll(this.blockAccents);
+        copy.entityAccents.addAll(this.entityAccents);
+        return copy;
     }
 }

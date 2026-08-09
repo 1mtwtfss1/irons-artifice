@@ -14,7 +14,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class GunShotSoundStack {
+import io.redspace.irons_artifice.data.Copyable;
+
+public class GunShotSoundStack implements Copyable<GunShotSoundStack> {
     GunShotSoundSettings baseSound;
     GunShotSoundSettings echoSound;
     PlayableSound dryFireSound;
@@ -54,5 +56,12 @@ public class GunShotSoundStack {
 
     public void playDryFireSound(Level level, Vec3 pos) {
         this.dryFireSound.play(level, pos, SoundSource.NEUTRAL);
+    }
+
+    @Override
+    public GunShotSoundStack copy() {
+        GunShotSoundStack copy = new GunShotSoundStack(this.baseSound, this.echoSound, this.dryFireSound);
+        copy.accents.addAll(this.accents);
+        return copy;
     }
 }

@@ -1,10 +1,12 @@
 package io.redspace.irons_artifice.gun;
 
+import io.redspace.irons_artifice.data.Copyable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public final class PostHitEffects {
+public final class PostHitEffects implements Copyable<PostHitEffects> {
     private final List<PostHitEffect> effects = new ArrayList<>();
 
     public void add(PostHitEffect effect) {
@@ -26,6 +28,10 @@ public final class PostHitEffects {
         return created;
     }
 
+    public void remove(Class<? extends PostHitEffect> type) {
+        effects.removeIf(type::isInstance);
+    }
+
     public boolean contains(PostHitEffect effect) {
         return this.effects.contains(effect);
     }
@@ -36,5 +42,12 @@ public final class PostHitEffects {
 
     public boolean isEmpty() {
         return this.effects.isEmpty();
+    }
+
+    @Override
+    public PostHitEffects copy() {
+        PostHitEffects copy = new PostHitEffects();
+        copy.effects.addAll(this.effects);
+        return copy;
     }
 }

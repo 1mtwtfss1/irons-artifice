@@ -138,7 +138,7 @@ public final class GunplayManager {
         for (int i = 0; i < projectileCount; i++) {
             Bullet bullet = new Bullet(EntityRegistry.BULLET.get(), level);
             bullet.setOwner(player);
-            bullet.applyProfile(profile);
+            bullet.applyProfile(profile.copy());
             bullet.setPos(origin);
             bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);

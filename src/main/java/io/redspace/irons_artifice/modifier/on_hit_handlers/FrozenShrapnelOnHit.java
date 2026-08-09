@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.modifier.on_hit_handlers;
 
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
+import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.Value;
@@ -8,7 +9,6 @@ import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
 import io.redspace.irons_artifice.gun.ShotProfile;
-import io.redspace.irons_artifice.item.MagazineContents;
 import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ParticleRegistry;
 import io.redspace.irons_artifice.utils.Utils;
@@ -16,7 +16,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -73,19 +72,19 @@ public class FrozenShrapnelOnHit implements OnHitEffect {
     }
 
     private static ShotProfile createChildProfile(ShotProfile parent, float damage) {
-        ShotComponentMap components = new ShotComponentMap();
+        ShotProfile child = parent.deepCopy();
+        ShotComponentMap components = child.components();
         components.set(ShotComponents.DAMAGE, Value.of(damage));
         components.set(ShotComponents.PROJECTILE_COUNT, Value.of(1));
         components.set(ShotComponents.BULLET_SPEED, Value.of(SPEED));
         components.set(ShotComponents.BULLET_DRAG, Value.of(DRAG));
-        components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(new ColorTransitionParticleOption(
+        ParticleStack trail = new ParticleStack();
+        trail.add(new ColorTransitionParticleOption(
                 ParticleRegistry.BULLET_TRAIL.get(), TRAIL_COLOR_FROM, TRAIL_COLOR_TO, 1f, 0f, 1f, 1f, 0.45f, 0f, 0
         ));
-        components.getOrCreate(ShotComponents.POST_HIT_EFFECTS).add(new FreezePostHit());
-
-        ItemStack stack = parent.itemStack() != null ? parent.itemStack() : ItemStack.EMPTY;
-        MagazineContents magazine = parent.magazineContents() != null ? parent.magazineContents() : MagazineContents.EMPTY;
-        return new ShotProfile(stack, parent.gun(), magazine, components);
+        components.set(ShotComponents.PARTICLE_TRAIL, trail);
+        components.getOrCreate(ShotComponents.ON_HIT).remove(FrozenShrapnelOnHit.class);
+        return child;
     }
 
     /**

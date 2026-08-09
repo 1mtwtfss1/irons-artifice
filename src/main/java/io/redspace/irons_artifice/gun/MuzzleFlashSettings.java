@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import io.redspace.irons_artifice.data.Copyable;
+
 public record MuzzleFlashSettings(
         Set<MuzzleFlashType> types,
         float muzzleDistanceScalar,
         List<Vector3f> tints
-) {
+) implements Copyable<MuzzleFlashSettings> {
     public static final Vector3f WHITE = new Vector3f(1f, 1f, 1f);
     public static final Vector3f UNTINTED = new Vector3f(-1f, -1f, -1f);
     public static final Supplier<MuzzleFlashSettings> DEFAULT = ()->of(1.5f, MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR);
@@ -51,5 +53,14 @@ public record MuzzleFlashSettings(
             throw new IllegalStateException("MuzzleFlashSettings has no types to pick from");
         }
         return types.stream().skip(random.nextInt(types.size())).findFirst().orElseThrow();
+    }
+
+    @Override
+    public MuzzleFlashSettings copy() {
+        return new MuzzleFlashSettings(
+                types.isEmpty() ? EnumSet.noneOf(MuzzleFlashType.class) : EnumSet.copyOf(types),
+                muzzleDistanceScalar,
+                new ArrayList<>(tints)
+        );
     }
 }
