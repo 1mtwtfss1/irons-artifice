@@ -172,6 +172,29 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('R', Items.REPEATER)
                 .unlockedBy("has_precursor", this.has(Items.NETHERITE_INGOT))
                 .save(this.output);
+        /* **********************************
+         * Modifier
+         ********************************** */
+        // Overcharged Powder
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.OVERCHARGED_POWDER.get())
+                .pattern("BBB")
+                .pattern("PRP")
+                .pattern("BBB")
+                .define('R', commonTag("storage_blocks/redstone"))
+                .define('B', ItemRegistry.BLACKPOWDER)
+                .define('P', Items.BLAZE_POWDER)
+                .unlockedBy("has_precursor", this.has(Items.BLAZE_POWDER))
+                .save(this.output);
+        // Steel Core
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.STEEL_CORE.get())
+                .pattern(" I ")
+                .pattern(" S ")
+                .pattern("IBI")
+                .define('S', commonTag("storage_blocks/iron"))
+                .define('B', ItemRegistry.BLACKPOWDER)
+                .define('I', commonTag("ingots/iron"))
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
     }
 
     private static TagKey<Item> commonTag(String path) {

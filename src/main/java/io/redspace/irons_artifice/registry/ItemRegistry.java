@@ -12,10 +12,11 @@ import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.modifier.modifiers.AntigravityModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BlackpowderChargeModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BreachModifier;
+import io.redspace.irons_artifice.modifier.modifiers.BufferSpringModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainShotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.FairyDustModifier;
-import io.redspace.irons_artifice.modifier.modifiers.FireModifier;
+import io.redspace.irons_artifice.modifier.modifiers.IncendiaryTipModifier;
 import io.redspace.irons_artifice.modifier.modifiers.FrozenJacketModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GravityWellModifier;
@@ -27,7 +28,6 @@ import io.redspace.irons_artifice.modifier.modifiers.OverchargedPowderModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ScattershotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SeekingModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SteelCoreModifier;
-import io.redspace.irons_artifice.modifier.modifiers.TrickshotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.VenomCapsuleModifier;
 import io.redspace.irons_artifice.modifier.modifiers.WindChamberModifier;
 import net.minecraft.core.component.DataComponents;
@@ -106,10 +106,10 @@ public final class ItemRegistry {
             "heavy_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
     public static final DeferredItem<ModifierItem> SCATTERSHOT = ITEMS.registerItem(
             "scattershot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ScattershotModifier()));
-    public static final DeferredItem<ModifierItem> TRICKSHOT = ITEMS.registerItem(
-            "trickshot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new TrickshotModifier()));
+//    public static final DeferredItem<ModifierItem> TRICKSHOT = ITEMS.registerItem(
+//            "trickshot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new TrickshotModifier()));
     public static final DeferredItem<ModifierItem> FIRE = ITEMS.registerItem(
-            "fire_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FireModifier()));
+            "fire_modifier", properties -> new ModifierItem(properties.stacksTo(1), new IncendiaryTipModifier()));
     public static final DeferredItem<ModifierItem> GRAVITY_WELL = ITEMS.registerItem(
             "gravity_well_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GravityWellModifier()));
     public static final DeferredItem<ModifierItem> BREACH = ITEMS.registerItem(
@@ -144,6 +144,8 @@ public final class ItemRegistry {
             "fairy_dust_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FairyDustModifier()));
     public static final DeferredItem<ModifierItem> VENOM_CAPSULE = ITEMS.registerItem(
             "venom_capsule_modifier", properties -> new ModifierItem(properties.stacksTo(1), new VenomCapsuleModifier()));
+    public static final DeferredItem<ModifierItem> BUFFER_SPRING = ITEMS.registerItem(
+            "buffer_spring_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BufferSpringModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
     public static final DeferredItem<Item> BLACKPOWDER = ITEMS.registerSimpleItem("blackpowder");

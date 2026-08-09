@@ -34,13 +34,14 @@
   "item.irons_artifice.mechanical_components": "Mechanical Components",
   "item.irons_artifice.clockwork_components": "Clockwork Components",
   "item.irons_artifice.antigravity_powder_modifier": "Antigravity Powder Modifier",
+  "item.irons_artifice.buffer_spring_modifier": "Buffer Spring Modifier",
 
   "container.irons_artifice.gun": "Gun",
   "key.irons_artifice.open_modifier_menu": "Open Gun Modifiers",
   "key.irons_artifice.reload": "Reload",
 
   "irons_artifice.component_type.knockback": "Knockback",
-  "irons_artifice.component_type.ricochet": "Ricochet",
+  "irons_artifice.component_type.ricochet": "Block Ricochet",
   "irons_artifice.component_type.spread": "Bullet Spread",
   "irons_artifice.component_type.in_air_penalty": "In-Air Penalty",
   "irons_artifice.component_type.character_recoil": "Character Recoil",
@@ -58,6 +59,7 @@
   "irons_artifice.component_type.reload_speed_multiplier": "Reload Speed",
   "irons_artifice.component_type.gravity": "Gravity",
   "irons_artifice.component_type.freeze_on_hit": "Freeze on Hit",
+  "irons_artifice.component_type.burn_duration_on_hit": "+%ss Burn on Hit",
   "irons_artifice.component_type.poison_amplifier_on_hit": "+%s Poison Amplifier",
   "irons_artifice.component_type.poison_duration_on_hit": "+%ss Poison on Hit",
   "irons_artifice.modifier.blackpowder_charge": "Explode on Hit",
@@ -67,6 +69,7 @@
   "irons_artifice.modifier.fairy_dust": "Fairy Dust Trail",
   "irons_artifice.modifier.venom_capsule": "Creates Poison Cloud on Hit",
   "irons_artifice.modifier.antigravity": "Removes Bullet Gravity",
+  "irons_artifice.modifier.negate": "Removes %s",
 
   "irons_artifice.value_modifier.plus": "+%s %s",
   "irons_artifice.value_modifier.minus": "-%s %s",
