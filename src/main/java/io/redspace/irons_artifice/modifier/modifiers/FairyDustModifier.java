@@ -11,7 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public final class FairyDustModifier implements GunModifier {
     private static final float TRAIL_RADIUS = 1f;
@@ -25,7 +25,7 @@ public final class FairyDustModifier implements GunModifier {
     }
 
     @Override
-    public List<Component> getDescriptionText() {
-        return List.of(Component.translatable("irons_artifice.modifier.fairy_dust").withStyle(ChatFormatting.LIGHT_PURPLE));
+    public void getDescriptionText(Consumer<Component> builder) {
+        builder.accept(Component.translatable("irons_artifice.modifier.fairy_dust").withStyle(ChatFormatting.LIGHT_PURPLE));
     }
 }

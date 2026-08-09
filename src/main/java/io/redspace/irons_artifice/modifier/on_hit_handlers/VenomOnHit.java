@@ -22,17 +22,27 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 public class VenomOnHit implements OnHitEffect {
 
     private int durationTicks;
+    private int amplifier;
 
-    public VenomOnHit(int durationTicks) {
+    public VenomOnHit(int durationTicks, int amplifier) {
         this.durationTicks = durationTicks;
+        this.amplifier = amplifier;
     }
 
     public void addDuration(int ticks) {
         this.durationTicks += ticks;
     }
 
+    public void addAmplifier(int amount) {
+        this.amplifier += amount;
+    }
+
     public int getDurationTicks() {
         return durationTicks;
+    }
+
+    public int getAmplifier() {
+        return amplifier;
     }
 
     @Override
@@ -40,18 +50,20 @@ public class VenomOnHit implements OnHitEffect {
         Vec3 center = hitResult.getLocation();
         Vec3 spawn = level.clip(new ClipContext(center, center.add(0, -5, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty())).getLocation().add(0, 0.05, 0);
         int duration = Math.max(1, durationTicks);
+        int amp = Math.max(0, amplifier);
         int poisonColor = MobEffects.POISON.value().getColor();
 
         AreaEffectCloud cloud = new AreaEffectCloud(level, spawn.x, spawn.y, spawn.z);
         if (bullet.getOwner() instanceof LivingEntity owner) {
             cloud.setOwner(owner);
         }
-        cloud.setRadius(2f);
-        cloud.setRadiusOnUse(-0.5f);
+        cloud.getPersistentData().putBoolean("irons_artifice:venom_cloud", true);
+        cloud.setRadius(3.5f);
+        cloud.setRadiusOnUse(0);
         cloud.setWaitTime(10);
         cloud.setDuration(duration);
         cloud.setRadiusPerTick(-cloud.getRadius() / duration);
-        cloud.addEffect(new MobEffectInstance(MobEffects.POISON, duration, 0));
+        cloud.addEffect(new MobEffectInstance(MobEffects.POISON, duration, amp));
         level.addFreshEntity(cloud);
         splashEffects(level, center, poisonColor, bullet.getDeltaMovement());
     }

@@ -9,7 +9,7 @@ import io.redspace.irons_artifice.modifier.on_hit_handlers.FrozenShrapnelOnHit;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public final class FrozenJacketModifier implements GunModifier {
     private static final int MUZZLE_TINT = 0xA8E6FF;
@@ -23,17 +23,13 @@ public final class FrozenJacketModifier implements GunModifier {
         ));
 
         components.getOrCreate(ShotComponents.MUZZLE_FLASH).addTint(MUZZLE_TINT);
-//        Vector3f color = ARGB.vector3fFromRGB24(MUZZLE_TINT);
-//        components.set(ShotComponents.MUZZLE_FLASH, flash);
     }
 
     @Override
-    public List<Component> getDescriptionText() {
-        return List.of(
-                Component.translatable("irons_artifice.component_type.freeze_on_hit").withStyle(ChatFormatting.AQUA),
-                Component.translatable("irons_artifice.modifier.frozen_jacket",
-                        FrozenShrapnelOnHit.SHRAPNEL_COUNT,
-                        (int) (FrozenShrapnelOnHit.DAMAGE_FRACTION * 100)).withStyle(ChatFormatting.AQUA)
-        );
+    public void getDescriptionText(Consumer<Component> builder) {
+        builder.accept(Component.translatable("irons_artifice.component_type.freeze_on_hit").withStyle(ChatFormatting.AQUA));
+        builder.accept(Component.translatable("irons_artifice.modifier.frozen_jacket",
+                FrozenShrapnelOnHit.SHRAPNEL_COUNT,
+                (int) (FrozenShrapnelOnHit.DAMAGE_FRACTION * 100)).withStyle(ChatFormatting.AQUA));
     }
 }

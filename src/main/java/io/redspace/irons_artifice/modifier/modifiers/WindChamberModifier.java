@@ -9,8 +9,8 @@ import java.util.Map;
 public final class WindChamberModifier extends ValueStackModifier {
     public WindChamberModifier() {
         super(Map.of(
-                ShotComponents.CHARACTER_RECOIL, new ValueModifier(0.3, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.NEUTRAL),
-                ShotComponents.IN_AIR_PENALTY, new ValueModifier(-0.15, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.HARMFUL)
+                ShotComponents.CHARACTER_RECOIL, new ValueModifier(0.5, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.NEUTRAL),
+                ShotComponents.IN_AIR_PENALTY, new ValueModifier(-0.5, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.HARMFUL)
         ));
     }
 }

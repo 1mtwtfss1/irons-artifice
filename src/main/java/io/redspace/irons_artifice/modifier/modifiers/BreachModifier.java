@@ -7,9 +7,8 @@ import io.redspace.irons_artifice.modifier.ValueStackModifier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public final class BreachModifier extends ValueStackModifier {
     public BreachModifier() {
@@ -19,10 +18,9 @@ public final class BreachModifier extends ValueStackModifier {
     }
 
     @Override
-    public List<Component> getDescriptionText() {
-        var text = new ArrayList<>(super.getDescriptionText());
-        text.add(0, Component.translatable("irons_artifice.component_type.enables_block_damage").withStyle(ChatFormatting.AQUA));
-        return text;
+    public void getDescriptionText(Consumer<Component> builder) {
+        builder.accept(Component.translatable("irons_artifice.component_type.enables_block_damage").withStyle(ChatFormatting.AQUA));
+        super.getDescriptionText(builder);
     }
 
     @Override

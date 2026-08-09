@@ -6,7 +6,7 @@ import io.redspace.irons_artifice.modifier.GunModifier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public final class MechanicalRepeaterModifier implements GunModifier {
     @Override
@@ -15,7 +15,7 @@ public final class MechanicalRepeaterModifier implements GunModifier {
     }
 
     @Override
-    public List<Component> getDescriptionText() {
-        return List.of(Component.translatable("irons_artifice.component_type.force_auto_fire").withStyle(ChatFormatting.AQUA));
+    public void getDescriptionText(Consumer<Component> builder) {
+        builder.accept(Component.translatable("irons_artifice.component_type.force_auto_fire").withStyle(ChatFormatting.AQUA));
     }
 }

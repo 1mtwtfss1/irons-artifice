@@ -12,17 +12,27 @@ import net.minecraft.world.phys.HitResult;
 
 public class PoisonPostHit implements PostHitEffect {
     private int durationTicks;
+    private int amplifier;
 
-    public PoisonPostHit(int durationTicks) {
+    public PoisonPostHit(int durationTicks, int amplifier) {
         this.durationTicks = durationTicks;
+        this.amplifier = amplifier;
     }
 
     public void addDuration(int ticks) {
         this.durationTicks += ticks;
     }
 
+    public void addAmplifier(int amount) {
+        this.amplifier += amount;
+    }
+
     public int getDurationTicks() {
         return durationTicks;
+    }
+
+    public int getAmplifier() {
+        return amplifier;
     }
 
     @Override
@@ -31,7 +41,8 @@ public class PoisonPostHit implements PostHitEffect {
             return;
         }
         MobEffectInstance existing = living.getEffect(MobEffects.POISON);
-        int base = existing != null ? existing.getDuration() : 0;
-        living.addEffect(new MobEffectInstance(MobEffects.POISON, base + durationTicks, 0), bullet.getOwner());
+        int duration = durationTicks + (existing != null ? existing.getDuration() : 0);
+        int amp = existing != null ? Math.max(existing.getAmplifier(), amplifier) : amplifier;
+        living.addEffect(new MobEffectInstance(MobEffects.POISON, duration, Math.max(0, amp)), bullet.getOwner());
     }
 }

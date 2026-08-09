@@ -4,11 +4,8 @@ import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
-import io.redspace.irons_artifice.registry.SoundRegistry;
 import io.redspace.irons_artifice.utils.Utils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -17,23 +14,23 @@ import net.minecraft.world.phys.Vec3;
 public class ChainLightningOnHit implements OnHitEffect {
     public static final int CHAIN_COUNT = 2;
     public static final float DAMAGE_MULTIPLIER = 0.5f;
+    public static final float RADIUS = 4f;
 
     @Override
     public void onHit(ServerLevel level, Bullet bullet, HitResult hitResult, HitEntityAccumulator accumulator) {
         Vec3 center = hitResult.getLocation();
-        float range = 6;
-        AABB area = AABB.ofSize(center, range, range, range).inflate(1);
+        AABB area = AABB.ofSize(center, RADIUS, RADIUS, RADIUS).inflate(1);
         var random = bullet.getRandom();
         Entity owner = bullet.getOwner();
         var targets = bullet.level().getEntities(bullet, area, entity ->
                 !accumulator.contains(entity)
                         && entity.canBeHitByProjectile()
                         && Utils.canHarm(owner, entity)
-                        && entity.getBoundingBox().getCenter().distanceToSqr(center) < range * range
+                        && entity.getBoundingBox().getCenter().distanceToSqr(center) < RADIUS * RADIUS
                         && Utils.hasLineOfSight(bullet, entity)
         );
         for (int i = 0; i < CHAIN_COUNT; i++) {
-            Vec3 visualAnchor = center.add(new Vec3(random.nextFloat(), random.nextFloat(), random.nextFloat()).scale(range).subtract(new Vec3(range, range, range).scale(0.5)).scale(1));
+            Vec3 visualAnchor = center.add(new Vec3(random.nextFloat(), random.nextFloat(), random.nextFloat()).scale(RADIUS).subtract(new Vec3(RADIUS, RADIUS, RADIUS).scale(0.5)).scale(1));
             if (!targets.isEmpty()) {
                 Entity entity = targets.get(random.nextInt(targets.size()));
                 float damage = bullet.resolveDamage() * DAMAGE_MULTIPLIER;

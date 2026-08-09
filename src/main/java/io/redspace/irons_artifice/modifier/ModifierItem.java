@@ -20,7 +20,7 @@ public class ModifierItem extends Item {
     @Override
     @SuppressWarnings("deprecation")
     public void appendHoverText(@NonNull ItemStack itemStack, @NonNull TooltipContext context, @NonNull TooltipDisplay display, @NonNull Consumer<Component> builder, @NonNull TooltipFlag tooltipFlag) {
-        modifier.getDescriptionText().forEach(builder);
+        modifier.getDescriptionText(builder);
     }
 
     public GunModifier getModifier() {

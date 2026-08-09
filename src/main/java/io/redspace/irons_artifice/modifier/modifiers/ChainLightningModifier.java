@@ -13,7 +13,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public final class ChainLightningModifier implements GunModifier {
     public static final int LIGHTNING_COLOR = 0xcef8ff;
@@ -33,7 +33,7 @@ public final class ChainLightningModifier implements GunModifier {
     }
 
     @Override
-    public List<Component> getDescriptionText() {
-        return List.of(Component.translatable("irons_artifice.modifier.chain_lightning", ChainLightningOnHit.CHAIN_COUNT, (int) (ChainLightningOnHit.DAMAGE_MULTIPLIER * 100)).withStyle(ChatFormatting.AQUA));
+    public void getDescriptionText(Consumer<Component> builder) {
+        builder.accept(Component.translatable("irons_artifice.modifier.chain_lightning", ChainLightningOnHit.CHAIN_COUNT, (int) (ChainLightningOnHit.DAMAGE_MULTIPLIER * 100)).withStyle(ChatFormatting.AQUA));
     }
 }

@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -24,6 +25,10 @@ public class Utils {
 
     public static Component formatValueModifierDescription(ValueModifier valueModifier, ComponentType<?> componentType) {
         return formatValueModifierDescription(valueModifier, Component.translatable(String.format("%s.component_type.%s", componentType.getName().getNamespace(), componentType.getName().getPath())));
+    }
+
+    public static Component getComponentTranslate(ComponentType<?> componentType) {
+        return Component.translatable(String.format("%s.component_type.%s", componentType.getName().getNamespace(), componentType.getName().getPath()));
     }
 
     public static Component formatValueModifierDescription(ValueModifier valueModifier, Component valueName) {
@@ -66,6 +71,20 @@ public class Utils {
         } else {
             return (end - x) / (end - peak);
         }
+    }
+
+    public static double mapClamped(
+            double value,
+            double inputMin,
+            double inputMax,
+            double outputMin,
+            double outputMax
+    ) {
+        return Mth.lerp(
+                Mth.clamp((value - inputMin) / (inputMax - inputMin), 0, 1),
+                outputMin,
+                outputMax
+        );
     }
 
     public static boolean canHarm(@Nullable Entity attacker, @Nullable Entity target) {

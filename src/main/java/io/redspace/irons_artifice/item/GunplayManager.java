@@ -1,5 +1,6 @@
 package io.redspace.irons_artifice.item;
 
+import com.geckolib.animatable.GeoItem;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
@@ -16,7 +17,7 @@ import io.redspace.irons_artifice.network.ClientboundReloadCrosshairAnimationPac
 import io.redspace.irons_artifice.recoil.RecoilState;
 import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ItemRegistry;
-import com.geckolib.animatable.GeoItem;
+import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -103,7 +104,11 @@ public final class GunplayManager {
         }
         Vec3 look = player.getLookAngle();
         // todo: factor in recoil to push direction (looking down to counter recoil makes blast push us up)
+        double d = player.fallDistance;
         player.push(-look.x * strength, -look.y * strength * 0.5 + 0.05, -look.z * strength);
+        double fallDistanceMultiplier = Utils.mapClamped(player.getDeltaMovement().y, -0.5, -0.1, 1, 0);
+        player.fallDistance *= fallDistanceMultiplier;
+//        IronsArtifice.LOGGER.debug("[applyCharacterRecoil] {} * {}->{}", d, fallDistanceMultiplier, player.fallDistance);
         player.hurtMarked = true;
     }
 
