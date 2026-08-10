@@ -240,9 +240,12 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .save(this.output);
         // Wind Chamber
         ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.WIND_CHAMBER.get())
-                .pattern("BPB")
+                .pattern("  P")
+                .pattern("CB ")
+                .pattern(" C ")
                 .define('P', Items.WIND_CHARGE)
                 .define('B', ItemRegistry.BLACKPOWDER)
+                .define('C', commonTag("ingots/copper"))
                 .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
                 .save(this.output);
         // Gas Vent
@@ -264,7 +267,9 @@ public class RecipeDataGenerator extends RecipeProvider {
         // Mechanical Repeater
         ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.MECHANICAL_REPEATER.get())
                 .pattern("#B#")
+                .pattern("***")
                 .define('#', Items.IRON_CHAIN)
+                .define('*', commonTag("ingots/gold"))
                 .define('B', ItemRegistry.CLOCKWORK_COMPONENTS)
                 .unlockedBy("has_precursor", this.has(ItemRegistry.CLOCKWORK_COMPONENTS))
                 .save(this.output);
@@ -321,10 +326,28 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .pattern(" I ")
                 .pattern(" S ")
                 .pattern("IBI")
-                .define('S', commonTag("storage_blocks/raw_iron"))
+                .define('S', Items.DEEPSLATE_BRICKS)
                 .define('B', ItemRegistry.BLACKPOWDER)
                 .define('I', commonTag("ingots/iron"))
                 .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
+        // Trick Bullet
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.TRICK_BULLET_MODIFIER.get())
+                .pattern(" I ")
+                .pattern(" S ")
+                .pattern("IBI")
+                .define('S', commonTag("storage_blocks/gold"))
+                .define('B', ItemRegistry.BLACKPOWDER)
+                .define('I', commonTag("ingots/gold"))
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
+        // Lubricated Mechanism
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.LUBRICATED_MECHANISM.get())
+                .pattern("L")
+                .pattern("M")
+                .define('L', Items.HONEY_BOTTLE)
+                .define('M', ItemRegistry.MECHANICAL_COMPONENTS)
+                .unlockedBy("has_precursor", this.has(ItemRegistry.MECHANICAL_COMPONENTS))
                 .save(this.output);
     }
 

@@ -3,10 +3,12 @@
   "category": "misc",
   "key": {
     "#": "minecraft:iron_chain",
+    "*": "#c:ingots/gold",
     "B": "irons_artifice:clockwork_components"
   },
   "pattern": [
-    "#B#"
+    "#B#",
+    "***"
   ],
   "result": {
     "id": "irons_artifice:mechanical_repeater_modifier"

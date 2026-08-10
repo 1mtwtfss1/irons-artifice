@@ -90,7 +90,6 @@ public class ItemModelDataGenerator extends ModelProvider {
         map.put(ItemRegistry.FAIRY_DUST, Identifier.withDefaultNamespace("glow_berries"));
         map.put(ItemRegistry.LUBRICATED_MECHANISM, Identifier.withDefaultNamespace("honey_bottle"));
         map.put(ItemRegistry.SEEKING, Identifier.withDefaultNamespace("ender_eye"));
-        map.put(ItemRegistry.GAS_VENT, Identifier.withDefaultNamespace("hopper"));
         return map;
     }
 

@@ -3,10 +3,13 @@
   "category": "misc",
   "key": {
     "B": "irons_artifice:blackpowder",
+    "C": "#c:ingots/copper",
     "P": "minecraft:wind_charge"
   },
   "pattern": [
-    "BPB"
+    "  P",
+    "CB ",
+    " C "
   ],
   "result": {
     "id": "irons_artifice:wind_chamber_modifier"
