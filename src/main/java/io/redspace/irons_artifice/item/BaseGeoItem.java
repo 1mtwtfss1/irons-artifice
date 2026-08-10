@@ -33,5 +33,4 @@ public class BaseGeoItem extends Item implements GeoItem {
     public @NonNull AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.geoCache;
     }
-
 }

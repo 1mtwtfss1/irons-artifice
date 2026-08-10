@@ -87,13 +87,10 @@ public class ItemModelDataGenerator extends ModelProvider {
     private static Map<DeferredItem<ModifierItem>, Identifier> modifiers() {
         Map<DeferredItem<ModifierItem>, Identifier> map = new HashMap<>();
         map.put(ItemRegistry.GRAVITY_WELL, Identifier.withDefaultNamespace("nether_star"));
-        map.put(ItemRegistry.HAIR_TRIGGER, Identifier.withDefaultNamespace("breeze_rod"));
         map.put(ItemRegistry.FAIRY_DUST, Identifier.withDefaultNamespace("glow_berries"));
         map.put(ItemRegistry.LUBRICATED_MECHANISM, Identifier.withDefaultNamespace("honey_bottle"));
         map.put(ItemRegistry.SEEKING, Identifier.withDefaultNamespace("ender_eye"));
-        map.put(ItemRegistry.WIND_CHAMBER, Identifier.withDefaultNamespace("wind_charge"));
         map.put(ItemRegistry.GAS_VENT, Identifier.withDefaultNamespace("hopper"));
-        map.put(ItemRegistry.MECHANICAL_REPEATER, Identifier.withDefaultNamespace("repeater"));
         return map;
     }
 
