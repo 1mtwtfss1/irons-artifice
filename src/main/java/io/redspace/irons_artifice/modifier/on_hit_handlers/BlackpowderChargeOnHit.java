@@ -1,15 +1,20 @@
 package io.redspace.irons_artifice.modifier.on_hit_handlers;
 
+import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.Bullet;
+import io.redspace.irons_artifice.gun.BlockDamageManager;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
+import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.utils.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -43,6 +48,30 @@ public class BlackpowderChargeOnHit implements OnHitEffect {
             if (entity.hurtServer(level, bullet.damageSources().explosion(bullet, owner instanceof LivingEntity living ? living : null), damage)) {
                 accumulator.add(entity);
             }
+        }//
+
+        ShotProfile profile = bullet.getProfile();
+        if (profile != null && profile.get(ShotComponents.BREAKS_BLOCKS)) {
+            float blockDamageMultiplier = (float) profile.value(ShotComponents.BLOCK_DAMAGE_MULTIPLIER);
+            BlockPos.betweenClosed(
+                    BlockPos.containing(center.x - RADIUS, center.y - RADIUS, center.z - RADIUS),
+                    BlockPos.containing(center.x + RADIUS, center.y + RADIUS, center.z + RADIUS)
+            ).forEach(pos -> {
+                BlockState state = level.getBlockState(pos);
+                if (state.isAir()) {
+                    return;
+                }
+                double distSq = Vec3.atCenterOf(pos).distanceToSqr(center);
+                if (distSq > radiusSq) {
+                    return;
+                }
+                float falloff = 1f - (float) Math.sqrt(distSq) / RADIUS;
+                float damage = baseDamage * blockDamageMultiplier * falloff;
+                if (damage <= 0) {
+                    return;
+                }
+                BlockDamageManager.applyDamage(level, pos.immutable(), state, damage, bullet);
+            });
         }
 
         level.playSound(null, center.x, center.y, center.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 2.5f, 1.4f);

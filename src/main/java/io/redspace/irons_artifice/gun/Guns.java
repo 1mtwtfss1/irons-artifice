@@ -120,7 +120,7 @@ public final class Guns {
             () -> {
                 var map = basicGun();
                 map.set(ShotComponents.DAMAGE, Value.of(22));
-                map.set(ShotComponents.PROJECTILE_COUNT, Value.of(6));
+                map.set(ShotComponents.PROJECTILE_COUNT, Value.of(8));
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(30f, .35f, 2f, 999));
                 map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.75));
                 map.set(ShotComponents.SPREAD, Value.of(9));

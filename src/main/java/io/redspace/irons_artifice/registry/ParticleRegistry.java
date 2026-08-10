@@ -64,6 +64,9 @@ public final class ParticleRegistry {
     public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> LIGHTNING_TRAIL =
             PARTICLE_TYPES.register("lightning_trail", () -> new BulletTrailParticleType(false));
 
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> FIRE_TRAIL =
+            PARTICLE_TYPES.register("fire_trail", () -> new BulletTrailParticleType(false));
+
     public static final DeferredHolder<ParticleType<?>, ParticleType<FairyDustParticleOption>> FAIRY_DUST =
             PARTICLE_TYPES.register("fairy_dust", () -> new FairyDustParticleType(false));
 

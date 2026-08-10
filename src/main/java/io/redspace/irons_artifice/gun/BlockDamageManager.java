@@ -2,7 +2,6 @@ package io.redspace.irons_artifice.gun;
 
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.entity.Bullet;
-import com.google.common.eventbus.Subscribe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -71,7 +70,7 @@ public class BlockDamageManager {
         if (destroySpeed < 0) {
             return false;
         }
-        float blockMaxHealth = (destroySpeed + state.getBlock().getExplosionResistance()) * 5;
+        float blockMaxHealth = (destroySpeed + state.getBlock().getExplosionResistance()) * 8;
         // todo: block specific multipliers, config, blacklist, etc
         if (state.is(Blocks.TARGET)) {
             return false;
@@ -89,6 +88,7 @@ public class BlockDamageManager {
         }
         float lastProgress = 1 - blockCurrentHealth / blockMaxHealth;
         blockCurrentHealth -= damage;
+        IronsArtifice.LOGGER.debug("Dealing {} damage ({}/{}) to {} at {}", damage, blockCurrentHealth, blockMaxHealth, state.getBlock(), pos);
         float destroyProgress = 1 - blockCurrentHealth / blockMaxHealth;
         if (destroyProgress >= 1) {
             // todo: checks and stuff? events? drop modifiers?

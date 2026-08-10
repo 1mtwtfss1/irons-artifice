@@ -6,8 +6,8 @@
     "R": "minecraft:breeze_rod"
   },
   "pattern": [
-    " C",
-    "R "
+    "C",
+    "R"
   ],
   "result": {
     "id": "irons_artifice:hair_trigger_modifier"

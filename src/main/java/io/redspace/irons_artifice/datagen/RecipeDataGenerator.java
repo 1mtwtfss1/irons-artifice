@@ -207,8 +207,8 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .save(this.output);
         // Hair Trigger
         ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.HAIR_TRIGGER.get())
-                .pattern(" C")
-                .pattern("R ")
+                .pattern("C")
+                .pattern("R")
                 .define('R', Items.BREEZE_ROD)
                 .define('C', ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS)
                 .unlockedBy("has_precursor", this.has(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS))

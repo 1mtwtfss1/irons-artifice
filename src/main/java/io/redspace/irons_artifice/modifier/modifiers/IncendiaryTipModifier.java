@@ -34,7 +34,7 @@ public final class IncendiaryTipModifier extends ValueStackModifier {
                 .getOrCreate(IgnitePostHit.class, () -> new IgnitePostHit(0))
                 .addDuration(BURN_TICKS_PER);
         components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(
-                new ColorTransitionParticleOption(ParticleRegistry.BULLET_TRAIL.get(), 0xfffa87, 0xfa0a00,
+                new ColorTransitionParticleOption(ParticleRegistry.FIRE_TRAIL.get(), 0xfffa87, 0xfa0a00,
                         1f, 0.5f,
                         1f, 1f,
                         0.5f, 0f,
@@ -46,7 +46,7 @@ public final class IncendiaryTipModifier extends ValueStackModifier {
                 (level, bullet, hitResult, accumulator) -> {
                     // fixme: this is dumb
                     var vec = hitResult.getLocation();
-                    Utils.spawnParticles(level, ParticleTypes.LAVA, vec.x, vec.y, vec.z, 5, 0, 0, 0, 0.2, true);
+                    Utils.spawnParticles(level, ParticleTypes.LAVA, vec.x, vec.y, vec.z, 3, 0, 0, 0, 0.2, true);
                 }
         );
     }
