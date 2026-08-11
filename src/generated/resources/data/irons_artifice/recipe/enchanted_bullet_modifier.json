@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": "minecraft:lapis_lazuli",
-    "*": "minecraft:book",
+    "*": "irons_artifice:bullet",
     "B": "irons_artifice:blackpowder"
   },
   "pattern": [

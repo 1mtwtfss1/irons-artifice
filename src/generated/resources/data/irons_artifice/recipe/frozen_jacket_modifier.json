@@ -2,11 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "*": "#c:ingots/iron",
     "B": "irons_artifice:blackpowder",
     "R": "minecraft:blue_ice"
   },
   "pattern": [
-    " R ",
+    " * ",
+    "*R*",
     "RBR"
   ],
   "result": {

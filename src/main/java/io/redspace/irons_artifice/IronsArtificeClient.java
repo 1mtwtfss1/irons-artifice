@@ -2,6 +2,8 @@ package io.redspace.irons_artifice;
 
 import io.redspace.irons_artifice.client.Keybinds;
 import io.redspace.irons_artifice.client.entity.ChainEntityRenderer;
+import io.redspace.irons_artifice.client.gui.GunPreviewRenderState;
+import io.redspace.irons_artifice.client.gui.GunPreviewRenderer;
 import io.redspace.irons_artifice.client.gun.GunInHandRenderer;
 import io.redspace.irons_artifice.client.hud.AmmoCountHudOverlay;
 import io.redspace.irons_artifice.client.particle.BlockDustParticle;
@@ -42,6 +44,7 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -64,6 +67,11 @@ public class IronsArtificeClient {
     @SubscribeEvent
     public static void registerGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.HOTBAR, IronsArtifice.id("ammo_hud"), AmmoCountHudOverlay::render);
+    }
+
+    @SubscribeEvent
+    public static void registerPictureInPictureRenderers(RegisterPictureInPictureRenderersEvent event) {
+        event.register(GunPreviewRenderState.class, GunPreviewRenderer::new);
     }
 
     @SubscribeEvent

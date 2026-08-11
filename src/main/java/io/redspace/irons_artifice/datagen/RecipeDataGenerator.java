@@ -225,10 +225,12 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .save(this.output);
         // Frozen Jacket
         ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.FROZEN_JACKET.get())
-                .pattern(" R ")
+                .pattern(" * ")
+                .pattern("*R*")
                 .pattern("RBR")
                 .define('R', Items.BLUE_ICE)
                 .define('B', ItemRegistry.BLACKPOWDER)
+                .define('*', commonTag("ingots/iron"))
                 .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
                 .save(this.output);
         // Antigravity Powder
@@ -365,7 +367,7 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .pattern("B*#")
                 .pattern(" B ")
                 .define('#', Items.LAPIS_LAZULI)
-                .define('*', Items.BOOK)
+                .define('*', ItemRegistry.BULLET)
                 .define('B', ItemRegistry.BLACKPOWDER)
                 .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
                 .save(this.output);

@@ -106,8 +106,6 @@ public final class ItemRegistry {
             "lead_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
     public static final DeferredItem<ModifierItem> SCATTERSHOT = ITEMS.registerItem(
             "scattershot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ScattershotModifier()));
-    //    public static final DeferredItem<ModifierItem> TRICKSHOT = ITEMS.registerItem(
-//            "trickshot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new TrickshotModifier()));
     public static final DeferredItem<ModifierItem> INCENDIARY_TIP_MODIFIER = ITEMS.registerItem(
             "incendiary_tip_modifier", properties -> new ModifierItem(properties.stacksTo(1), new IncendiaryTipModifier()));
     public static final DeferredItem<ModifierItem> SINGULARITY_CHARGE_MODIFIER = ITEMS.registerItem(

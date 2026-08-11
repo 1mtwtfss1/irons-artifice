@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GunMenu extends AbstractContainerMenu {
-
+    public static final int SLOT_SIZE = 24;
     private final Container gunInventory;
     private final int size;
+    public final ItemStack gunstack;
 
     public List<Slot> getModifierSlots() {
         return modifierSlots;
@@ -32,17 +33,20 @@ public class GunMenu extends AbstractContainerMenu {
         this.modifierSlots = new ArrayList<>();
         gunInventory.startOpen(playerInventory.player);
         this.size = gunInventory.getContainerSize();
+        this.gunstack = playerInventory.getSelectedItem();
 
-        for (int x = 0; x < size; x++) {
-            int rows = (size - 1) / 5 + 1;
-            int columns = Math.min(size, 5);
-            int left = 39;
-            int top = 15;
-            int width = 98;
-            int height = 44;
-            modifierSlots.add(this.addSlot(new Slot(gunInventory, x,
-                    left + (width - columns * 18) / 2 + (x % 5) * 18,
-                    top + (height - rows * 18) / 2 + (x / 5) * 18) {
+        int maxPerRow = size == 6 ? 4 : 5; // prevent awkward single slot row
+        int rows = (size - 1) / maxPerRow + 1;
+        int centerX = 176 / 2;
+        int top = 84 - SLOT_SIZE * rows;
+        for (int i = 0; i < size; i++) {
+            int row = i / maxPerRow;
+            int col = i % maxPerRow;
+            int slotsInRow = Math.min(maxPerRow, size - row * maxPerRow);
+            int rowLeft = centerX - (slotsInRow * SLOT_SIZE) / 2;
+            modifierSlots.add(this.addSlot(new Slot(gunInventory, i,
+                    rowLeft + col * SLOT_SIZE,
+                    top + row * SLOT_SIZE) {
                 @Override
                 public boolean mayPlace(ItemStack stack) {
                     return gunInventory.canPlaceItem(this.index, stack);
@@ -50,7 +54,7 @@ public class GunMenu extends AbstractContainerMenu {
             }));
         }
 
-        this.addStandardInventorySlots(playerInventory, 8, 77);
+        this.addStandardInventorySlots(playerInventory, 8, 101);
     }
 
     @Override
