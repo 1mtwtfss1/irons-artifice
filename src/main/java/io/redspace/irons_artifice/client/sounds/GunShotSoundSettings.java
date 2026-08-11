@@ -1,4 +1,4 @@
-package io.redspace.irons_artifice.client;
+package io.redspace.irons_artifice.client.sounds;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;

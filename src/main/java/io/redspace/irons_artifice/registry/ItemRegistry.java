@@ -7,6 +7,7 @@ import io.redspace.irons_artifice.gun.Guns;
 import io.redspace.irons_artifice.gun.ReloadCue;
 import io.redspace.irons_artifice.gun.ReloadCueStack;
 import io.redspace.irons_artifice.item.AnimationAdjuster;
+import io.redspace.irons_artifice.item.CowboyHatItem;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.modifier.modifiers.AntigravityModifier;
@@ -152,4 +153,7 @@ public final class ItemRegistry {
     public static final DeferredItem<Item> SIMPLE_MECHANICAL_COMPONENTS = ITEMS.registerSimpleItem("simple_mechanical_components");
     public static final DeferredItem<Item> MECHANICAL_COMPONENTS = ITEMS.registerSimpleItem("mechanical_components");
     public static final DeferredItem<Item> CLOCKWORK_COMPONENTS = ITEMS.registerSimpleItem("clockwork_components");
+
+    public static final DeferredItem<Item> COWBOY_HAT = ITEMS.registerItem("cowboy_hat", CowboyHatItem::new);
+
 }

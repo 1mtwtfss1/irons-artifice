@@ -2,9 +2,13 @@ package io.redspace.irons_artifice.client;
 
 import com.geckolib.animation.AnimationController;
 import com.geckolib.constant.DataTickets;
+import io.redspace.irons_artifice.client.hud.CrosshairRenderer;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
 import io.redspace.irons_artifice.client.particle.FairyDustParticleOption;
 import io.redspace.irons_artifice.client.particle.ITrailParticle;
+import io.redspace.irons_artifice.client.sounds.EquipSoundInstance;
+import io.redspace.irons_artifice.client.sounds.GunShotSoundInstance;
+import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
 import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.entity.Bullet;

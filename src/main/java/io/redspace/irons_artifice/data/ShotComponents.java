@@ -1,7 +1,7 @@
 package io.redspace.irons_artifice.data;
 
 import io.redspace.irons_artifice.IronsArtifice;
-import io.redspace.irons_artifice.client.GunShotSoundSettings;
+import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.GunShotSoundStack;
 import io.redspace.irons_artifice.gun.ImpactSoundStack;

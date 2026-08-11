@@ -1,6 +1,6 @@
 package io.redspace.irons_artifice.gun;
 
-import io.redspace.irons_artifice.client.GunShotSoundSettings;
+import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;

@@ -2,7 +2,7 @@ package io.redspace.irons_artifice.network;
 
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.ClientHelper;
-import io.redspace.irons_artifice.client.GunShotSoundSettings;
+import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

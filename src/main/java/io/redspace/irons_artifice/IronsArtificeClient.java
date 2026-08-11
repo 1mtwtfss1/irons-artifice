@@ -14,7 +14,7 @@ import io.redspace.irons_artifice.client.particle.ImpactBlockParticle;
 import io.redspace.irons_artifice.client.particle.LightningTrailEmitterParticle;
 import io.redspace.irons_artifice.client.particle.MuzzleFlashParticle;
 import io.redspace.irons_artifice.client.particle.SplashParticle;
-import io.redspace.irons_artifice.client.pose.GunArmPoses;
+import io.redspace.irons_artifice.client.gun.GunArmPoses;
 import io.redspace.irons_artifice.gun.ArmPoseKind;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.menu.GunModifierScreen;

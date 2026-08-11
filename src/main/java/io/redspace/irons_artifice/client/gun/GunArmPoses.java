@@ -1,4 +1,4 @@
-package io.redspace.irons_artifice.client.pose;
+package io.redspace.irons_artifice.client.gun;
 
 import io.redspace.irons_artifice.item.ReloadState;
 import net.minecraft.client.model.HumanoidModel;

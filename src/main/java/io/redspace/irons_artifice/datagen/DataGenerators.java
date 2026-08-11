@@ -14,5 +14,6 @@ public final class DataGenerators {
     public static void gatherClientData(GatherDataEvent.Client event) {
         event.createProvider(ItemModelDataGenerator::new);
         event.createProvider(RecipeDataGenerator.Runner::new);
+        event.createProvider(ItemTagDataGenerator::new);
     }
 }

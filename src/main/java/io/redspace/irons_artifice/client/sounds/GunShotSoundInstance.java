@@ -1,4 +1,4 @@
-package io.redspace.irons_artifice.client;
+package io.redspace.irons_artifice.client.sounds;
 
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.client.Minecraft;

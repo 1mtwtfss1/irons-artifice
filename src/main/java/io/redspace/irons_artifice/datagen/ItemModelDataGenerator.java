@@ -3,7 +3,6 @@ package io.redspace.irons_artifice.datagen;
 import com.geckolib.renderer.internal.GeckolibItemSpecialRenderer;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.item.GunItem;
-import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.registry.ItemRegistry;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -18,6 +17,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.List;
@@ -34,25 +34,19 @@ public class ItemModelDataGenerator extends ModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        for (DeferredItem<Item> item : List.of(ItemRegistry.BULLET, ItemRegistry.BLACKPOWDER, ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS, ItemRegistry.MECHANICAL_COMPONENTS, ItemRegistry.CLOCKWORK_COMPONENTS)) {
-            generateTemplatedItem(itemModels, item.get(), itemTexture(item));
-        }
-
         for (var item : ItemRegistry.ITEMS.getEntries()) {
-            if (item.get() instanceof ModifierItem) {
-                generateTemplatedItem(itemModels, item.get(), itemTexture((DeferredItem<?>) item));
+            if (item.get() instanceof GunItem) {
+                Identifier displayParent = GECKOLIB_GUN_DISPLAY;
+                if (item == ItemRegistry.BLACKPOWDER_REVOLVER || item == ItemRegistry.SIX_SHOOTER) {
+                    displayParent = REVOLVER_GUN_DISPLAY;
+                }
+                itemModels.itemModelOutput.accept(
+                        item.get(),
+                        ItemModelUtils.specialModel(displayParent, new GeckolibItemSpecialRenderer.Unbaked<>())
+                );
+            } else {
+                generateTemplatedItem(itemModels, item.get(), itemTexture(item));
             }
-        }
-
-        for (DeferredItem<GunItem> gun : geckolibGuns()) {
-            Identifier displayParent = GECKOLIB_GUN_DISPLAY;
-            if (gun == ItemRegistry.BLACKPOWDER_REVOLVER || gun == ItemRegistry.SIX_SHOOTER) {
-                displayParent = REVOLVER_GUN_DISPLAY;
-            }
-            itemModels.itemModelOutput.accept(
-                    gun.get(),
-                    ItemModelUtils.specialModel(displayParent, new GeckolibItemSpecialRenderer.Unbaked<>())
-            );
         }
     }
 
@@ -70,22 +64,13 @@ public class ItemModelDataGenerator extends ModelProvider {
         itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(modelLocation));
     }
 
-    private static Identifier itemTexture(DeferredItem<?> item) {
+    private static Identifier itemTexture(DeferredHolder<?, ?> item) {
         return itemTexture(item.getId());
     }
 
     private static Identifier itemTexture(Identifier identifier) {
         return identifier.withPrefix("item/");
     }
-
-//    private static Map<DeferredItem<ModifierItem>, Identifier> modifiers() {
-//        Map<DeferredItem<ModifierItem>, Identifier> map = new HashMap<>();
-//        map.put(ItemRegistry.GRAVITY_WELL, Identifier.withDefaultNamespace("nether_star"));
-//        map.put(ItemRegistry.FAIRY_DUST, Identifier.withDefaultNamespace("glow_berries"));
-//        map.put(ItemRegistry.LUBRICATED_MECHANISM, Identifier.withDefaultNamespace("honey_bottle"));
-//        map.put(ItemRegistry.SEEKING, Identifier.withDefaultNamespace("ender_eye"));
-//        return map;
-//    }
 
     private static List<DeferredItem<GunItem>> geckolibGuns() {
         return ItemRegistry.ITEMS.getEntries().stream()

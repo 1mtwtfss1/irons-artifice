@@ -59,6 +59,18 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .unlockedBy("has_blackpowder", this.has(ItemRegistry.BLACKPOWDER))
                 .save(this.output, recipeId("bullet_from_copper"));
         /* **********************************
+         * Armor
+         ********************************** */
+        // Cowboy Hat
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.COWBOY_HAT.get())
+                .pattern("B#B")
+                .pattern("***")
+                .define('*', commonTag("leathers"))
+                .define('B', ItemRegistry.BULLET)
+                .define('#', Items.LEATHER_HELMET)
+                .unlockedBy("precursor", this.has(ItemRegistry.BULLET))
+                .save(this.output);
+        /* **********************************
          * Mechanical Components
          ********************************** */
         ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS.get())

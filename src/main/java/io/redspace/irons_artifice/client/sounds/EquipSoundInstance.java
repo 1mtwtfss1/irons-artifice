@@ -1,4 +1,4 @@
-package io.redspace.irons_artifice.client;
+package io.redspace.irons_artifice.client.sounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;

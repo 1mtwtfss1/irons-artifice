@@ -1,6 +1,7 @@
-package io.redspace.irons_artifice.client;
+package io.redspace.irons_artifice.client.hud;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.client.RecoilManager;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
