@@ -17,7 +17,7 @@ import io.redspace.irons_artifice.client.particle.SplashParticle;
 import io.redspace.irons_artifice.client.pose.GunArmPoses;
 import io.redspace.irons_artifice.gun.ArmPoseKind;
 import io.redspace.irons_artifice.item.GunItem;
-import io.redspace.irons_artifice.menu.GunScreen;
+import io.redspace.irons_artifice.menu.GunModifierScreen;
 import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ItemRegistry;
 import io.redspace.irons_artifice.registry.MenuRegistry;
@@ -99,7 +99,7 @@ public class IronsArtificeClient {
 
     @SubscribeEvent
     static void registerMenuScreens(RegisterMenuScreensEvent event) {
-        event.register(MenuRegistry.GUN_MENU.get(), GunScreen::new);
+        event.register(MenuRegistry.GUN_MENU.get(), GunModifierScreen::new);
     }
 
     @SubscribeEvent

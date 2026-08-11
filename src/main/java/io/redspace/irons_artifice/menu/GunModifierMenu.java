@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GunMenu extends AbstractContainerMenu {
+public class GunModifierMenu extends AbstractContainerMenu {
     public static final int SLOT_SIZE = 24;
     private final Container gunInventory;
     private final int size;
@@ -23,11 +23,11 @@ public class GunMenu extends AbstractContainerMenu {
 
     private final List<Slot> modifierSlots;
 
-    public GunMenu(int containerId, Inventory playerInventory) {
+    public GunModifierMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, new GunContainer(playerInventory.getSelectedItem()));
     }
 
-    public GunMenu(int containerId, Inventory playerInventory, Container gunInventory) {
+    public GunModifierMenu(int containerId, Inventory playerInventory, Container gunInventory) {
         super(MenuRegistry.GUN_MENU.get(), containerId);
         this.gunInventory = gunInventory;
         this.modifierSlots = new ArrayList<>();
@@ -35,15 +35,20 @@ public class GunMenu extends AbstractContainerMenu {
         this.size = gunInventory.getContainerSize();
         this.gunstack = playerInventory.getSelectedItem();
 
-        int maxPerRow = size == 6 ? 4 : 5; // prevent awkward single slot row
+        int maxPerRow = 8;
+        if (size % maxPerRow == 1) {
+            // prevent awkward single slot row
+            maxPerRow--;
+        }
         int rows = (size - 1) / maxPerRow + 1;
         int centerX = 176 / 2;
         int top = 84 - SLOT_SIZE * rows;
+        int margin = (SLOT_SIZE - 16) / 2;
         for (int i = 0; i < size; i++) {
             int row = i / maxPerRow;
             int col = i % maxPerRow;
             int slotsInRow = Math.min(maxPerRow, size - row * maxPerRow);
-            int rowLeft = centerX - (slotsInRow * SLOT_SIZE) / 2;
+            int rowLeft = centerX - (slotsInRow * SLOT_SIZE) / 2 + margin;
             modifierSlots.add(this.addSlot(new Slot(gunInventory, i,
                     rowLeft + col * SLOT_SIZE,
                     top + row * SLOT_SIZE) {

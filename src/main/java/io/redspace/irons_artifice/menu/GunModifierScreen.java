@@ -17,27 +17,21 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-import static io.redspace.irons_artifice.menu.GunMenu.SLOT_SIZE;
+import static io.redspace.irons_artifice.menu.GunModifierMenu.SLOT_SIZE;
 
-public class GunScreen extends AbstractContainerScreen<GunMenu> {
+public class GunModifierScreen extends AbstractContainerScreen<GunModifierMenu> {
     private static final Identifier BG_TEXTURE = IronsArtifice.id("textures/gui/gun_modifier_screen.png");
     private static final Identifier SLOT_SPRITE = IronsArtifice.id("modifier_screen/slot");
     private static final float PREVIEW_SCALE = 16.0F * 3.0F;
 
-    public GunScreen(GunMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 176, 183);
+    public GunModifierScreen(GunModifierMenu menu, Inventory inventory, Component title) {
+        super(menu, inventory, menu.gunstack.getHoverName().copy().setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE).withUnderlined(true)), 176, 183);
         int margin = (SLOT_SIZE - 16) / 2;
         for (var slot : menu.getModifierSlots()) {
             this.addRenderableOnly((graphics, mx, my, a) ->
                     graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_SPRITE, leftPos + slot.x - margin, topPos + slot.y - margin, SLOT_SIZE, SLOT_SIZE)
             );
         }
-        this.inventoryLabelY = imageHeight - 93;
-    }
-
-    @Override
-    public Component getTitle() {
-        return this.menu.gunstack.getHoverName().copy().setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE));
     }
 
     @Override

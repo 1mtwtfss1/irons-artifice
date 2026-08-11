@@ -3,7 +3,7 @@ package io.redspace.irons_artifice.network;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.menu.GunContainer;
-import io.redspace.irons_artifice.menu.GunMenu;
+import io.redspace.irons_artifice.menu.GunModifierMenu;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -37,7 +37,7 @@ public record ServerboundOpenModifierMenuPacket() implements CustomPacketPayload
             return;
         }
         serverPlayer.openMenu(new SimpleMenuProvider(
-                (id, inventory, player) -> new GunMenu(id, inventory, new GunContainer(held)),
+                (id, inventory, player) -> new GunModifierMenu(id, inventory, new GunContainer(held)),
                 Component.translatable("container.irons_artifice.gun")
         ));
     }
