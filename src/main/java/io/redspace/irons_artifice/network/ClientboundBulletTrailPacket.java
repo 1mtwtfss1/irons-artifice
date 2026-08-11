@@ -2,6 +2,7 @@ package io.redspace.irons_artifice.network;
 
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.ClientHelper;
+import io.redspace.irons_artifice.data.ParticleStack;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -14,7 +15,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public record ClientboundBulletTrailPacket(Vec3 from, Vec3 to, List<ParticleOptions> particles)
+public record ClientboundBulletTrailPacket(Vec3 from, Vec3 to, List<ParticleOptions> particles,
+                                           List<ParticleStack.ParticleAccent> accents)
         implements CustomPacketPayload {
 
     public static final Type<ClientboundBulletTrailPacket> TYPE =
@@ -34,6 +36,11 @@ public record ClientboundBulletTrailPacket(Vec3 from, Vec3 to, List<ParticleOpti
         for (ParticleOptions particle : msg.particles) {
             ParticleTypes.STREAM_CODEC.encode(buf, particle);
         }
+        buf.writeVarInt(msg.accents.size());
+        for (ParticleStack.ParticleAccent accent : msg.accents) {
+            ParticleTypes.STREAM_CODEC.encode(buf, accent.options());
+            buf.writeDouble(accent.chance());
+        }
     }
 
     private static ClientboundBulletTrailPacket decode(RegistryFriendlyByteBuf buf) {
@@ -44,7 +51,15 @@ public record ClientboundBulletTrailPacket(Vec3 from, Vec3 to, List<ParticleOpti
         for (int i = 0; i < size; i++) {
             particles.add(ParticleTypes.STREAM_CODEC.decode(buf));
         }
-        return new ClientboundBulletTrailPacket(from, to, particles);
+        size = buf.readVarInt();
+        List<ParticleStack.ParticleAccent> accents = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            accents.add(new ParticleStack.ParticleAccent(
+                    ParticleTypes.STREAM_CODEC.decode(buf),
+                    buf.readDouble()
+            ));
+        }
+        return new ClientboundBulletTrailPacket(from, to, particles, accents);
     }
 
     @Override

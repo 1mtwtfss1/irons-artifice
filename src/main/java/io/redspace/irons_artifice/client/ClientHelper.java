@@ -5,6 +5,7 @@ import com.geckolib.constant.DataTickets;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
 import io.redspace.irons_artifice.client.particle.FairyDustParticleOption;
 import io.redspace.irons_artifice.client.particle.ITrailParticle;
+import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.item.GunItem;
@@ -40,6 +41,7 @@ public final class ClientHelper {
     public static void handleBulletTrail(ClientboundBulletTrailPacket msg) {
         ClientLevel level = Minecraft.getInstance().level;
         List<ParticleOptions> particles = msg.particles();
+        List<ParticleStack.ParticleAccent> accents = msg.accents();
         if (level == null || particles.isEmpty()) {
             return;
         }
@@ -67,6 +69,13 @@ public final class ClientHelper {
             level.addAlwaysVisibleParticle(particle, true,
                     pos.x, pos.y, pos.z,
                     dir.x * speed, dir.y * speed, dir.z * speed);
+            for (ParticleStack.ParticleAccent accent : accents) {
+                if (level.getRandom().nextDouble() < accent.chance()) {
+                    level.addAlwaysVisibleParticle(accent.options(), true,
+                            pos.x, pos.y, pos.z,
+                            dir.x * speed, dir.y * speed, dir.z * speed);
+                }
+            }
         }
     }
 

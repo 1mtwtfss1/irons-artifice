@@ -349,6 +349,26 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('M', ItemRegistry.MECHANICAL_COMPONENTS)
                 .unlockedBy("has_precursor", this.has(ItemRegistry.MECHANICAL_COMPONENTS))
                 .save(this.output);
+        // Singularity Charge
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.SINGULARITY_CHARGE_MODIFIER.get())
+                .pattern(" #B")
+                .pattern("#*#")
+                .pattern("B# ")
+                .define('#', Items.AMETHYST_SHARD)
+                .define('*', Items.ENDER_EYE)
+                .define('B', ItemRegistry.BLACKPOWDER)
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
+        // Enchanted Bullet
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.ENCHANTED_BULLET_MODIFIER.get())
+                .pattern(" ##")
+                .pattern("B*#")
+                .pattern(" B ")
+                .define('#', Items.LAPIS_LAZULI)
+                .define('*', Items.BOOK)
+                .define('B', ItemRegistry.BLACKPOWDER)
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
     }
 
     private static TagKey<Item> commonTag(String path) {

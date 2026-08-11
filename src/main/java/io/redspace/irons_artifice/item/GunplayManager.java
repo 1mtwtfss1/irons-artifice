@@ -164,7 +164,7 @@ public final class GunplayManager {
     }
 
     public static float getSpreadForEntity(ShotProfile shotProfile, Entity entity) {
-        float crouchingMultiplier = 0.5f;
+        float crouchingMultiplier = 0.75f;
         float penaltyPerMovement = 12f;
         float maxMovementPenalty = 25f;
 

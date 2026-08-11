@@ -13,7 +13,6 @@ import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ParticleRegistry;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.BlockHitResult;
@@ -54,10 +53,8 @@ public class FrozenShrapnelOnHit implements OnHitEffect {
         Entity hitEntity = hitResult instanceof EntityHitResult entityHit ? entityHit.getEntity() : null;
         float childDamage = bullet.resolveDamage() * DAMAGE_FRACTION;
         RandomSource random = level.getRandom();
-        float halfAngleRad = CONE_HALF_ANGLE_DEG * Mth.DEG_TO_RAD;
-
         for (int i = 0; i < SHRAPNEL_COUNT; i++) {
-            Vec3 direction = randomDirectionInCone(axis, halfAngleRad, random);
+            Vec3 direction = Utils.directionWithinCone(axis, CONE_HALF_ANGLE_DEG, random);
             ShotProfile childProfile = createChildProfile(parentProfile, childDamage);
             Bullet child = new Bullet(EntityRegistry.BULLET.get(), level);
             child.setOwner(bullet.getOwner());
@@ -85,25 +82,5 @@ public class FrozenShrapnelOnHit implements OnHitEffect {
         components.set(ShotComponents.PARTICLE_TRAIL, trail);
         components.getOrCreate(ShotComponents.ON_HIT).remove(FrozenShrapnelOnHit.class);
         return child;
-    }
-
-    /**
-     * Uniform-ish random unit direction within a cone of the given half-angle around {@code axis}.
-     */
-    static Vec3 randomDirectionInCone(Vec3 axis, float halfAngleRad, RandomSource random) {
-        Vec3 n = axis.normalize();
-        // Orthonormal basis perpendicular to axis
-        Vec3 arbitrary = Math.abs(n.y) < 0.99 ? new Vec3(0, 1, 0) : new Vec3(1, 0, 0);
-        Vec3 u = n.cross(arbitrary).normalize();
-        Vec3 v = n.cross(u);
-
-        float cosHalf = Mth.cos(halfAngleRad);
-        float z = Mth.lerp(random.nextFloat(), cosHalf, 1f);
-        float r = Mth.sqrt(1f - z * z);
-        float phi = random.nextFloat() * Mth.TWO_PI;
-        float cosPhi = Mth.cos(phi);
-        float sinPhi = Mth.sin(phi);
-
-        return n.scale(z).add(u.scale(r * cosPhi)).add(v.scale(r * sinPhi)).normalize();
     }
 }

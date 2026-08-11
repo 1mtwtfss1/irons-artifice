@@ -16,17 +16,17 @@ import io.redspace.irons_artifice.modifier.modifiers.BufferSpringModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainShotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.FairyDustModifier;
-import io.redspace.irons_artifice.modifier.modifiers.IncendiaryTipModifier;
 import io.redspace.irons_artifice.modifier.modifiers.FrozenJacketModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
-import io.redspace.irons_artifice.modifier.modifiers.GravityWellModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyModifier;
+import io.redspace.irons_artifice.modifier.modifiers.IncendiaryTipModifier;
 import io.redspace.irons_artifice.modifier.modifiers.LubricatedMechanismModifier;
 import io.redspace.irons_artifice.modifier.modifiers.MechanicalRepeaterModifier;
 import io.redspace.irons_artifice.modifier.modifiers.OverchargedPowderModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ScattershotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SeekingModifier;
+import io.redspace.irons_artifice.modifier.modifiers.SingularityChargeModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SteelCoreModifier;
 import io.redspace.irons_artifice.modifier.modifiers.TrickshotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.VenomCapsuleModifier;
@@ -106,12 +106,12 @@ public final class ItemRegistry {
             "lead_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
     public static final DeferredItem<ModifierItem> SCATTERSHOT = ITEMS.registerItem(
             "scattershot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ScattershotModifier()));
-//    public static final DeferredItem<ModifierItem> TRICKSHOT = ITEMS.registerItem(
+    //    public static final DeferredItem<ModifierItem> TRICKSHOT = ITEMS.registerItem(
 //            "trickshot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new TrickshotModifier()));
     public static final DeferredItem<ModifierItem> INCENDIARY_TIP_MODIFIER = ITEMS.registerItem(
             "incendiary_tip_modifier", properties -> new ModifierItem(properties.stacksTo(1), new IncendiaryTipModifier()));
-    public static final DeferredItem<ModifierItem> GRAVITY_WELL = ITEMS.registerItem(
-            "gravity_well_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GravityWellModifier()));
+    public static final DeferredItem<ModifierItem> SINGULARITY_CHARGE_MODIFIER = ITEMS.registerItem(
+            "singularity_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SingularityChargeModifier()));
     public static final DeferredItem<ModifierItem> BREACHING_SHELL = ITEMS.registerItem(
             "breaching_shell_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BreachModifier()));
     public static final DeferredItem<ModifierItem> OVERCHARGED_POWDER = ITEMS.registerItem(
@@ -128,8 +128,8 @@ public final class ItemRegistry {
             "lubricated_mechanism_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
     public static final DeferredItem<ModifierItem> ANTIGRAVITY_MODIFIER = ITEMS.registerItem(
             "antigravity_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new AntigravityModifier()));
-    public static final DeferredItem<ModifierItem> SEEKING = ITEMS.registerItem(
-            "seeking_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SeekingModifier()));
+    public static final DeferredItem<ModifierItem> ENCHANTED_BULLET_MODIFIER = ITEMS.registerItem(
+            "enchanted_bullet_modifier", properties -> new ModifierItem(properties.stacksTo(1).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true), new SeekingModifier()));
     public static final DeferredItem<ModifierItem> WIND_CHAMBER = ITEMS.registerItem(
             "wind_chamber_modifier", properties -> new ModifierItem(properties.stacksTo(1), new WindChamberModifier()));
     public static final DeferredItem<ModifierItem> GAS_VENT = ITEMS.registerItem(

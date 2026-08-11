@@ -7,6 +7,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -48,6 +49,29 @@ public class Utils {
                     ChatFormatting.GREEN.getColor() : ChatFormatting.RED.getColor();
         }
         return Component.translatable(String.format("irons_artifice.value_modifier.%s", identifier), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value), valueName).withColor(color);
+    }
+
+    /**
+     * @return Uniformly distributed unit vector pointing within a cone of full range: 2 * degreeRadius
+     */
+    public static Vec3 directionWithinCone(Vec3 axis, float degreeRadius, RandomSource random) {
+        // get orthonormal basis
+        Vec3 n = axis.normalize();
+        Vec3 vec3 = Math.abs(n.y) < 0.99 ? new Vec3(0, 1, 0) : new Vec3(1, 0, 0);
+        Vec3 u = n.cross(vec3).normalize();
+        Vec3 v = n.cross(u).normalize();
+
+        // use dot product manipulation to limit range via cosine of the half angle
+        float cosHalf = Mth.cos(degreeRadius * Mth.DEG_TO_RAD);
+        // uniformly distribute distance from axis (1 == perfectly aligned, as per dot product)
+        float z = Mth.lerp(random.nextFloat(), cosHalf, 1f);
+        // trig identity to get sine from sin^2
+        float r = Mth.sqrt(1f - z * z);
+        float phi = random.nextFloat() * Mth.TWO_PI;
+        float cosPhi = Mth.cos(phi);
+        float sinPhi = Mth.sin(phi);
+        // apply random directionality
+        return n.scale(z).add(u.scale(r * cosPhi)).add(v.scale(r * sinPhi)).normalize();
     }
 
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {

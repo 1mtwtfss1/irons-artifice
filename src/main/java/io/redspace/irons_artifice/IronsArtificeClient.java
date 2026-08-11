@@ -8,7 +8,6 @@ import io.redspace.irons_artifice.client.particle.BlockDustParticle;
 import io.redspace.irons_artifice.client.particle.BulletImpactParticle;
 import io.redspace.irons_artifice.client.particle.BulletTrailParticle;
 import io.redspace.irons_artifice.client.particle.FairyDustParticle;
-import io.redspace.irons_artifice.client.particle.FireTrailParticle;
 import io.redspace.irons_artifice.client.particle.ImpactBlockParticle;
 import io.redspace.irons_artifice.client.particle.LightningTrailEmitterParticle;
 import io.redspace.irons_artifice.client.particle.MuzzleFlashParticle;
@@ -118,7 +117,6 @@ public class IronsArtificeClient {
         event.registerSpriteSet(ParticleRegistry.MUZZLE_FLASH_SMALL_STAR.get(), MuzzleFlashParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.FAIRY_DUST.get(), FairyDustParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.LIGHTNING_TRAIL.get(), LightningTrailEmitterParticle.Provider::new);
-        event.registerSpriteSet(ParticleRegistry.FIRE_TRAIL.get(), FireTrailParticle.Provider::new);
 
         event.registerSpecial(ParticleRegistry.SPLASH.get(), new SplashParticle.Provider());
     }

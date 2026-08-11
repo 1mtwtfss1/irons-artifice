@@ -13,6 +13,9 @@ public final class ChainShotModifier implements GunModifier {
     @Override
     public void apply(ShotComponentMap components) {
         components.getOrCreate(ShotComponents.ON_HIT).add(new ChainShotOnHit());
+//        components.getOrCreate(ShotComponents.PARTICLE_TRAIL).addAccent(
+//                new ParticleStack.ParticleAccent(new BlockParticleOption(ParticleTypes.BLOCK_CRUMBLE, Blocks.IRON_CHAIN.defaultBlockState()), 0.5)
+//        );
     }
 
     @Override

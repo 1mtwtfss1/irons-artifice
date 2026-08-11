@@ -20,9 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredItem;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 public class ItemModelDataGenerator extends ModelProvider {
@@ -42,11 +40,7 @@ public class ItemModelDataGenerator extends ModelProvider {
 
         for (var item : ItemRegistry.ITEMS.getEntries()) {
             if (item.get() instanceof ModifierItem) {
-                if (modifiers().containsKey(item)) {
-                    generateTemplatedItem(itemModels, item.get(), itemTexture(modifiers().get(item)));
-                } else {
-                    generateTemplatedItem(itemModels, item.get(), itemTexture((DeferredItem<?>) item));
-                }
+                generateTemplatedItem(itemModels, item.get(), itemTexture((DeferredItem<?>) item));
             }
         }
 
@@ -84,14 +78,14 @@ public class ItemModelDataGenerator extends ModelProvider {
         return identifier.withPrefix("item/");
     }
 
-    private static Map<DeferredItem<ModifierItem>, Identifier> modifiers() {
-        Map<DeferredItem<ModifierItem>, Identifier> map = new HashMap<>();
-        map.put(ItemRegistry.GRAVITY_WELL, Identifier.withDefaultNamespace("nether_star"));
-        map.put(ItemRegistry.FAIRY_DUST, Identifier.withDefaultNamespace("glow_berries"));
-        map.put(ItemRegistry.LUBRICATED_MECHANISM, Identifier.withDefaultNamespace("honey_bottle"));
-        map.put(ItemRegistry.SEEKING, Identifier.withDefaultNamespace("ender_eye"));
-        return map;
-    }
+//    private static Map<DeferredItem<ModifierItem>, Identifier> modifiers() {
+//        Map<DeferredItem<ModifierItem>, Identifier> map = new HashMap<>();
+//        map.put(ItemRegistry.GRAVITY_WELL, Identifier.withDefaultNamespace("nether_star"));
+//        map.put(ItemRegistry.FAIRY_DUST, Identifier.withDefaultNamespace("glow_berries"));
+//        map.put(ItemRegistry.LUBRICATED_MECHANISM, Identifier.withDefaultNamespace("honey_bottle"));
+//        map.put(ItemRegistry.SEEKING, Identifier.withDefaultNamespace("ender_eye"));
+//        return map;
+//    }
 
     private static List<DeferredItem<GunItem>> geckolibGuns() {
         return ItemRegistry.ITEMS.getEntries().stream()

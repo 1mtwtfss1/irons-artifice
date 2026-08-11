@@ -1,11 +1,13 @@
 package io.redspace.irons_artifice.modifier.on_hit_handlers;
 
+import io.redspace.irons_artifice.client.particle.MuzzleFlashParticleOption;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.BlockDamageManager;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
 import io.redspace.irons_artifice.gun.ShotProfile;
+import io.redspace.irons_artifice.registry.ParticleRegistry;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,7 +27,7 @@ public class BlackpowderChargeOnHit implements OnHitEffect {
 
     @Override
     public void onHit(ServerLevel level, Bullet bullet, HitResult hitResult, HitEntityAccumulator accumulator) {
-        Vec3 center = hitResult.getLocation();
+        Vec3 center = hitResult.getLocation().subtract(bullet.getDeltaMovement().normalize().scale(0.25));
         float radiusSq = RADIUS * RADIUS;
         AABB area = AABB.ofSize(center, RADIUS * 2, RADIUS * 2, RADIUS * 2);
         float baseDamage = bullet.resolveDamage() * DAMAGE_FRACTION;
@@ -48,7 +50,7 @@ public class BlackpowderChargeOnHit implements OnHitEffect {
             if (entity.hurtServer(level, bullet.damageSources().explosion(bullet, owner instanceof LivingEntity living ? living : null), damage)) {
                 accumulator.add(entity);
             }
-        }//
+        }
 
         ShotProfile profile = bullet.getProfile();
         if (profile != null && profile.get(ShotComponents.BREAKS_BLOCKS)) {
@@ -75,7 +77,7 @@ public class BlackpowderChargeOnHit implements OnHitEffect {
         }
 
         level.playSound(null, center.x, center.y, center.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 2.5f, 1.4f);
-        Utils.spawnParticles(level, ParticleTypes.EXPLOSION, center.x, center.y, center.z, 1, 0, 0, 0, 0, true);
+        Utils.spawnParticles(level, new MuzzleFlashParticleOption(ParticleRegistry.MUZZLE_FLASH_LARGE.get(), -1, -1, -1), center.x, center.y, center.z, 1, 0, 0, 0, 0, true);
         Utils.spawnParticles(level, ParticleTypes.SMOKE, center.x, center.y, center.z, 8, 0.4, 0.4, 0.4, 0.02, false);
         Utils.spawnParticles(level, ParticleTypes.LAVA, center.x, center.y, center.z, 6, 0.35, 0.35, 0.35, 0.01, false);
     }

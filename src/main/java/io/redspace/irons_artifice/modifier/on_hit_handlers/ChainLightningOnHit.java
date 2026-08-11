@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class ChainLightningOnHit implements OnHitEffect {
     public static final int CHAIN_COUNT = 2;
-    public static final float DAMAGE_MULTIPLIER = 0.5f;
+    public static final float DAMAGE_MULTIPLIER = 0.25f;
     public static final float RADIUS = 6f;
 
     @Override

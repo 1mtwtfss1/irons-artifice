@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.modifier.modifiers;
 
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
+import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
@@ -34,11 +35,14 @@ public final class IncendiaryTipModifier extends ValueStackModifier {
                 .getOrCreate(IgnitePostHit.class, () -> new IgnitePostHit(0))
                 .addDuration(BURN_TICKS_PER);
         components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(
-                new ColorTransitionParticleOption(ParticleRegistry.FIRE_TRAIL.get(), 0xfffa87, 0xfa0a00,
+                new ColorTransitionParticleOption(ParticleRegistry.BULLET_TRAIL.get(), 0xfffa87, 0xfa0a00,
                         1f, 0.5f,
                         1f, 1f,
                         0.5f, 0f,
                         0f)
+        );
+        components.getOrCreate(ShotComponents.PARTICLE_TRAIL).addAccent(
+                new ParticleStack.ParticleAccent(ParticleTypes.SMOKE, 0.50)
         );
         components.getOrCreate(ShotComponents.GUNSHOT_SOUND).addAccent(PlayableSound.of(PlayableSound.holder(SoundEvents.BLAZE_SHOOT), 4f, 1.2f, 1.4f));
         components.getOrCreate(ShotComponents.MUZZLE_FLASH).addTint(MuzzleFlashSettings.UNTINTED);

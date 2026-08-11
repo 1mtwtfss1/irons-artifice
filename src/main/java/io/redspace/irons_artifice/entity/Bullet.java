@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.entity;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.gun.BlockDamageManager;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
@@ -130,7 +131,6 @@ public class Bullet extends Projectile {
         return hitEntity == null ? null : new EntityHitResult(hitEntity, nearestLocation.get());
     }
 
-    private static final double MIN_SEEK_SPEED = 2.0;
     private static final double SEEK_LOOK_AHEAD = 40.0;
     private static final double SEEK_FORWARD_DOT = 0.2;
 
@@ -144,13 +144,8 @@ public class Bullet extends Projectile {
         }
         Vec3 motion = getDeltaMovement();
         double speed = motion.length();
-        // At low speed look-ahead collapses and gravity/drag dominate; seeking then spikes into the ground.
-        if (speed < MIN_SEEK_SPEED) {
-            return;
-        }
-
         float strength = Mth.clamp((float) seeking, 0.0F, 1.0F);
-        double range = 5;
+        double range = 7 * (1 + strength);
         Vec3 start = position();
         Vec3 direction = motion.scale(1.0 / speed);
         Vec3 end = level().clip(new ClipContext(
@@ -171,11 +166,13 @@ public class Bullet extends Projectile {
             if (toTargetLengthSqr < 1.0E-6) {
                 continue;
             }
-            // Only home toward targets roughly in front of the bullet.
             if (toTarget.normalize().dot(direction) < SEEK_FORWARD_DOT) {
                 continue;
             }
             if (distanceToSegmentSqr(targetPos, start, end) > range * range) {
+                continue;
+            }
+            if (!Utils.hasLineOfSight(this, entity)) {
                 continue;
             }
             if (toTargetLengthSqr < closestDistSqr) {
@@ -293,26 +290,8 @@ public class Bullet extends Projectile {
     }
 
     @Override
-    public Vec3 getMovementToShoot(double xd, double yd, double zd, float pow, float uncertainty) {
-        Vec3 direction = new Vec3(xd, yd, zd);
-        Vec3 n = direction.normalize();
-        Vec3 arbitrary = Math.abs(n.y) < 0.99 ? new Vec3(0, 1, 0) : new Vec3(1, 0, 0);
-        Vec3 u = n.cross(arbitrary).normalize();
-        Vec3 v = n.cross(u).normalize();
-
-        float cosHalf = Mth.cos(uncertainty * Mth.DEG_TO_RAD);
-        float z = Mth.lerp(random.nextFloat(), cosHalf, 1f);
-        float r = Mth.sqrt(1f - z * z);
-        float phi = random.nextFloat() * Mth.TWO_PI;
-        float cosPhi = Mth.cos(phi);
-        float sinPhi = Mth.sin(phi);
-
-        return n.scale(z).add(u.scale(r * cosPhi)).add(v.scale(r * sinPhi)).normalize().scale(pow);
-//        return new Vec3(xd, yd, zd)
-//                .normalize()
-//                .add(new Vec3(distribution(random), distribution(random), distribution(random))
-//                        .scale(uncertainty * Mth.DEG_TO_RAD * 0.75))
-//                .scale(pow);
+    public @NonNull Vec3 getMovementToShoot(double xd, double yd, double zd, float pow, float uncertainty) {
+        return Utils.directionWithinCone(new Vec3(xd, yd, zd), uncertainty, this.random).scale(pow);
     }
 
     @Override
@@ -433,12 +412,19 @@ public class Bullet extends Projectile {
     }
 
     private void emitTrail(ServerLevel level, Vec3 from, Vec3 to) {
-        List<ParticleOptions> palette = profile.get(ShotComponents.PARTICLE_TRAIL).getParticles();
+        if (profile == null) {
+            return;
+        }
+        ParticleStack particles = profile.get(ShotComponents.PARTICLE_TRAIL);
+        if (particles == null) {
+            return;
+        }
+        List<ParticleOptions> palette = particles.getParticles();
         int steps = (int) Math.round(from.distanceTo(to) * TRAIL_DENSITY);
         if (steps <= 0 || palette.isEmpty()) {
             return;
         }
-        ClientboundBulletTrailPacket payload = new ClientboundBulletTrailPacket(from, to, palette);
+        ClientboundBulletTrailPacket payload = new ClientboundBulletTrailPacket(from, to, palette, particles.getAccents());
         if (this.isRemoved()) {
             PacketDistributor.sendToPlayersTrackingChunk(level, this.chunkPosition(), payload);
         } else {

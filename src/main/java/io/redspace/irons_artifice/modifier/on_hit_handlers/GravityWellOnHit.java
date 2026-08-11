@@ -1,8 +1,10 @@
 package io.redspace.irons_artifice.modifier.on_hit_handlers;
 
+import io.redspace.irons_artifice.client.particle.MuzzleFlashParticleOption;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
 import io.redspace.irons_artifice.gun.OnHitEffect;
+import io.redspace.irons_artifice.registry.ParticleRegistry;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -11,21 +13,26 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class GravityWellOnHit implements OnHitEffect {
+    public static final float RADIUS = 3f;
+    public static final float MAX_STRENGTH = 0.5f;
+
     @Override
     public void onHit(ServerLevel level, Bullet bullet, HitResult hitResult, HitEntityAccumulator accumulator) {
-        Vec3 center = hitResult.getLocation();
-        AABB area = AABB.ofSize(center, 4, 4, 4);
+        Vec3 center = hitResult.getLocation().subtract(bullet.getDeltaMovement().normalize().scale(0.25));
+        AABB area = AABB.ofSize(center, RADIUS * 2, RADIUS * 2, RADIUS * 2).inflate(1);
         Entity owner = bullet.getOwner();
         bullet.level().getEntities(bullet, area, entity ->
                 entity.canBeHitByProjectile() && Utils.canHarm(owner, entity)
         ).forEach(
                 entity -> {
-                    if (entity.getBoundingBox().getCenter().distanceToSqr(center) < 3 * 3) {
-                        entity.setDeltaMovement(entity.getDeltaMovement().add(center.subtract(entity.position())).scale(0.5));
+                    if (entity.position().distanceToSqr(center) < RADIUS * RADIUS) {
+                        Vec3 delta = center.subtract(entity.position());
+                        entity.setDeltaMovement(entity.getDeltaMovement().add(delta.normalize().scale(Math.min(MAX_STRENGTH, delta.length()))));
                         entity.hurtMarked = true;
                     }
                 }
         );
         // todo: vfx/sound
+        Utils.spawnParticles(level, new MuzzleFlashParticleOption(ParticleRegistry.MUZZLE_FLASH_LARGE.get(), 0.8745098F, 0, 0.9764706F), center.x, center.y, center.z, 1, 0, 0, 0, 0, true);
     }
 }
