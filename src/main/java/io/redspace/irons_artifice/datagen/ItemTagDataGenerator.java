@@ -5,9 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import java.util.concurrent.CompletableFuture;
@@ -20,6 +18,8 @@ public class ItemTagDataGenerator extends IntrinsicHolderTagsProvider<Item> {
     @Override
     protected void addTags(HolderLookup.Provider registries) {
         this.tag(ItemTags.HEAD_ARMOR)
-                .add(ItemRegistry.COWBOY_HAT.get());
+                .add(ItemRegistry.COWBOY_HAT.get())
+                .add(ItemRegistry.TRICORNE_HAT.get())
+        ;
     }
 }
