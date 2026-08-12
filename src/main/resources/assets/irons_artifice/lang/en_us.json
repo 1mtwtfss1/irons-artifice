@@ -36,6 +36,8 @@
   "item.irons_artifice.antigravity_powder_modifier": "Antigravity Powder Modifier",
   "item.irons_artifice.buffer_spring_modifier": "Buffer Spring Modifier",
   "item.irons_artifice.cowboy_hat": "Cowboy Hat",
+  "item.irons_artifice.cowboy_hat.ability": "Insta-Reload Gun on Kill (%ss cooldown)",
+  "item.irons_artifice.cowboy_hat.ability.gain_ammo": "Reloaded +%d Bullets!",
   "item.irons_artifice.tricorne": "Tricorne",
   "item.irons_artifice.tricorne.ability": "First Shot from a Full Magazine does +%d%% Damage",
 

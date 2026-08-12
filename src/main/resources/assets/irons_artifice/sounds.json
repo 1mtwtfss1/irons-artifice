@@ -70,6 +70,11 @@
       "irons_artifice:leather_accent"
     ]
   },
+  "item.cowboy_hat.instant_reload": {
+    "sounds": [
+      "irons_artifice:instant_reload"
+    ]
+  },
   "item.blackpowder_revolver.reload.start": {
     "sounds": [
       "irons_artifice:blackpowder_revolver_reload_start"
