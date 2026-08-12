@@ -17,7 +17,6 @@ import io.redspace.irons_artifice.modifier.modifiers.BreachModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BufferSpringModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainShotModifier;
-import io.redspace.irons_artifice.modifier.modifiers.FairyDustModifier;
 import io.redspace.irons_artifice.modifier.modifiers.FrozenJacketModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
@@ -152,8 +151,8 @@ public final class ItemRegistry {
             "chain_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainShotModifier()));
     public static final DeferredItem<ModifierItem> FROZEN_JACKET = ITEMS.registerItem(
             "frozen_jacket_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FrozenJacketModifier()));
-    public static final DeferredItem<ModifierItem> FAIRY_DUST = ITEMS.registerItem(
-            "fairy_dust_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FairyDustModifier()));
+//    public static final DeferredItem<ModifierItem> FAIRY_DUST = ITEMS.registerItem(
+//            "fairy_dust_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FairyDustModifier()));
     public static final DeferredItem<ModifierItem> VENOM_CAPSULE = ITEMS.registerItem(
             "venom_capsule_modifier", properties -> new ModifierItem(properties.stacksTo(1), new VenomCapsuleModifier()));
     public static final DeferredItem<ModifierItem> BUFFER_SPRING = ITEMS.registerItem(

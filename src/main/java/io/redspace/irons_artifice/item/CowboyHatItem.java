@@ -67,24 +67,34 @@ public class CowboyHatItem extends BaseGeoItem {
 
     @SubscribeEvent
     public static void onBulletKill(LivingDeathEvent event) {
-        //
-        if (event.getSource().is(DamageSources.BULLET_DAMAGE_TYPE) && event.getSource().getEntity() instanceof LivingEntity livingAttacker) {
-            var stack = livingAttacker.getItemBySlot(EquipmentSlot.HEAD);
-            if (stack.is(ItemRegistry.COWBOY_HAT) && (!(livingAttacker instanceof Player player) || !player.getCooldowns().isOnCooldown(stack))) {
-                ItemStack gunstack = livingAttacker.getItemBySlot(EquipmentSlot.MAINHAND);
-                if (gunstack.getItem() instanceof GunItem gunItem && MagazineContents.has(gunstack)) {
-                    MagazineContents contents = MagazineContents.get(gunstack);
-                    if (!contents.isFull(gunItem.magazineCapacity())) {
-                        int missing = contents.missing(gunItem.magazineCapacity());
-                        MagazineContents.set(gunstack, contents.with(gunItem.magazineCapacity()));
-                        livingAttacker.level().playSound(null, livingAttacker.getX(), livingAttacker.getY(), livingAttacker.getZ(), SoundRegistry.INSTANT_RELOAD.get(), SoundSource.NEUTRAL, 1, 1);
-                        if (livingAttacker instanceof Player player) {
-                            player.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
-                            player.sendOverlayMessage(Component.translatable("item.irons_artifice.cowboy_hat.ability.gain_ammo", missing).withStyle(ChatFormatting.LIGHT_PURPLE));
-                        }
-                    }
-                }
-            }
+        if (!event.getSource().is(DamageSources.BULLET_DAMAGE_TYPE) || !(event.getSource().getEntity() instanceof LivingEntity livingAttacker)) {
+            return;
+        }
+        ItemStack hat = livingAttacker.getItemBySlot(EquipmentSlot.HEAD);
+        ItemStack gun = livingAttacker.getItemBySlot(EquipmentSlot.MAINHAND);
+        if (!hat.is(ItemRegistry.COWBOY_HAT) ||
+                !(gun.getItem() instanceof GunItem gunItem) ||
+                !MagazineContents.has(gun) ||
+                (livingAttacker instanceof Player player && player.getCooldowns().isOnCooldown(hat))) {
+            return;
+        }
+        MagazineContents contents = MagazineContents.get(gun);
+        if (contents.isFull(gunItem.magazineCapacity())) {
+            return;
+        }
+        performInstantReload(livingAttacker, gunItem, contents, gun, hat);
+    }
+
+    private static void performInstantReload(LivingEntity livingAttacker, GunItem gunItem, MagazineContents contents, ItemStack gunstack, ItemStack stack) {
+        int missing = contents.missing(gunItem.magazineCapacity());
+        MagazineContents.set(gunstack, contents.with(gunItem.magazineCapacity()));
+        livingAttacker.level().playSound(null, livingAttacker.getX(), livingAttacker.getY(), livingAttacker.getZ(), SoundRegistry.INSTANT_RELOAD.get(), SoundSource.NEUTRAL, 1, 1);
+//        if (gunItem.getEquipSound() != null) {
+//            gunItem.getEquipSound().play(livingAttacker.level(), livingAttacker.position(), SoundSource.NEUTRAL);
+//        }
+        if (livingAttacker instanceof Player player) {
+            player.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
+            player.sendOverlayMessage(Component.translatable("item.irons_artifice.cowboy_hat.ability.gain_ammo", missing).withStyle(ChatFormatting.LIGHT_PURPLE));
         }
     }
 }
