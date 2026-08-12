@@ -34,7 +34,6 @@ import io.redspace.irons_artifice.modifier.modifiers.TrickshotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.VenomCapsuleModifier;
 import io.redspace.irons_artifice.modifier.modifiers.WindChamberModifier;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.bus.api.IEventBus;
@@ -51,12 +50,15 @@ public final class ItemRegistry {
     public static final DeferredItem<GunItem> FLINTLOCK_PISTOL = ITEMS.registerItem("flintlock",
             properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL, IronsArtifice.id("flintlock"), ArmPoseKind.PISTOL,
                     ReloadCueStack.of(
-                            new ReloadCue(0.25f, PlayableSound.of(SoundEvents.CROSSBOW_LOADING_MIDDLE, 0.75f, 0.9f)),
-                            new ReloadCue(2.88f / 3.0f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.85f, 0.85f, 0.95f)),
-                            new ReloadCue(0.90f, PlayableSound.of(SoundEvents.CROSSBOW_LOADING_END, 0.8f, 1.0f))
+                            new ReloadCue(0.0f / 3.0f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 0.85f, 0.95f, 1.05f)),
+                            new ReloadCue(0.4f / 3.0f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_INSERT_BULLET, 0.85f, 0.95f, 1.05f)),
+                            new ReloadCue(1.3f / 3.0f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_PACK_BULLET, 0.85f, 0.95f, 1.05f)),
+                            new ReloadCue(2.75f / 3.0f, PlayableSound.of(SoundRegistry.LEATHER_ACCENT, 0.85f, 0.85f, 0.95f)),
+                            new ReloadCue(2.88f / 3.0f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.85f, 0.85f, 0.95f))
                     ), PlayableSound.of(SoundRegistry.FLINTLOCK_EQUIP, 0.75f, 0.9f, 1.1f), AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
+    /// ///
     public static final DeferredItem<GunItem> MUSKET = ITEMS.registerItem("musket",
             properties -> new GunItem(properties.stacksTo(1), Guns.MUSKET, IronsArtifice.id("musket"), ArmPoseKind.RIFLE, ReloadCueStack.of(
                     new ReloadCue(3.1f / 3.42f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.75f, 0.9f, 1.1f))

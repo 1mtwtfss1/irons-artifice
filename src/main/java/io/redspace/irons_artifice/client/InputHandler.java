@@ -1,14 +1,19 @@
 package io.redspace.irons_artifice.client;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.client.sounds.EquipSoundInstance;
+import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
 import io.redspace.irons_artifice.network.ServerboundFireGunPacket;
 import io.redspace.irons_artifice.network.ServerboundOpenModifierMenuPacket;
 import io.redspace.irons_artifice.network.ServerboundReloadGunPacket;
+import io.redspace.irons_artifice.registry.ItemRegistry;
+import io.redspace.irons_artifice.registry.SoundRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -85,6 +90,13 @@ public final class InputHandler {
         if (GunplayManager.tryFire(player, player.getLookAngle())) {
             ClientPacketDistributor.sendToServer(new ServerboundFireGunPacket(player.getLookAngle()));
             RecoilManager.applyRecoil(profile);
+            // fixme: this is dumb but why is it so hard to do this any other way
+            if (profile.itemStack().is(ItemRegistry.BLACKPOWDER_REVOLVER)) {
+                int delay = (int) (20 * 0.5 / ((profile.value(ShotComponents.FIRE_RATE) + 2) / 3));
+                Minecraft.getInstance().getSoundManager().playDelayed(new EquipSoundInstance(SoundRegistry.COCK_HAMMER.get(), SoundSource.PLAYERS,
+                        1f, .9f + player.getRandom().nextFloat() * 0.2f,
+                        player.getRandom(), gunItem, delay), delay);
+            }
         }
     }
 }
