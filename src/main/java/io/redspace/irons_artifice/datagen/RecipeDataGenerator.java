@@ -365,11 +365,11 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('I', commonTag("ingots/gold"))
                 .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
                 .save(this.output);
-        // Lubricated Mechanism
-        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.LUBRICATED_MECHANISM.get())
-                .pattern("L")
-                .pattern("M")
+        // Gun Oil
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.GUN_OIL.get())
+                .pattern("LMR")
                 .define('L', Items.HONEY_BOTTLE)
+                .define('R', Items.REDSTONE)
                 .define('M', ItemRegistry.MECHANICAL_COMPONENTS)
                 .unlockedBy("has_precursor", this.has(ItemRegistry.MECHANICAL_COMPONENTS))
                 .save(this.output);

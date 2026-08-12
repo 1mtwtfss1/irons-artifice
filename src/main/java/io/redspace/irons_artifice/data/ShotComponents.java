@@ -43,7 +43,7 @@ public final class ShotComponents {
     // Effects
     public static final ComponentType<RecoilProfile> CAMERA_RECOIL = new ComponentType<>(IronsArtifice.id("camera_recoil"), () -> RecoilProfile.simple(10, 0));
     public static final ComponentType<Value> CAMERA_RECOIL_MULTIPLIER = new ComponentType<>(IronsArtifice.id("camera_recoil_multiplier"), () -> Value.of(1));
-    public static final ComponentType<Value> CHARACTER_RECOIL = new ComponentType<>(IronsArtifice.id("character_recoil"), () -> Value.of(0));
+    public static final ComponentType<Value> CHARACTER_BLOWBACK = new ComponentType<>(IronsArtifice.id("character_blowback"), () -> Value.of(0));
     public static final ComponentType<GunShotSoundStack> GUNSHOT_SOUND = new ComponentType<>(IronsArtifice.id("gunshot_sound"), () -> new GunShotSoundStack(
             GunShotSoundSettings.of(SoundEvents.FIREWORK_ROCKET_BLAST, 0.9f, 1.1f, -1f, 0f, 48f),
             PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)));

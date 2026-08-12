@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "L": "minecraft:honey_bottle",
-    "M": "irons_artifice:mechanical_components"
+    "M": "irons_artifice:mechanical_components",
+    "R": "minecraft:redstone"
   },
   "pattern": [
-    "L",
-    "M"
+    "LMR"
   ],
   "result": {
-    "id": "irons_artifice:lubricated_mechanism_modifier"
+    "id": "irons_artifice:gun_oil_modifier"
   }
 }

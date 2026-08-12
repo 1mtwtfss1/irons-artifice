@@ -13,11 +13,11 @@ import java.util.function.Consumer;
 public final class BufferSpringModifier implements GunModifier {
     @Override
     public void apply(ShotComponentMap components) {
-        components.getOrCreate(ShotComponents.CHARACTER_RECOIL).addModifier(new ValueModifier(-1, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
+        components.getOrCreate(ShotComponents.CHARACTER_BLOWBACK).addModifier(new ValueModifier(-1, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
     }
 
     @Override
     public void getDescriptionText(Consumer<Component> builder) {
-        builder.accept(Component.translatable("irons_artifice.modifier.negate", Utils.getComponentTranslate(ShotComponents.CHARACTER_RECOIL)).withStyle(ChatFormatting.AQUA));
+        builder.accept(Component.translatable("irons_artifice.modifier.negate", Utils.getComponentTranslate(ShotComponents.CHARACTER_BLOWBACK)).withStyle(ChatFormatting.AQUA));
     }
 }

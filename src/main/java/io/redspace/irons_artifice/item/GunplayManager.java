@@ -101,7 +101,7 @@ public final class GunplayManager {
     }
 
     private static void applyCharacterRecoil(ServerPlayer player, ShotProfile profile) {
-        float strength = (float) profile.value(ShotComponents.CHARACTER_RECOIL);
+        float strength = (float) profile.value(ShotComponents.CHARACTER_BLOWBACK);
         if (strength <= 0.0F) {
             return;
         }

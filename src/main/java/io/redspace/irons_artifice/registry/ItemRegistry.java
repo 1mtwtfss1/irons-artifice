@@ -22,7 +22,7 @@ import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyModifier;
 import io.redspace.irons_artifice.modifier.modifiers.IncendiaryTipModifier;
-import io.redspace.irons_artifice.modifier.modifiers.LubricatedMechanismModifier;
+import io.redspace.irons_artifice.modifier.modifiers.GunOilModifier;
 import io.redspace.irons_artifice.modifier.modifiers.MechanicalRepeaterModifier;
 import io.redspace.irons_artifice.modifier.modifiers.OverchargedPowderModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ScattershotModifier;
@@ -132,9 +132,9 @@ public final class ItemRegistry {
     public static final DeferredItem<ModifierItem> HAIR_TRIGGER = ITEMS.registerItem(
             "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_LIGHTNING = ITEMS.registerItem(
-            "arc_jacket_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
-    public static final DeferredItem<ModifierItem> LUBRICATED_MECHANISM = ITEMS.registerItem(
-            "lubricated_mechanism_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LubricatedMechanismModifier()));
+            "voltaic_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
+    public static final DeferredItem<ModifierItem> GUN_OIL = ITEMS.registerItem(
+            "gun_oil_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GunOilModifier()));
     public static final DeferredItem<ModifierItem> ANTIGRAVITY_MODIFIER = ITEMS.registerItem(
             "antigravity_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new AntigravityModifier()));
     public static final DeferredItem<ModifierItem> ENCHANTED_BULLET_MODIFIER = ITEMS.registerItem(

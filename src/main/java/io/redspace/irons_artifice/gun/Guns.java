@@ -40,7 +40,7 @@ public final class Guns {
                         PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
                 ));
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(35f, .45f, 1.7f, 0));
-                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.5));
+                map.set(ShotComponents.CHARACTER_BLOWBACK, Value.of(0.5));
                 map.set(ShotComponents.SPREAD, Value.of(3));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(1.5f, MuzzleFlashType.LARGE));
@@ -78,7 +78,7 @@ public final class Guns {
             () -> {
                 var map = basicGun();
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(25f, .33f, 1.7f, 0));
-                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.125));
+                map.set(ShotComponents.CHARACTER_BLOWBACK, Value.of(0.125));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(10));
                 map.set(ShotComponents.DAMAGE, Value.of(10));
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
@@ -122,7 +122,7 @@ public final class Guns {
                 map.set(ShotComponents.DAMAGE, Value.of(22));
                 map.set(ShotComponents.PROJECTILE_COUNT, Value.of(8));
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(30f, .35f, 2f, 999));
-                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.75));
+                map.set(ShotComponents.CHARACTER_BLOWBACK, Value.of(0.75));
                 map.set(ShotComponents.SPREAD, Value.of(7));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(1));
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
@@ -165,7 +165,7 @@ public final class Guns {
             () -> {
                 var map = basicGun();
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(7.5f, .35f, 0.6f, 6969));
-                map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.05));
+                map.set(ShotComponents.CHARACTER_BLOWBACK, Value.of(0.05));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(4));
                 map.set(ShotComponents.SPREAD, Value.of(2));
                 map.set(ShotComponents.DAMAGE, Value.of(5));
@@ -192,7 +192,7 @@ public final class Guns {
         map.set(ShotComponents.GRAVITY, Value.of(0.05));
         map.set(ShotComponents.KNOCKBACK, Value.of(0.3));
         map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(10f, .33f, 1.7f, 431));
-        map.set(ShotComponents.CHARACTER_RECOIL, Value.of(0.0));
+        map.set(ShotComponents.CHARACTER_BLOWBACK, Value.of(0.0));
         map.set(ShotComponents.FIRE_DELAY, Value.of(20));
         return map;
     }
