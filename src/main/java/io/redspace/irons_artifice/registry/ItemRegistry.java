@@ -61,7 +61,11 @@ public final class ItemRegistry {
     /// ///
     public static final DeferredItem<GunItem> MUSKET = ITEMS.registerItem("musket",
             properties -> new GunItem(properties.stacksTo(1), Guns.MUSKET, IronsArtifice.id("musket"), ArmPoseKind.RIFLE, ReloadCueStack.of(
-                    new ReloadCue(3.1f / 3.42f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.75f, 0.9f, 1.1f))
+                    new ReloadCue(0.0f / 3.0f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 0.85f, 0.75f, 0.85f)),
+                    new ReloadCue(0.9f / 3.0f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_INSERT_BULLET, 0.85f, 0.95f, 0.85f)),
+                    new ReloadCue(1.7f / 3.0f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_PACK_BULLET, 0.85f, 0.95f, 1.05f)),
+                    new ReloadCue(2.88f / 3.0f, PlayableSound.of(SoundRegistry.LEATHER_ACCENT, 0.85f, 0.85f, 0.95f)),
+                    new ReloadCue(2.88f / 3.0f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 0.85f, 0.85f, 0.95f))
             ), PlayableSound.of(SoundRegistry.MUSKET_EQUIP, 0.75f, 0.9f, 1.1f), AnimationAdjuster.LOWER_HAMMER),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
