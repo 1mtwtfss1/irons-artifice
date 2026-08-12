@@ -39,6 +39,16 @@
       "irons_artifice:flintlock_equip"
     ]
   },
+  "item.flintlock.reload.insert_bullet": {
+    "sounds": [
+      "irons_artifice:flintlock_insert_bullet"
+    ]
+  },
+  "item.flintlock.reload.pack_bullet": {
+    "sounds": [
+      "irons_artifice:flintlock_pack_bullet"
+    ]
+  },
   "item.musket.shoot": {
     "sounds": [
       "irons_artifice:musket_shoot"
@@ -53,6 +63,11 @@
     "sounds": [
       "irons_artifice:hammer/shortbow_shoot_1",
       "irons_artifice:hammer/shortbow_shoot_2"
+    ]
+  },
+  "item.generic.leather_accent": {
+    "sounds": [
+      "irons_artifice:leather_accent"
     ]
   },
   "item.blackpowder_revolver.reload.start": {

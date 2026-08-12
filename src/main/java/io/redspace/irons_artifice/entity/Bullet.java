@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.entity;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.damage.DamageSources;
 import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.gun.BlockDamageManager;
@@ -333,7 +334,7 @@ public class Bullet extends Projectile {
 
         Entity owner = getOwner();
         float damage = resolveDamage();
-        DamageSource source = damageSources().mobProjectile(this, owner instanceof LivingEntity le ? le : null);
+        DamageSource source = DamageSources.bullet(level(), this, owner);
         target.hurtServer(serverLevel, source, damage);
 
         float knockback = (float) profile.value(ShotComponents.KNOCKBACK);
