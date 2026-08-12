@@ -5,7 +5,6 @@ import io.redspace.irons_artifice.client.RecoilManager;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
-import io.redspace.irons_artifice.menu.GunContainer;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -102,7 +101,7 @@ public final class CrosshairRenderer {
         if (!(held.getItem() instanceof GunItem gunItem)) {
             return;
         }
-        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), held);
+        ShotProfile profile = GunplayManager.compose(player, gunItem.getGun(), held);
         float spread = GunplayManager.getSpreadForEntity(profile, player);
         float recoilMagnitude = RecoilManager.localRecoilMagnitude();
 

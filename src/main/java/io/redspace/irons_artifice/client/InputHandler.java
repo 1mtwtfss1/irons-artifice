@@ -4,7 +4,6 @@ import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
-import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.network.ServerboundFireGunPacket;
 import io.redspace.irons_artifice.network.ServerboundOpenModifierMenuPacket;
 import io.redspace.irons_artifice.network.ServerboundReloadGunPacket;
@@ -69,7 +68,7 @@ public final class InputHandler {
             return;
         }
         ItemStack held = player.getMainHandItem();
-        ShotProfile profile = GunplayManager.compose(gunItem.getGun(), new GunContainer(held), held);
+        ShotProfile profile = GunplayManager.compose(player, gunItem.getGun(), held);
 
         boolean triggerPulled = switch (profile.fireMode()) {
             case SEMI -> attackHeld && !attackHeldLastTick;
@@ -83,14 +82,8 @@ public final class InputHandler {
     }
 
     private static void tryFire(ShotProfile profile, LocalPlayer player, GunItem gunItem) {
-        ItemStack held = player.getMainHandItem();
-        // fixme: these conditions are thin and must be manually kept in sync
-        if (player.getCooldowns().isOnCooldown(held) || GunItem.isReloading(held)) {
-            return;
-        }
-        ClientPacketDistributor.sendToServer(new ServerboundFireGunPacket(player.getLookAngle()));
-        // fixme: another thin client-server manually synced thingie
-        if (!GunItem.getMagazine(held).isEmpty()) {
+        if (GunplayManager.tryFire(player, player.getLookAngle())) {
+            ClientPacketDistributor.sendToServer(new ServerboundFireGunPacket(player.getLookAngle()));
             RecoilManager.applyRecoil(profile);
         }
     }

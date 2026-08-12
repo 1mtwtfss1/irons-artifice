@@ -7,7 +7,6 @@ import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
 import io.redspace.irons_artifice.item.ReloadState;
-import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.network.ClientboundEquipSoundPacket;
 import io.redspace.irons_artifice.network.ClientboundGunAnimationPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -80,7 +79,7 @@ public class ServerEvents {
     }
 
     private static void resumeReloadState(ServerLevel serverLevel, GunItem gunItem, ItemStack equippedStack, LivingEntity entity) {
-        ShotProfile profile = GunplayManager.compose(gunItem.getGunProfile(), new GunContainer(equippedStack), equippedStack);
+        ShotProfile profile = GunplayManager.compose(entity, gunItem.getGunProfile(), equippedStack);
         double reloadSpeedMultiplier = profile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
         ReloadState reloadState = ReloadState.get(equippedStack);
         double progress = reloadState.animationProgressSeconds(gunItem.getGunProfile());

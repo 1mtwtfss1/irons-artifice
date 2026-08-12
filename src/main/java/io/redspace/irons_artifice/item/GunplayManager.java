@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.item;
 
 import com.geckolib.animatable.GeoItem;
+import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
@@ -21,7 +22,6 @@ import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,37 +30,40 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jspecify.annotations.Nullable;
 
 public final class GunplayManager {
 
-    public static void tryFire(ServerPlayer player, Vec3 direction) {
+    public static boolean tryFire(Player player, Vec3 direction) {
         InteractionHand hand = InteractionHand.MAIN_HAND;
         ItemStack stack = player.getItemInHand(hand);
         if (!(stack.getItem() instanceof GunItem gunItem)) {
-            return;
+            return false;
         }
         if (player.getCooldowns().isOnCooldown(stack)) {
-            return;
+            return false;
         }
         if (GunItem.isReloading(stack)) {
-            return;
+            return false;
         }
-
-        ServerLevel level = player.level();
         MagazineContents magazine = GunItem.getMagazine(stack);
         GunProfile gunProfile = gunItem.getGun();
-        GunContainer modifiers = new GunContainer(stack);
-        ShotProfile profile = compose(gunProfile, modifiers, stack);
+        ShotProfile profile = compose(player, gunProfile, stack);
 
         if (magazine.isEmpty()) {
-            profile.get(ShotComponents.GUNSHOT_SOUND).playDryFireSound(level, player.position());
-            player.getCooldowns().addCooldown(stack, 2);
-            return;
+            profile.get(ShotComponents.GUNSHOT_SOUND).playDryFireSound(player.level(), player.position());
+            player.getCooldowns().addCooldown(stack, 4);
+            return false;
         }
-
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            // client return point
+            return true;
+        }
+        ServerLevel level = serverPlayer.level();
         long now = level.getGameTime();
-        RecoilState offset = RecoilState.current(player, now);
+        RecoilState offset = RecoilState.current(serverPlayer, now);
 
         // todo: add config for authority
         Vec3 authoritativeDirection = direction;
@@ -73,12 +76,13 @@ public final class GunplayManager {
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
         GunItem.setMagazine(stack, magazine.deplete());
-        profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, player.position());
-        RecoilState.addImpulse(player, now, profile);
-        fireShot(level, player, player.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
-        applyCharacterRecoil(player, profile);
-        player.getCooldowns().addCooldown(stack, (int) Math.round(profile.fireDelayTicks()));
-        playFireAnimation(player, stack, gunItem, profile);
+        profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, serverPlayer.position());
+        RecoilState.addImpulse(serverPlayer, now, profile);
+        fireShot(level, serverPlayer, serverPlayer.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
+        applyCharacterRecoil(serverPlayer, profile);
+        serverPlayer.getCooldowns().addCooldown(stack, (int) Math.round(profile.fireDelayTicks()));
+        playFireAnimation(serverPlayer, stack, gunItem, profile);
+        return true;
     }
 
     public static boolean debugFire(ServerLevel level, ServerPlayer player, Vec3 origin, Vec3 direction) {
@@ -88,8 +92,7 @@ public final class GunplayManager {
         }
 
         GunProfile gunProfile = gunItem.getGun();
-        GunContainer modifiers = new GunContainer(stack);
-        ShotProfile profile = compose(gunProfile, modifiers, stack);
+        ShotProfile profile = compose(player, gunProfile, stack);
 
         fireShot(level, player, origin, direction, profile);
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
@@ -164,7 +167,7 @@ public final class GunplayManager {
     }
 
     public static float getSpreadForEntity(ShotProfile shotProfile, Entity entity) {
-        float crouchingMultiplier = 0.75f;
+        float crouchingMultiplier = 0.667f;
         float penaltyPerMovement = 12f;
         float maxMovementPenalty = 25f;
 
@@ -183,13 +186,17 @@ public final class GunplayManager {
         return spread;
     }
 
-    public static ShotProfile compose(GunProfile gunProfile, Container modifiers, ItemStack gunStack) {
+    public static ShotProfile compose(@Nullable LivingEntity living, GunProfile gunProfile, ItemStack gunStack) {
+        GunContainer modifiers = new GunContainer(gunStack);
         ShotComponentMap components = gunProfile.baseProfile();
         for (int slot = 0; slot < modifiers.getContainerSize(); slot++) {
             ItemStack stack = modifiers.getItem(slot);
             if (stack.getItem() instanceof ModifierItem modifierItem) {
                 modifierItem.getModifier().apply(components);
             }
+        }
+        if (living != null) {
+            NeoForge.EVENT_BUS.post(new ComposeShotEvent(living, gunProfile, modifiers, components, gunStack));
         }
         return new ShotProfile(gunStack, gunProfile, MagazineContents.get(gunStack), components);
     }
@@ -238,10 +245,10 @@ public final class GunplayManager {
         if (requiresAmmo && available <= 0) {
             return ReloadResult.NO_AMMO;
         }
-        ShotProfile shotProfile = compose(gunItem.getGunProfile(), new GunContainer(gun), gun);
-        int ticks = (int) (gunItem.getGunProfile().reloadTimeTicks() / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
-        GunItem.startReload(gun, gunItem.getGunProfile().reloadTimeTicks(), shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (player instanceof ServerPlayer serverPlayer) {
+            ShotProfile shotProfile = compose(serverPlayer, gunItem.getGunProfile(), gun);
+            int ticks = (int) (gunItem.getGunProfile().reloadTimeTicks() / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
+            GunItem.startReload(gun, gunItem.getGunProfile().reloadTimeTicks(), shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
             PacketDistributor.sendToPlayer(serverPlayer, new ClientboundReloadCrosshairAnimationPacket(ticks));
             playReloadAnimation(serverPlayer, gun, gunItem, shotProfile);
         }

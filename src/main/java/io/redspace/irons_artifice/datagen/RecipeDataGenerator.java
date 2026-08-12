@@ -70,6 +70,16 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('#', Items.LEATHER_HELMET)
                 .unlockedBy("precursor", this.has(ItemRegistry.BULLET))
                 .save(this.output);
+        // Tricorne
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.TRICORNE_HAT.get())
+                .pattern("***")
+                .pattern("B#F")
+                .define('*', commonTag("leathers"))
+                .define('B', ItemRegistry.BLACKPOWDER)
+                .define('#', Items.LEATHER_HELMET)
+                .define('F', Items.FEATHER)
+                .unlockedBy("precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
         /* **********************************
          * Mechanical Components
          ********************************** */
