@@ -36,52 +36,46 @@ import org.jspecify.annotations.Nullable;
 
 public final class GunplayManager {
 
-    public static boolean tryFire(Player player, Vec3 direction) {
+    public static boolean tryFire(LivingEntity shooter, Vec3 direction) {
         InteractionHand hand = InteractionHand.MAIN_HAND;
-        ItemStack stack = player.getItemInHand(hand);
+        ItemStack stack = shooter.getItemInHand(hand);
         if (!(stack.getItem() instanceof GunItem gunItem)) {
             return false;
         }
-        if (player.getCooldowns().isOnCooldown(stack)) {
-            return false;
-        }
-        if (GunItem.isReloading(stack)) {
+        if (FireDelayState.isActive(stack) || GunItem.isReloading(stack)) {
             return false;
         }
         MagazineContents magazine = GunItem.getMagazine(stack);
         GunProfile gunProfile = gunItem.getGun();
-        ShotProfile profile = compose(player, gunProfile, stack);
+        ShotProfile profile = compose(shooter, gunProfile, stack);
 
         if (magazine.isEmpty()) {
-            profile.get(ShotComponents.GUNSHOT_SOUND).playDryFireSound(player.level(), player.position());
-            player.getCooldowns().addCooldown(stack, 4);
+            profile.get(ShotComponents.GUNSHOT_SOUND).playDryFireSound(shooter.level(), shooter.position());
+            beginFireDelay(shooter, stack, 4, 1f);
             return false;
         }
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            // client return point
+        beginFireDelay(shooter, stack, (int) Math.round(profile.fireDelayTicks()), pitchMultiplierForFire(profile));
+        if (!(shooter.level() instanceof ServerLevel level)) {
             return true;
         }
-        ServerLevel level = serverPlayer.level();
-        long now = level.getGameTime();
-        RecoilState offset = RecoilState.current(serverPlayer, now);
 
-        // todo: add config for authority
-        Vec3 authoritativeDirection = direction;
-        Vec2 rotation = authoritativeDirection.rotation();
-        // order here is very important:
-        //  - calculate direction
-        //  - then update recoil
-        //  - then fire shot
+        long now = level.getGameTime();
+
+        // order is important since these calls mutate state that affect gun performance
+        //  - calculate direction before adding recoil
+        //  - update recoil
+        //  - fire shot from fixed direction
         //  - then apply character motion
+        RecoilState offset = RecoilState.current(shooter, now);
+        Vec2 rotation = direction.rotation();
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
         GunItem.setMagazine(stack, magazine.deplete());
-        profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, serverPlayer.position());
-        RecoilState.addImpulse(serverPlayer, now, profile);
-        fireShot(level, serverPlayer, serverPlayer.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
-        applyCharacterRecoil(serverPlayer, profile);
-        serverPlayer.getCooldowns().addCooldown(stack, (int) Math.round(profile.fireDelayTicks()));
-        playFireAnimation(serverPlayer, stack, gunItem, profile);
+        profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, shooter.position());
+        RecoilState.addImpulse(shooter, now, profile);
+        fireShot(level, shooter, shooter.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
+        applyCharacterBlowback(shooter, profile);
+        playFireAnimation(shooter, stack, gunItem, profile);
         return true;
     }
 
@@ -100,19 +94,30 @@ public final class GunplayManager {
         return true;
     }
 
-    private static void applyCharacterRecoil(ServerPlayer player, ShotProfile profile) {
+    private static float pitchMultiplierForFire(ShotProfile profile) {
+        return (float) ((profile.value(ShotComponents.FIRE_RATE) + 2) / 3);
+    }
+
+    private static void beginFireDelay(LivingEntity shooter, ItemStack stack, int ticks, float pitchMultiplier) {
+        FireDelayState.start(stack, ticks, pitchMultiplier);
+        if (shooter instanceof Player player) {
+            player.getCooldowns().addCooldown(stack, ticks);
+        }
+    }
+
+    private static void applyCharacterBlowback(LivingEntity living, ShotProfile profile) {
         float strength = (float) profile.value(ShotComponents.CHARACTER_BLOWBACK);
         if (strength <= 0.0F) {
             return;
         }
-        Vec3 look = player.getLookAngle();
+        Vec3 look = living.getForward();
         // todo: factor in recoil to push direction (looking down to counter recoil makes blast push us up)
-        double d = player.fallDistance;
-        player.push(-look.x * strength, -look.y * strength * 0.5 + 0.05, -look.z * strength);
-        double fallDistanceMultiplier = Utils.mapClamped(player.getDeltaMovement().y, -0.5, -0.1, 1, 0);
-        player.fallDistance *= fallDistanceMultiplier;
-//        IronsArtifice.LOGGER.debug("[applyCharacterRecoil] {} * {}->{}", d, fallDistanceMultiplier, player.fallDistance);
-        player.hurtMarked = true;
+        living.push(-look.x * strength, -look.y * strength * 0.5 + 0.05, -look.z * strength);
+        if (living instanceof Player) {
+            double fallDistanceMultiplier = Utils.mapClamped(living.getDeltaMovement().y, -0.5, -0.1, 1, 0);
+            living.fallDistance *= fallDistanceMultiplier;
+        }
+        living.hurtMarked = true;
     }
 
     private static void playFireAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
@@ -134,33 +139,33 @@ public final class GunplayManager {
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
-    private static void fireShot(ServerLevel level, ServerPlayer player, Vec3 origin, Vec3 direction, ShotProfile profile) {
+    private static void fireShot(ServerLevel level, LivingEntity shooter, Vec3 origin, Vec3 direction, ShotProfile profile) {
         int projectileCount = Math.max(1, (int) Math.round(profile.value(ShotComponents.PROJECTILE_COUNT)));
         float speed = (float) profile.value(ShotComponents.BULLET_SPEED);
-        float spread = getSpreadForEntity(profile, player);
+        float spread = getSpreadForEntity(profile, shooter);
         for (int i = 0; i < projectileCount; i++) {
             Bullet bullet = new Bullet(EntityRegistry.BULLET.get(), level);
-            bullet.setOwner(player);
+            bullet.setOwner(shooter);
             bullet.applyProfile(profile.copy());
             bullet.setPos(origin);
             bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);
         }
-        spawnMuzzleFlash(level, player, direction, profile);
+        spawnMuzzleFlash(level, shooter, direction, profile);
     }
 
-    private static void spawnMuzzleFlash(ServerLevel level, ServerPlayer player, Vec3 direction, ShotProfile profile) {
+    private static void spawnMuzzleFlash(ServerLevel level, LivingEntity shooter, Vec3 direction, ShotProfile profile) {
         MuzzleFlashSettings settings = profile.get(ShotComponents.MUZZLE_FLASH);
         if (settings.types().isEmpty()) {
             return;
         }
         MuzzleFlashType type = settings.pick(level.getRandom());
-        Vec3 position = player.getEyePosition();
+        Vec3 position = shooter.getEyePosition();
         Vec3 offset = direction.normalize().scale(settings.muzzleDistanceScalar());
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new ClientboundMuzzleFlashPacket(
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(shooter, new ClientboundMuzzleFlashPacket(
                 type.particle(settings.pickTint(level.getRandom())),
-                player.getId(),
-                player.getDeltaMovement(),
+                shooter.getId(),
+                shooter.getDeltaMovement(),
                 position,
                 offset
         ));
@@ -201,7 +206,11 @@ public final class GunplayManager {
         return new ShotProfile(gunStack, gunProfile, MagazineContents.get(gunStack), components);
     }
 
-    public static ReloadResult attemptFinishReload(Player player, ItemStack gun) {
+    private static boolean requiresAmmo(LivingEntity living) {
+        return living instanceof Player player && !player.hasInfiniteMaterials();
+    }
+
+    public static ReloadResult attemptFinishReload(LivingEntity living, ItemStack gun) {
         // fixme: lots of duplicated checks with attemptStartReload
         if (!(gun.getItem() instanceof GunItem gunItem)) {
             return ReloadResult.NO_AMMO;
@@ -212,14 +221,14 @@ public final class GunplayManager {
         if (missing <= 0) {
             return ReloadResult.ALREADY_FULL;
         }
-        boolean requiresAmmo = !player.hasInfiniteMaterials();
-        int available = countBullets(player);
-        if (requiresAmmo && available <= 0) {
+        boolean needsAmmo = requiresAmmo(living);
+        int available = needsAmmo ? countBullets((Player) living) : missing;
+        if (needsAmmo && available <= 0) {
             return ReloadResult.NO_AMMO;
         }
         int toLoad = Math.min(missing, available);
-        if (requiresAmmo) {
-            consumeBullets(player, toLoad);
+        if (needsAmmo) {
+            consumeBullets((Player) living, toLoad);
         } else {
             toLoad = missing;
         }
@@ -227,7 +236,7 @@ public final class GunplayManager {
         return ReloadResult.FINISHED_RELOAD;
     }
 
-    public static ReloadResult attemptStartReload(Player player, ItemStack gun) {
+    public static ReloadResult attemptStartReload(LivingEntity living, ItemStack gun) {
         if (!(gun.getItem() instanceof GunItem gunItem)) {
             return ReloadResult.NO_AMMO;
         }
@@ -239,18 +248,18 @@ public final class GunplayManager {
             return ReloadResult.ALREADY_FULL;
         }
 
-        boolean requiresAmmo = !player.hasInfiniteMaterials();
-
-        int available = countBullets(player);
-        if (requiresAmmo && available <= 0) {
+        boolean needsAmmo = requiresAmmo(living);
+        if (needsAmmo && countBullets((Player) living) <= 0) {
             return ReloadResult.NO_AMMO;
         }
-        if (player instanceof ServerPlayer serverPlayer) {
-            ShotProfile shotProfile = compose(serverPlayer, gunItem.getGunProfile(), gun);
+        if (!living.level().isClientSide()) {
+            ShotProfile shotProfile = compose(living, gunItem.getGunProfile(), gun);
             int ticks = (int) (gunItem.getGunProfile().reloadTimeTicks() / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
             GunItem.startReload(gun, gunItem.getGunProfile().reloadTimeTicks(), shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
-            PacketDistributor.sendToPlayer(serverPlayer, new ClientboundReloadCrosshairAnimationPacket(ticks));
-            playReloadAnimation(serverPlayer, gun, gunItem, shotProfile);
+            if (living instanceof ServerPlayer serverPlayer) {
+                PacketDistributor.sendToPlayer(serverPlayer, new ClientboundReloadCrosshairAnimationPacket(ticks));
+            }
+            playReloadAnimation(living, gun, gunItem, shotProfile);
         }
         return ReloadResult.STARTING_RELOAD;
     }

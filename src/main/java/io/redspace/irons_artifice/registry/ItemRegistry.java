@@ -3,6 +3,8 @@ package io.redspace.irons_artifice.registry;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.gun.ArmPoseKind;
+import io.redspace.irons_artifice.gun.FireCycleCue;
+import io.redspace.irons_artifice.gun.FireCycleCueStack;
 import io.redspace.irons_artifice.gun.Guns;
 import io.redspace.irons_artifice.gun.ReloadCue;
 import io.redspace.irons_artifice.gun.ReloadCueStack;
@@ -82,7 +84,10 @@ public final class ItemRegistry {
                     new ReloadCue(0f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_START, 0.75f, 0.95f, 1.05f)),
                     new ReloadCue(1.33f / 2f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_MID, 0.75f, 0.95f, 1.05f)),
                     new ReloadCue(1.71f / 2f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_END, 0.75f, 0.95f, 1.05f))
-            ), PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_EQUIP, 0.75f, 0.9f, 1.1f)),
+            ), PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_EQUIP, 0.75f, 0.9f, 1.1f),
+                    FireCycleCueStack.of(
+                            new FireCycleCue(1.0f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1f, 0.9f, 1.1f))
+                    ), AnimationAdjuster.NONE),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> SIX_SHOOTER = ITEMS.registerItem("six_shooter",

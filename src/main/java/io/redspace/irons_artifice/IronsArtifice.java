@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice;
 
 import io.redspace.irons_artifice.config.ClientConfig;
+import io.redspace.irons_artifice.events.CommonSetup;
 import io.redspace.irons_artifice.network.PayloadRegistry;
 import io.redspace.irons_artifice.registry.DataAttachmentRegistry;
 import io.redspace.irons_artifice.registry.DataComponentRegistry;
@@ -48,6 +49,7 @@ public class IronsArtifice {
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
         modEventBus.addListener(PayloadRegistry::register);
+        modEventBus.addListener(CommonSetup::entityAttributes);
         CREATIVE_MODE_TABS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);

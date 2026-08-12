@@ -16,6 +16,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -53,7 +55,8 @@ public class BlackpowderChargeOnHit implements OnHitEffect {
         }
 
         ShotProfile profile = bullet.getProfile();
-        if (profile != null && profile.get(ShotComponents.BREAKS_BLOCKS)) {
+        if (profile != null && profile.get(ShotComponents.BREAKS_BLOCKS)
+                && !(owner instanceof Mob && !level.getGameRules().get(GameRules.MOB_GRIEFING))) {
             float blockDamageMultiplier = (float) profile.value(ShotComponents.BLOCK_DAMAGE_MULTIPLIER);
             BlockPos.betweenClosed(
                     BlockPos.containing(center.x - RADIUS, center.y - RADIUS, center.z - RADIUS),

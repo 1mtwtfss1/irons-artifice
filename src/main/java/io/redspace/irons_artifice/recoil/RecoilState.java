@@ -2,7 +2,7 @@ package io.redspace.irons_artifice.recoil;
 
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.registry.DataAttachmentRegistry;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec2;
 
 /**
@@ -19,8 +19,8 @@ import net.minecraft.world.phys.Vec2;
 public record RecoilState(float pitch, float yaw, long tick) {
     public static final RecoilState NONE = new RecoilState(0.0F, 0.0F, 0L);
 
-    public static RecoilState current(ServerPlayer player, long now) {
-        RecoilState state = player.getData(DataAttachmentRegistry.RECOIL);
+    public static RecoilState current(LivingEntity living, long now) {
+        RecoilState state = living.getData(DataAttachmentRegistry.RECOIL);
         int elapsed = (int) Math.max(0L, now - state.tick());
         if (elapsed == 0) {
             return state;
@@ -31,18 +31,13 @@ public record RecoilState(float pitch, float yaw, long tick) {
                 now);
     }
 
-    /**
-     * Adds this shot's recoil impulse on top of the current (decayed) offsetSeconds and stores it.
-     *
-     * @param roundIndex the shot's index within the magazine (drives the deterministic yaw pattern)
-     */
-    public static void addImpulse(ServerPlayer player, long now, ShotProfile shotProfile) {
-        RecoilState decayed = current(player, now);
+    public static void addImpulse(LivingEntity living, long now, ShotProfile shotProfile) {
+        RecoilState decayed = current(living, now);
         Vec2 recoil = RecoilHelper.calculateCameraRecoil(shotProfile);
         RecoilState next = new RecoilState(
                 decayed.pitch() + recoil.x,
                 decayed.yaw() + recoil.y,
                 now);
-        player.setData(DataAttachmentRegistry.RECOIL, next);
+        living.setData(DataAttachmentRegistry.RECOIL, next);
     }
 }

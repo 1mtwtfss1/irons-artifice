@@ -26,9 +26,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -361,11 +363,16 @@ public class Bullet extends Projectile {
      * @return whether the block was completed destroyed
      */
     protected boolean attemptApplyBlockDamage(BlockHitResult hitResult) {
-        if (level() instanceof ServerLevel serverLevel && this.profile != null && profile.get(ShotComponents.BREAKS_BLOCKS)) {
-            float damage = (float) (this.profile.value(ShotComponents.BLOCK_DAMAGE_MULTIPLIER) * resolveDamage());
-            return BlockDamageManager.applyDamage(serverLevel, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()), damage, this);
+        if (!(level() instanceof ServerLevel serverLevel) || this.profile == null
+                || !profile.get(ShotComponents.BREAKS_BLOCKS)) {
+            return false;
         }
-        return false;
+        if (getOwner() instanceof Mob
+                && !serverLevel.getGameRules().get(GameRules.MOB_GRIEFING)) {
+            return false;
+        }
+        float damage = (float) (this.profile.value(ShotComponents.BLOCK_DAMAGE_MULTIPLIER) * resolveDamage());
+        return BlockDamageManager.applyDamage(serverLevel, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()), damage, this);
     }
 
     @Override

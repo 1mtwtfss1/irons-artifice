@@ -2,6 +2,7 @@ package io.redspace.irons_artifice;
 
 import io.redspace.irons_artifice.client.Keybinds;
 import io.redspace.irons_artifice.client.entity.ChainEntityRenderer;
+import io.redspace.irons_artifice.client.entity.GunslingerRenderer;
 import io.redspace.irons_artifice.client.gui.GunPreviewRenderState;
 import io.redspace.irons_artifice.client.gui.GunPreviewRenderer;
 import io.redspace.irons_artifice.client.gun.GunInHandRenderer;
@@ -106,6 +107,7 @@ public class IronsArtificeClient {
     static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityRegistry.BULLET.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CHAIN.get(), ChainEntityRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.GUNSLINGER.get(), GunslingerRenderer::new);
     }
 
     @SubscribeEvent

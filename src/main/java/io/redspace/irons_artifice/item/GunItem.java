@@ -15,6 +15,7 @@ import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.ArmPoseKind;
+import io.redspace.irons_artifice.gun.FireCycleCueStack;
 import io.redspace.irons_artifice.gun.GunProfile;
 import io.redspace.irons_artifice.gun.ReloadCueStack;
 import io.redspace.irons_artifice.gun.ShotProfile;
@@ -30,6 +31,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -53,17 +55,24 @@ public class GunItem extends BaseGeoItem {
     private final @Nullable Identifier geoModelId;
     private final ArmPoseKind armPoseKind;
     private final ReloadCueStack reloadCues;
+    private final FireCycleCueStack fireCycleCues;
     private final @Nullable PlayableSound equipSound;
     private final AnimationAdjuster animationAdjuster;
 
     public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
                    ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound) {
-        this(properties, gunProfile, geoModelId, armPoseKind, reloadCues, equipSound, AnimationAdjuster.NONE);
+        this(properties, gunProfile, geoModelId, armPoseKind, reloadCues, equipSound, FireCycleCueStack.EMPTY, AnimationAdjuster.NONE);
     }
 
     public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
                    ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound,
                    AnimationAdjuster animationAdjuster) {
+        this(properties, gunProfile, geoModelId, armPoseKind, reloadCues, equipSound, FireCycleCueStack.EMPTY, animationAdjuster);
+    }
+
+    public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
+                   ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound,
+                   FireCycleCueStack fireCycleCues, AnimationAdjuster animationAdjuster) {
         super(properties
                 .component(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.CONTAINER, true))
                 .component(DataComponentRegistry.MAGAZINE, new MagazineContents(gunProfile.magazineCapacity()))
@@ -72,12 +81,13 @@ public class GunItem extends BaseGeoItem {
         this.geoModelId = geoModelId;
         this.armPoseKind = armPoseKind;
         this.reloadCues = reloadCues;
+        this.fireCycleCues = fireCycleCues;
         this.equipSound = equipSound;
         this.animationAdjuster = animationAdjuster;
     }
 
     public GunItem(Properties properties, GunProfile gunProfile, ArmPoseKind armPoseKind) {
-        this(properties, gunProfile, null, armPoseKind, ReloadCueStack.EMPTY, null, AnimationAdjuster.NONE);
+        this(properties, gunProfile, null, armPoseKind, ReloadCueStack.EMPTY, null, FireCycleCueStack.EMPTY, AnimationAdjuster.NONE);
     }
 
     public GunProfile getGun() {
@@ -98,6 +108,10 @@ public class GunItem extends BaseGeoItem {
 
     public ReloadCueStack getReloadCues() {
         return reloadCues;
+    }
+
+    public FireCycleCueStack getFireCycleCues() {
+        return fireCycleCues;
     }
 
     public static MagazineContents getMagazine(ItemStack stack) {
@@ -124,14 +138,19 @@ public class GunItem extends BaseGeoItem {
     @Override
     public void inventoryTick(@NonNull ItemStack itemStack, @NonNull ServerLevel level, @NonNull Entity owner, @Nullable EquipmentSlot slot) {
         super.inventoryTick(itemStack, level, owner, slot);
-        if (slot != EquipmentSlot.MAINHAND || !(owner instanceof Player player)) {
+        if (slot != EquipmentSlot.MAINHAND || !(owner instanceof LivingEntity living)) {
             // fixme: will this cause issue in offhand? i think a lot of things (animations, dual-wielding) need specific offhand handling
             //  not a v1 concern
             return;
         }
-        if (isReloading(itemStack) && ReloadState.tickReload(itemStack, this, level, player)) {
-            ReloadResult result = GunplayManager.attemptFinishReload(player, itemStack);
-            playReloadFeedback(level, player, result);
+        if (FireDelayState.isActive(itemStack)) {
+            FireDelayState.tick(itemStack, this, level, living);
+        }
+        if (isReloading(itemStack) && ReloadState.tickReload(itemStack, this, level, living)) {
+            ReloadResult result = GunplayManager.attemptFinishReload(living, itemStack);
+            if (living instanceof Player player) {
+                playReloadFeedback(level, player, result);
+            }
         }
     }
 
