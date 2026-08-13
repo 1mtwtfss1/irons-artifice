@@ -42,7 +42,7 @@ public final class IncendiaryTipModifier extends ValueStackModifier {
                         0f)
         );
         components.getOrCreate(ShotComponents.PARTICLE_TRAIL).addAccent(
-                new ParticleStack.ParticleAccent(ParticleTypes.SMOKE, 0.50)
+                new ParticleStack.ParticleAccent(ParticleTypes.SMOKE, 0.250)
         );
         components.getOrCreate(ShotComponents.GUNSHOT_SOUND).addAccent(PlayableSound.of(PlayableSound.holder(SoundEvents.BLAZE_SHOOT), 4f, 1.2f, 1.4f));
         components.getOrCreate(ShotComponents.MUZZLE_FLASH).addTint(MuzzleFlashSettings.UNTINTED);

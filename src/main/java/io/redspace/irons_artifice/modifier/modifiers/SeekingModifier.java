@@ -1,5 +1,6 @@
 package io.redspace.irons_artifice.modifier.modifiers;
 
+import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
 import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
@@ -28,13 +29,13 @@ public final class SeekingModifier extends ValueStackModifier {
         super.apply(components);
         components.set(ShotComponents.BULLET_SPEED,
                 components.getOrDefault(ShotComponents.BULLET_SPEED).withBase(BASE_SPEED));
-//        components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(
-//                ColorTransitionParticleOption.bulletTrail(0xd6f2ff, 0x420036)
-//        );
-        components.getOrCreate(ShotComponents.PARTICLE_TRAIL).addAccent(
-                new ParticleStack.ParticleAccent(ParticleTypes.ENCHANT, 0.25)
+        components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(
+                ColorTransitionParticleOption.bulletTrail(0xcb9fff, 0x420036)
         );
-        components.getOrCreate(ShotComponents.MUZZLE_FLASH).addTint(0x92aeff);
+        components.getOrCreate(ShotComponents.PARTICLE_TRAIL).addAccent(
+                new ParticleStack.ParticleAccent(ParticleTypes.ENCHANT, 0.125)
+        );
+        components.getOrCreate(ShotComponents.MUZZLE_FLASH).addTint(0xcb9fff);
     }
 
     @Override
