@@ -38,7 +38,7 @@ public class Gunslinger extends AbstractIllager {
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MOVEMENT_SPEED, 0.35)
-                .add(Attributes.FOLLOW_RANGE, 32.0)
+                .add(Attributes.FOLLOW_RANGE, 48.0)
                 .add(Attributes.MAX_HEALTH, 24.0)
                 .add(Attributes.ATTACK_DAMAGE, 2.0);
     }
@@ -47,7 +47,7 @@ public class Gunslinger extends AbstractIllager {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new RangedGunAttackGoal<>(this));
+        this.goalSelector.addGoal(2, new RangedGunAttackGoal<>(this, 24, 15, 45, 40, 80));
         this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 15.0F));

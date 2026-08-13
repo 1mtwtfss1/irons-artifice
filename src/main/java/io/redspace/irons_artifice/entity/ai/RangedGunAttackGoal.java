@@ -1,50 +1,87 @@
 package io.redspace.irons_artifice.entity.ai;
 
+import io.redspace.irons_artifice.data.ShotComponents;
+import io.redspace.irons_artifice.data.ValueModifier;
+import io.redspace.irons_artifice.gun.FireMode;
+import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.FireDelayState;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
-import io.redspace.irons_artifice.utils.Utils;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.NonNull;
 
 import java.util.EnumSet;
 
 public class RangedGunAttackGoal<T extends Mob> extends Goal {
-    private final T mob;
-    private LivingEntity target;
-    private final float attackRangeSqr;
-    private final float engageRangeSqr;
-    private boolean hasLos;
-    private int seeTime;
-
-    public RangedGunAttackGoal(T mob, float range) {
-        this.mob = mob;
-        this.attackRangeSqr = range * range;
-        float r = mob.getAttributes().hasAttribute(Attributes.FOLLOW_RANGE) ? (float) mob.getAttributeValue(Attributes.FOLLOW_RANGE) : range;
-        this.engageRangeSqr = r * r;
-        this.setFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
+    private enum ShootPhase {
+        IDLE,
+        TELEGRAPHING_VOLLEY,
+        VOLLEY
     }
 
+    private final T mob;
+    private AiGunRange bands;
+    private final GunCombatMoveControl mover = new GunCombatMoveControl();
+    private final float engageRangeSqr;
+    private final int telegraphMin;
+    private final int telegraphMax;
+    private final int volleyIntervalMin;
+    private final int volleyIntervalMax;
+
+    private LivingEntity target;
+    private boolean hasLos;
+    private int seeTime;
+    private int noSeeTime;
+    private ShootPhase phase = ShootPhase.IDLE;
+    private int telegraphRemaining;
+    private int shotsRemaining;
+    private int volleyCooldown;
+
     public RangedGunAttackGoal(T mob) {
-        this(mob, 32);
+        this(mob, 24, 15, 45, 40, 80);
+    }
+
+    public RangedGunAttackGoal(T mob, float range) {
+        this(mob, range, 15, 45, 40, 80);
+    }
+
+    public RangedGunAttackGoal(T mob, float range, int telegraphMinTicks, int telegraphMaxTicks,
+                               int volleyIntervalMin, int volleyIntervalMax) {
+        this.mob = mob;
+        this.bands = new AiGunRange(range);
+        float follow = Math.max(mob.getAttributes().hasAttribute(Attributes.FOLLOW_RANGE)
+                ? (float) mob.getAttributeValue(Attributes.FOLLOW_RANGE)
+                : range, range);
+        this.engageRangeSqr = Math.max(follow, range) * Math.max(follow, range);
+        this.telegraphMin = Math.min(telegraphMinTicks, telegraphMaxTicks);
+        this.telegraphMax = Math.max(telegraphMinTicks, telegraphMaxTicks);
+        this.volleyIntervalMin = Math.min(volleyIntervalMin, volleyIntervalMax);
+        this.volleyIntervalMax = Math.max(volleyIntervalMin, volleyIntervalMax);
+        this.setFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
     }
 
     @Override
     public boolean canUse() {
-        LivingEntity target = mob.getTarget();
-        if (target == null) {
-            // defer to last target. helps when mob loses LOS
-            target = this.target;
+        LivingEntity next = mob.getTarget();
+        if (next == null) {
+            next = this.target;
         } else {
-            this.target = target;
+            this.target = next;
         }
-        return target != null && target.isAlive()
-                && holdingGun()
-                && mob.distanceToSqr(target) <= engageRangeSqr;
+        if (noSeeTime > 200) {
+            this.target = null;
+            return false;
+        }
+        return next != null && next.isAlive() && mob.canAttack(next)
+                && isHoldingGun()
+                && mob.distanceToSqr(next) <= engageRangeSqr;
     }
 
     @Override
@@ -54,62 +91,23 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
 
     @Override
     public void start() {
-        super.start();
         mob.setAggressive(true);
     }
 
     @Override
     public void stop() {
-        super.stop();
         mob.setAggressive(false);
-        this.mob.setTarget(null);
-        this.target = null;
-        this.seeTime = 0;
-    }
-
-    @Override
-    public void tick() {
-        if (target == null) {
-            return;
-        }
-        if (mob.tickCount % 10 == 0) {
-            this.hasLos = Utils.hasLineOfSight(mob, target);
-        }
-        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
-
-        ItemStack gun = mob.getMainHandItem();
-        if (!(gun.getItem() instanceof GunItem)) {
-            return;
-        }
-
-        if (GunItem.isReloading(gun) || FireDelayState.isActive(gun)) {
-            return;
-        }
-
-        if (GunItem.getMagazine(gun).isEmpty()) {
-            GunplayManager.attemptStartReload(mob, gun);
-            return;
-        }
-        Vec3 from = mob.getEyePosition();
-        Vec3 to = target.getEyePosition();
-        Vec3 direction = to.subtract(from);
-        double distanceSqr = direction.lengthSqr();
-
-        if (hasLos) {
-            seeTime++;
-        } else {
-            seeTime = 0;
-        }
-        if (distanceSqr > attackRangeSqr || !hasLos) {
-            if (mob.tickCount % 20 == 0) {
-                this.mob.getNavigation().moveTo(target, 1f);
-            }
-        }
-        if (seeTime > 20) {
-            mob.setYRot(mob.yHeadRot);
-            GunplayManager.tryFire(mob, direction.normalize());
-            mob.setNoActionTime(0);
-        }
+        mob.setTarget(null);
+        target = null;
+        seeTime = 0;
+        noSeeTime = 0;
+        phase = ShootPhase.IDLE;
+        telegraphRemaining = 0;
+        shotsRemaining = 0;
+        volleyCooldown = 0;
+        mover.reset();
+        mob.getNavigation().stop();
+        mob.getMoveControl().strafe(0, 0);
     }
 
     @Override
@@ -117,7 +115,140 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         return true;
     }
 
-    private boolean holdingGun() {
+    @Override
+    public void tick() {
+        if (target == null || !target.isAlive()) {
+            return;
+        }
+
+        ItemStack gun = mob.getMainHandItem();
+        if (!(gun.getItem() instanceof GunItem gunItem)) {
+            return;
+        }
+        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+
+        hasLos = mob.getSensing().hasLineOfSight(target);
+        if (hasLos) {
+            seeTime++;
+            noSeeTime = 0;
+        } else {
+            seeTime = 0;
+            noSeeTime++;
+        }
+
+        double distSqr = mob.distanceToSqr(target);
+
+        if (phase == ShootPhase.IDLE) {
+            mover.tick(mob, target, bands, hasLos);
+            if (volleyCooldown > 0) {
+                volleyCooldown--;
+            }
+            if (GunItem.getMagazine(gun).isEmpty() && !GunItem.isReloading(gun)) {
+                GunplayManager.attemptStartReload(mob, gun);
+            }
+        } else {
+            mob.getNavigation().stop();
+            mob.getMoveControl().strafe(0, 0);
+            holdPlant();
+        }
+
+        switch (phase) {
+            case IDLE -> {
+                if (canStartVolley(gun, distSqr)) {
+                    phase = ShootPhase.TELEGRAPHING_VOLLEY;
+                    telegraphRemaining = randomBetween(telegraphMin, telegraphMax);
+                    mob.getNavigation().stop();
+                }
+            }
+            case TELEGRAPHING_VOLLEY -> {
+                if (shouldCancelVolley(distSqr)) {
+                    phase = ShootPhase.IDLE;
+                    break;
+                }
+                if (--telegraphRemaining <= 0) {
+                    ShotProfile profile = createShotProfile(gunItem, gun);
+                    shotsRemaining = rollVolleyShots(gun, gunItem, profile, mob.getRandom());
+                    phase = ShootPhase.VOLLEY;
+                }
+            }
+            case VOLLEY -> {
+                if (shouldCancelVolley(distSqr)) {
+                    endVolley();
+                    break;
+                }
+                if (shotsRemaining > 0 && !FireDelayState.isActive(gun) && !GunItem.isReloading(gun)
+                        && !GunItem.getMagazine(gun).isEmpty()) {
+                    Vec3 aim = target.getEyePosition().subtract(mob.getEyePosition());
+                    if (aim.lengthSqr() > 1.0E-6 && GunplayManager.tryFire(mob, aim.normalize())) {
+                        shotsRemaining--;
+                        mob.setNoActionTime(0);
+                    }
+                }
+                if (shotsRemaining <= 0 || GunItem.getMagazine(gun).isEmpty()) {
+                    endVolley();
+                    if (GunItem.getMagazine(gun).isEmpty() && !GunItem.isReloading(gun)) {
+                        GunplayManager.attemptStartReload(mob, gun);
+                    }
+                }
+            }
+        }
+    }
+
+    private @NonNull ShotProfile createShotProfile(GunItem gunItem, ItemStack gun) {
+        ShotProfile profile = GunplayManager.compose(mob, gunItem.getGun(), gun);
+        // who thought a 20 damage flintlock was a good idea
+        profile.get(ShotComponents.DAMAGE).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
+        // todo: base on difficulty
+        profile.get(ShotComponents.BULLET_SPEED).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
+        profile.get(ShotComponents.RELOAD_SPEED_MULTIPLIER).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
+        profile.get(ShotComponents.SPREAD).addModifier(new ValueModifier(1, ValueModifier.Operation.ADD, ValueModifier.Type.HARMFUL));
+        return profile;
+    }
+
+    private void endVolley() {
+        phase = ShootPhase.IDLE;
+        shotsRemaining = 0;
+        volleyCooldown = randomBetween(volleyIntervalMin, volleyIntervalMax);
+    }
+
+    private void holdPlant() {
+        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+        mob.setYRot(mob.yHeadRot);
+    }
+
+    private boolean canStartVolley(ItemStack gun, double distSqr) {
+        return volleyCooldown <= 0
+                && hasLos
+                && seeTime >= 20
+                && distSqr <= bands.maxRangeSqr()
+                && distSqr >= bands.panicSqr()
+                && !GunItem.isReloading(gun)
+                && !GunItem.getMagazine(gun).isEmpty();
+    }
+
+    private boolean shouldCancelVolley(double distSqr) {
+        return !target.isAlive() || distSqr < bands.panicSqr() || noSeeTime > 40;
+    }
+
+    private int rollVolleyShots(ItemStack gun, GunItem gunItem, ShotProfile profile, RandomSource random) {
+        int mag = GunItem.getMagazine(gun).count();
+        int capacity = Math.max(1, gunItem.magazineCapacity());
+        float minFrac = 0.20f;
+        float maxFrac = 0.40f;
+        if (profile.fireMode() == FireMode.AUTO) {
+            minFrac *= 2;
+            maxFrac *= 2;
+        }
+        float frac = Mth.lerp(random.nextFloat(), minFrac, maxFrac);
+        int fromPercent = Math.max(1, Math.round(capacity * frac));
+        return Math.min(mag, fromPercent);
+    }
+
+    private int randomBetween(int min, int max) {
+        return Mth.randomBetweenInclusive(mob.getRandom(), min, max);
+    }
+
+    private boolean isHoldingGun() {
         return mob.getMainHandItem().getItem() instanceof GunItem;
     }
 }

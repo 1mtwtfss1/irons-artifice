@@ -1,0 +1,126 @@
+package io.redspace.irons_artifice.entity.ai;
+
+import net.minecraft.util.TimeUtil;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.phys.Vec3;
+
+public final class GunCombatMoveControl {
+    private static final UniformInt PATH_DELAY = TimeUtil.rangeOfSeconds(1, 2);
+
+    public enum PositionMode {
+        FLEE,
+        BACKPEDAL,
+        ORBIT,
+        CLOSE_GAP
+    }
+
+    private int pathDelay;
+    private int strafingTime = -1;
+    private boolean strafingClockwise;
+    private boolean strafingBackwards;
+
+    public PositionMode select(double distSqr, boolean hasLos, AiGunRange bands) {
+        if (!hasLos || distSqr > bands.idealMaxSqr()) {
+            return PositionMode.CLOSE_GAP;
+        }
+        if (distSqr < bands.panicSqr()) {
+            return PositionMode.FLEE;
+        }
+        if (distSqr < bands.idealMinSqr()) {
+            return PositionMode.BACKPEDAL;
+        }
+        return PositionMode.ORBIT;
+    }
+
+    public void tick(Mob mob, LivingEntity target, AiGunRange bands, boolean hasLos) {
+        double distSqr = mob.distanceToSqr(target);
+        PositionMode mode = select(distSqr, hasLos, bands);
+        switch (mode) {
+            case FLEE -> flee(mob, target, bands);
+            case BACKPEDAL -> backpedal(mob, target, distSqr, bands);
+            case ORBIT -> orbit(mob, target, distSqr, bands);
+            case CLOSE_GAP -> closeGap(mob, target);
+        }
+    }
+
+    public void reset() {
+        pathDelay = 0;
+        strafingTime = -1;
+    }
+
+    private void flee(Mob mob, LivingEntity target, AiGunRange bands) {
+        pathDelay--;
+        if (pathDelay <= 0) {
+            Vec3 away = mob.position().subtract(target.position());
+            if (away.lengthSqr() < 1.0E-4) {
+                away = new Vec3(mob.getRandom().nextFloat() - 0.5, 0, mob.getRandom().nextFloat() - 0.5);
+            }
+            away = away.normalize();
+            Vec3 dest = mob.position().add(away.scale(bands.idealRangeMin()));
+            if (!mob.getNavigation().moveTo(dest.x, dest.y, dest.z, 1.0)) {
+                mob.getMoveControl().strafe(-1.0F, strafingClockwise ? 0.5F : -0.5F);
+            }
+            pathDelay = PATH_DELAY.sample(mob.getRandom());
+        }
+        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+    }
+
+    private void backpedal(Mob mob, LivingEntity target, double distSqr, AiGunRange bands) {
+        mob.getNavigation().stop();
+        updateStrafeDirection(mob);
+        float lateral = strafingClockwise ? 0.5F : -0.5F;
+        mob.getMoveControl().strafe(-0.7F, lateral);
+        mob.lookAt(target, 30.0F, 30.0F);
+        // leave panic band via flee instead if somehow still closing
+        if (distSqr < bands.panicSqr()) {
+            flee(mob, target, bands);
+        }
+    }
+
+    private void orbit(Mob mob, LivingEntity target, double distSqr, AiGunRange bands) {
+        mob.getNavigation().stop();
+        updateStrafeDirection(mob);
+
+        boolean isGoingTheOtherWayThanLateral = true;
+        if (distSqr > bands.idealMaxSqr() * 0.8 * 0.8) {
+            strafingBackwards = false;
+        } else if (distSqr < bands.idealMinSqr() * 1.2 * 1.2) {
+            strafingBackwards = true;
+        } else {
+            isGoingTheOtherWayThanLateral = false;
+        }
+
+        float forward = !isGoingTheOtherWayThanLateral ? 0 : (strafingBackwards ? -0.5F : 0.5F);
+        float lateral = strafingClockwise ? 0.5F : -0.5F;
+        mob.getMoveControl().strafe(forward, lateral);
+        mob.lookAt(target, 30.0F, 30.0F);
+    }
+
+    private void closeGap(Mob mob, LivingEntity target) {
+        pathDelay--;
+        if (pathDelay <= 0) {
+            mob.getNavigation().moveTo(target, 1.0);
+            pathDelay = PATH_DELAY.sample(mob.getRandom());
+        }
+        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+        strafingTime = -1;
+    }
+
+    private void updateStrafeDirection(Mob mob) {
+        if (strafingTime < 0) {
+            strafingTime = 0;
+        }
+        strafingTime++;
+        if (strafingTime >= 20) {
+            if (mob.getRandom().nextFloat() < 0.3F) {
+                strafingClockwise = !strafingClockwise;
+            }
+            if (mob.getRandom().nextFloat() < 0.3F) {
+                strafingBackwards = !strafingBackwards;
+            }
+            strafingTime = 0;
+        }
+    }
+}
