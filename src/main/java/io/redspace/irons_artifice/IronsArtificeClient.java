@@ -1,5 +1,6 @@
 package io.redspace.irons_artifice;
 
+import io.redspace.irons_artifice.client.ClientHelper;
 import io.redspace.irons_artifice.client.Keybinds;
 import io.redspace.irons_artifice.client.entity.ChainEntityRenderer;
 import io.redspace.irons_artifice.client.entity.GunslingerRenderer;
@@ -40,6 +41,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -129,6 +131,11 @@ public class IronsArtificeClient {
         event.registerSpriteSet(ParticleRegistry.LIGHTNING_TRAIL.get(), LightningTrailEmitterParticle.Provider::new);
 
         event.registerSpecial(ParticleRegistry.SPLASH.get(), new SplashParticle.Provider());
+    }
+
+    @SubscribeEvent
+    public static void onLogOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        ClientHelper.reset();
     }
 
     @SubscribeEvent

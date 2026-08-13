@@ -33,6 +33,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,6 +42,15 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 public final class ClientHelper {
+
+    private static long localDryFireTime;
+
+    public static void handleLocalDryFire(Player player, PlayableSound sound) {
+        if (player.level().getGameTime() > localDryFireTime + 8) {
+            localDryFireTime = player.level().getGameTime();
+            player.level().playSound(player, player.getX(), player.getY(), player.getZ(), sound.soundEventHolder(), player.getSoundSource(), sound.volume(), sound.samplePitch(player.getRandom()));
+        }
+    }
 
     public static void handleBulletTrail(ClientboundBulletTrailPacket msg) {
         ClientLevel level = Minecraft.getInstance().level;
@@ -220,5 +230,9 @@ public final class ClientHelper {
                 payload.item(),
                 delay
         ), delay);
+    }
+
+    public static void reset() {
+        localDryFireTime = 0;
     }
 }

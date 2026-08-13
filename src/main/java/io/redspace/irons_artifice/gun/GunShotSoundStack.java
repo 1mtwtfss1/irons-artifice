@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.gun;
 
 import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
+import io.redspace.irons_artifice.data.Copyable;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.network.ClientboundGunshotSoundPacket;
 import io.redspace.irons_artifice.registry.SoundRegistry;
@@ -13,8 +14,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import io.redspace.irons_artifice.data.Copyable;
 
 public class GunShotSoundStack implements Copyable<GunShotSoundStack> {
     GunShotSoundSettings baseSound;
@@ -38,6 +37,10 @@ public class GunShotSoundStack implements Copyable<GunShotSoundStack> {
 
     public void setBaseSound(GunShotSoundSettings sound) {
         this.baseSound = sound;
+    }
+
+    public PlayableSound getDryFireSound() {
+        return dryFireSound;
     }
 
     public List<PlayableSound> getAccentSounds() {

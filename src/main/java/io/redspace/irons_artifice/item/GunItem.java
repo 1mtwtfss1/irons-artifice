@@ -138,14 +138,15 @@ public class GunItem extends BaseGeoItem {
     @Override
     public void inventoryTick(@NonNull ItemStack itemStack, @NonNull ServerLevel level, @NonNull Entity owner, @Nullable EquipmentSlot slot) {
         super.inventoryTick(itemStack, level, owner, slot);
+        if (FireDelayState.isActive(itemStack)) {
+            FireDelayState.tick(itemStack, this, level, owner);
+        }
         if (slot != EquipmentSlot.MAINHAND || !(owner instanceof LivingEntity living)) {
             // fixme: will this cause issue in offhand? i think a lot of things (animations, dual-wielding) need specific offhand handling
             //  not a v1 concern
             return;
         }
-        if (FireDelayState.isActive(itemStack)) {
-            FireDelayState.tick(itemStack, this, level, living);
-        }
+
         if (isReloading(itemStack) && ReloadState.tickReload(itemStack, this, level, living)) {
             ReloadResult result = GunplayManager.attemptFinishReload(living, itemStack);
             if (living instanceof Player player) {

@@ -2,6 +2,7 @@ package io.redspace.irons_artifice.item;
 
 import com.geckolib.animatable.GeoItem;
 import io.redspace.irons_artifice.api.ComposeShotEvent;
+import io.redspace.irons_artifice.client.ClientHelper;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
@@ -50,8 +51,9 @@ public final class GunplayManager {
         ShotProfile profile = compose(shooter, gunProfile, stack);
 
         if (magazine.isEmpty()) {
-            profile.get(ShotComponents.GUNSHOT_SOUND).playDryFireSound(shooter.level(), shooter.position());
-            beginFireDelay(shooter, stack, 4, 1f);
+            if (shooter instanceof Player player && player.level().isClientSide()) {
+                ClientHelper.handleLocalDryFire(player, profile.get(ShotComponents.GUNSHOT_SOUND).getDryFireSound());
+            }
             return false;
         }
         beginFireDelay(shooter, stack, (int) Math.round(profile.fireDelayTicks()), pitchMultiplierForFire(profile));
@@ -99,9 +101,11 @@ public final class GunplayManager {
     }
 
     private static void beginFireDelay(LivingEntity shooter, ItemStack stack, int ticks, float pitchMultiplier) {
-        FireDelayState.start(stack, ticks, pitchMultiplier);
-        if (shooter instanceof Player player) {
-            player.getCooldowns().addCooldown(stack, ticks);
+        // item cooldowns seem to tick before inventory tick. new system uses latter
+        // advance one tick in order to maintain intended parity, and one-tick cooldowns meaning "can shoot next tick"
+        ticks -= 1;
+        if (ticks > 0) {
+            FireDelayState.start(stack, ticks, pitchMultiplier);
         }
     }
 
