@@ -17,6 +17,15 @@
                 "class": "io/redspace/irons_artifice/client/gun/GunArmPoses",
                 "field": "RIFLE"
             }
+        },
+        {
+            "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+            "name": "IRONS_ARTIFICE_ILLIFICER",
+            "constructor": "(Ljava/util/function/Supplier;[I)V",
+            "parameters": {
+                "class": "io/redspace/irons_artifice/registry/ExtendedRaiderTypes",
+                "field": "ILLIFICER"
+            }
         }
     ]
 }

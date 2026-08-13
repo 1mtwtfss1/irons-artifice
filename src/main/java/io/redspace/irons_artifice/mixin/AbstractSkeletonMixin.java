@@ -34,7 +34,7 @@ public abstract class AbstractSkeletonMixin extends Monster implements RangedAtt
     @Unique
     private RangedGunAttackGoal<AbstractSkeleton> irons_artifice$gunGoal;
 
-    @Inject(method = "reassessWeaponGoal", at = @At("HEAD"))
+    @Inject(method = "reassessWeaponGoal", at = @At("HEAD"), cancellable = true)
     private void irons_artifice$assessGunGoal(CallbackInfo ci) {
         if (irons_artifice$gunGoal == null) {
             irons_artifice$gunGoal = new RangedGunAttackGoal<>((AbstractSkeleton) (Object) this, 32, 20, 40, 60, 100);

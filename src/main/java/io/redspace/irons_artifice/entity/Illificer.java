@@ -1,11 +1,9 @@
 package io.redspace.irons_artifice.entity;
 
-import io.redspace.irons_artifice.config.ServerConfig;
 import io.redspace.irons_artifice.entity.ai.RangedGunAttackGoal;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.modifier.ModifierItem;
-import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ItemRegistry;
 import io.redspace.irons_artifice.registry.LootTableRegistry;
 import net.minecraft.server.level.ServerLevel;
@@ -30,10 +28,8 @@ import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.illager.AbstractIllager;
-import net.minecraft.world.entity.monster.illager.Evoker;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -43,25 +39,85 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @EventBusSubscriber
 public class Illificer extends AbstractIllager implements IGunslingerMob {
+
     public Illificer(EntityType<? extends Illificer> type, Level level) {
         super(type, level);
     }
 
-    public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes()
-                .add(Attributes.MOVEMENT_SPEED, 0.35)
-                .add(Attributes.FOLLOW_RANGE, 48.0)
-                .add(Attributes.MAX_HEALTH, 36.0)
-                .add(Attributes.ATTACK_DAMAGE, 2.0);
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new RangedGunAttackGoal<>(this, 24, 15, 45, 40, 80));
+        this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6));
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 15.0F));
+
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+    }
+
+    @Override
+    public IllagerArmPose getArmPose() {
+        if (isAggressive() && !getMainHandItem().isEmpty()) {
+            return IllagerArmPose.CROSSBOW_HOLD;
+        }
+        return IllagerArmPose.NEUTRAL;
+    }
+
+    @Override
+    public void onVolleyEnd() {
+        if (this.getRandom().nextBoolean()) {
+            this.playSound(getCelebrateSound());
+        }
+    }
+
+    @Override
+    public void applyRaidBuffs(ServerLevel level, int wave, boolean isCaptain) {
+    }
+
+    @Override
+    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty,
+                                                  EntitySpawnReason spawnReason, @Nullable SpawnGroupData spawnGroupData) {
+        this.populateDefaultEquipmentSlots(level.getRandom(), difficulty);
+        return super.finalizeSpawn(level, difficulty, spawnReason, spawnGroupData);
+    }
+
+    @Override
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
+        if (level() instanceof ServerLevel serverLevel) {
+            setItemSlot(EquipmentSlot.MAINHAND, createLoadout(serverLevel));
+        }
+        setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.EVOKER_AMBIENT;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.EVOKER_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.EVOKER_DEATH;
+    }
+
+    @Override
+    public SoundEvent getCelebrateSound() {
+        return SoundEvents.EVOKER_CELEBRATE;
     }
 
     public static ItemStack createLoadout(ServerLevel level) {
@@ -88,67 +144,6 @@ public class Illificer extends AbstractIllager implements IGunslingerMob {
         return table.getRandomItems(params);
     }
 
-    public static List<ItemStack> getInstalledModifiers(ItemStack gun) {
-        GunContainer container = new GunContainer(gun);
-        List<ItemStack> mods = new ArrayList<>();
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            ItemStack stack = container.getItem(i);
-            if (!stack.isEmpty() && stack.getItem() instanceof ModifierItem) {
-                mods.add(stack.copy());
-            }
-        }
-        return mods;
-    }
-
-    private static boolean isReplaceableEvokerSpawn(EntitySpawnReason reason) {
-        return reason == EntitySpawnReason.STRUCTURE
-                || reason == EntitySpawnReason.EVENT
-                || reason == EntitySpawnReason.NATURAL
-                || reason == EntitySpawnReason.CHUNK_GENERATION;
-    }
-
-    @SubscribeEvent
-    public static void replaceEvoker(FinalizeSpawnEvent event) {
-        if (!(event.getEntity() instanceof Evoker evoker)) {
-            return;
-        }
-        if (!(evoker.level() instanceof ServerLevel level)) {
-            return;
-        }
-        if (!isReplaceableEvokerSpawn(event.getSpawnType())) {
-            return;
-        }
-        if (level.getRandom().nextDouble() >= ServerConfig.ILLIFICER_REPLACE_EVOKER_CHANCE.getAsDouble()) {
-            return;
-        }
-
-        Illificer illificer = EntityRegistry.ILLIFICER.get().create(level, event.getSpawnType());
-        if (illificer == null) {
-            return;
-        }
-
-        illificer.snapTo(evoker.getX(), evoker.getY(), evoker.getZ(), evoker.getYRot(), evoker.getXRot());
-        illificer.setYHeadRot(evoker.getYHeadRot());
-        illificer.setYBodyRot(evoker.yBodyRot);
-
-        Raid raid = evoker.getCurrentRaid();
-        int wave = evoker.getWave();
-        boolean canJoinRaid = evoker.canJoinRaid();
-
-        event.setSpawnCancelled(true);
-        if (evoker.hasActiveRaid() && raid != null) {
-            raid.removeFromRaid(level, evoker, true);
-        }
-
-        illificer.setCanJoinRaid(canJoinRaid);
-        illificer.finalizeSpawn(level,event.getDifficulty(), event.getSpawnType(), null);
-        level.addFreshEntityWithPassengers(illificer);
-
-        if (raid != null && canJoinRaid) {
-            raid.joinRaid(level, wave, illificer, null, true);
-        }
-    }
-
     @SubscribeEvent
     public static void dropLoadoutModifier(LivingDropsEvent event) {
         if (!(event.getEntity() instanceof Illificer illificer)) {
@@ -158,80 +153,19 @@ public class Illificer extends AbstractIllager implements IGunslingerMob {
         if (!(gun.getItem() instanceof GunItem)) {
             return;
         }
-        List<ItemStack> mods = getInstalledModifiers(gun);
-        if (mods.isEmpty()) {
+        GunContainer gunContainer = new GunContainer(gun);
+        if (gunContainer.isEmpty()) {
             return;
         }
-        ItemStack drop = mods.get(illificer.getRandom().nextInt(mods.size())).copyWithCount(1);
+        ItemStack drop = gunContainer.getItems().get(illificer.getRandom().nextInt(gunContainer.getItems().size())).copyWithCount(1);
         event.getDrops().add(new ItemEntity(illificer.level(), illificer.getX(), illificer.getY(), illificer.getZ(), drop));
     }
 
-    @Override
-    protected void registerGoals() {
-        super.registerGoals();
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new RangedGunAttackGoal<>(this, 24, 15, 45, 40, 80));
-        this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6));
-        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
-        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 15.0F));
-
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-    }
-
-    @Override
-    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty,
-                                                  EntitySpawnReason spawnReason, @Nullable SpawnGroupData spawnGroupData) {
-        this.populateDefaultEquipmentSlots(level.getRandom(), difficulty);
-        return super.finalizeSpawn(level, difficulty, spawnReason, spawnGroupData);
-    }
-
-    @Override
-    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
-        if (level() instanceof ServerLevel serverLevel) {
-            setItemSlot(EquipmentSlot.MAINHAND, createLoadout(serverLevel));
-        }
-        setDropChance(EquipmentSlot.MAINHAND, 0.0F);
-    }
-
-    @Override
-    public void applyRaidBuffs(ServerLevel level, int wave, boolean isCaptain) {
-    }
-
-    @Override
-    protected SoundEvent getAmbientSound() {
-        return SoundEvents.EVOKER_AMBIENT;
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.EVOKER_HURT;
-    }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return SoundEvents.EVOKER_DEATH;
-    }
-
-    @Override
-    public SoundEvent getCelebrateSound() {
-        return SoundEvents.EVOKER_CELEBRATE;
-    }
-
-    @Override
-    public IllagerArmPose getArmPose() {
-        if (isAggressive() && !getMainHandItem().isEmpty()) {
-            return IllagerArmPose.CROSSBOW_HOLD;
-        }
-        return IllagerArmPose.NEUTRAL;
-    }
-
-    @Override
-    public void onVolleyEnd() {
-        if (this.getRandom().nextBoolean()) {
-            this.playSound(getCelebrateSound());
-        }
+    public static AttributeSupplier.Builder createAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MOVEMENT_SPEED, 0.35)
+                .add(Attributes.FOLLOW_RANGE, 48.0)
+                .add(Attributes.MAX_HEALTH, 36.0)
+                .add(Attributes.ATTACK_DAMAGE, 2.0);
     }
 }
