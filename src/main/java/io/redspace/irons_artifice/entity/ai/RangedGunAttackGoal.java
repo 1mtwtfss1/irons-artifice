@@ -1,7 +1,6 @@
 package io.redspace.irons_artifice.entity.ai;
 
-import io.redspace.irons_artifice.data.ShotComponents;
-import io.redspace.irons_artifice.data.ValueModifier;
+import io.redspace.irons_artifice.entity.IGunslingerMob;
 import io.redspace.irons_artifice.gun.FireMode;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.FireDelayState;
@@ -15,9 +14,9 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.NonNull;
 
 import java.util.EnumSet;
+import java.util.function.Consumer;
 
 public class RangedGunAttackGoal<T extends Mob> extends Goal {
     private enum ShootPhase {
@@ -66,6 +65,12 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         this.volleyIntervalMin = Math.min(volleyIntervalMin, volleyIntervalMax);
         this.volleyIntervalMax = Math.max(volleyIntervalMin, volleyIntervalMax);
         this.setFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
+    }
+
+    protected void runHook(Consumer<IGunslingerMob> hook) {
+        if (mob instanceof IGunslingerMob gunslingerMob) {
+            hook.accept(gunslingerMob);
+        }
     }
 
     @Override
@@ -156,6 +161,7 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         switch (phase) {
             case IDLE -> {
                 if (canStartVolley(gun, distSqr)) {
+                    runHook(IGunslingerMob::onVolleyStart);
                     phase = ShootPhase.TELEGRAPHING_VOLLEY;
                     telegraphRemaining = randomBetween(telegraphMin, telegraphMax);
                     mob.getNavigation().stop();
@@ -167,7 +173,7 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
                     break;
                 }
                 if (--telegraphRemaining <= 0) {
-                    ShotProfile profile = createShotProfile(gunItem, gun);
+                    ShotProfile profile = GunplayManager.compose(mob, gunItem.getGun(), gun);
                     shotsRemaining = rollVolleyShots(gun, gunItem, profile, mob.getRandom());
                     phase = ShootPhase.VOLLEY;
                 }
@@ -195,20 +201,11 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         }
     }
 
-    private @NonNull ShotProfile createShotProfile(GunItem gunItem, ItemStack gun) {
-        ShotProfile profile = GunplayManager.compose(mob, gunItem.getGun(), gun);
-        // who thought a 20 damage flintlock was a good idea
-        profile.get(ShotComponents.DAMAGE).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
-        // todo: base on difficulty
-        profile.get(ShotComponents.BULLET_SPEED).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
-        profile.get(ShotComponents.SPREAD).addModifier(new ValueModifier(1, ValueModifier.Operation.ADD, ValueModifier.Type.HARMFUL));
-        return profile;
-    }
-
     private void endVolley() {
         phase = ShootPhase.IDLE;
         shotsRemaining = 0;
         volleyCooldown = randomBetween(volleyIntervalMin, volleyIntervalMax);
+        runHook(IGunslingerMob::onVolleyEnd);
     }
 
     private void holdPlant() {

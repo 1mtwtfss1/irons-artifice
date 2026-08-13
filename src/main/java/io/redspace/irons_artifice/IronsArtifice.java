@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice;
 
 import io.redspace.irons_artifice.config.ClientConfig;
+import io.redspace.irons_artifice.config.ServerConfig;
 import io.redspace.irons_artifice.events.CommonSetup;
 import io.redspace.irons_artifice.network.PayloadRegistry;
 import io.redspace.irons_artifice.registry.DataAttachmentRegistry;
@@ -53,6 +54,7 @@ public class IronsArtifice {
         CREATIVE_MODE_TABS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
     }
 
     public static Identifier id(String path) {

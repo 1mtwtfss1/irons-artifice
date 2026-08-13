@@ -4,6 +4,7 @@ import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.entity.ChainEntity;
 import io.redspace.irons_artifice.entity.Gunslinger;
+import io.redspace.irons_artifice.entity.Illificer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
@@ -31,7 +32,14 @@ public final class EntityRegistry {
             "gunslinger",
             Gunslinger::new,
             MobCategory.MONSTER,
-            builder -> builder.sized(0.6f, 1.95f).clientTrackingRange(8)
+            builder -> builder.sized(0.6f, 1.95f).clientTrackingRange(64)
+    );
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Illificer>> ILLIFICER = ENTITY_TYPES.registerEntityType(
+            "illificer",
+            Illificer::new,
+            MobCategory.MONSTER,
+            builder -> builder.sized(0.6f, 1.95f).clientTrackingRange(64)
     );
 
     public static void register(IEventBus modEventBus) {

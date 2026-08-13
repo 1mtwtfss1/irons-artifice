@@ -204,10 +204,11 @@ public final class GunplayManager {
                 modifierItem.getModifier().apply(components);
             }
         }
+        ShotProfile profile = new ShotProfile(gunStack, gunProfile, MagazineContents.get(gunStack), components);
         if (living != null) {
-            NeoForge.EVENT_BUS.post(new ComposeShotEvent(living, gunProfile, modifiers, components, gunStack));
+            NeoForge.EVENT_BUS.post(new ComposeShotEvent(living, profile));
         }
-        return new ShotProfile(gunStack, gunProfile, MagazineContents.get(gunStack), components);
+        return profile;
     }
 
     private static boolean requiresAmmo(LivingEntity living) {
