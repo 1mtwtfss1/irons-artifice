@@ -27,6 +27,7 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
     }
 
     private final T mob;
+    // todo: factor gun spread into effective range
     private AiGunRange bands;
     private final GunCombatMoveControl mover = new GunCombatMoveControl();
     private final float engageRangeSqr;
@@ -200,7 +201,6 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         profile.get(ShotComponents.DAMAGE).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
         // todo: base on difficulty
         profile.get(ShotComponents.BULLET_SPEED).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
-        profile.get(ShotComponents.RELOAD_SPEED_MULTIPLIER).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
         profile.get(ShotComponents.SPREAD).addModifier(new ValueModifier(1, ValueModifier.Operation.ADD, ValueModifier.Type.HARMFUL));
         return profile;
     }

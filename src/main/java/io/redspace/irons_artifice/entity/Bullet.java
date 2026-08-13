@@ -15,11 +15,13 @@ import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -41,6 +43,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -428,11 +431,15 @@ public class Bullet extends Projectile {
             return;
         }
         List<ParticleOptions> palette = particles.getParticles();
+        List<ParticleStack.ParticleAccent> accents = new ArrayList<>(particles.getAccents());
+        if (level.isFluidAtPosition(BlockPos.containing(from), s -> s.is(FluidTags.WATER))) {
+            accents.add(new ParticleStack.ParticleAccent(ParticleTypes.BUBBLE, 1.0));
+        }
         int steps = (int) Math.round(from.distanceTo(to) * TRAIL_DENSITY);
         if (steps <= 0 || palette.isEmpty()) {
             return;
         }
-        ClientboundBulletTrailPacket payload = new ClientboundBulletTrailPacket(from, to, palette, particles.getAccents());
+        ClientboundBulletTrailPacket payload = new ClientboundBulletTrailPacket(from, to, palette, accents);
         if (this.isRemoved()) {
             PacketDistributor.sendToPlayersTrackingChunk(level, this.chunkPosition(), payload);
         } else {
