@@ -103,8 +103,7 @@ public record ReloadState(double progress, double duration, double speed, boolea
         if (state.topLoadCount > 0 && !state.jumped() && gun.getGunProfile().topLoadConfig() != null) {
             TopLoadConfig topLoadConfig = gun.getGunProfile().topLoadConfig();
             if (state.progress >= topLoadConfig.loopStart()) {
-                double resumeFrom = topLoadConfig.loopEnd() - topLoadConfig.loopDuration() * (state.topLoadCount - 1);
-                state = new ReloadState(resumeFrom, state.duration, state.speed, true, state.topLoadCount);
+                state = new ReloadState(topLoadConfig.resumeFrom(state.topLoadCount), state.duration, state.speed, true, state.topLoadCount);
             }
         }
 //        int nextCue = cues.playDueCues(owner, owner.position(), SoundSource.PLAYERS, state.percent(0), state.cueIndex(), state.pitchMultiplier);

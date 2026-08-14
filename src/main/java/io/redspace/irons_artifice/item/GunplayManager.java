@@ -134,13 +134,16 @@ public final class GunplayManager {
     private static void playReloadAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
         ReloadState existingState = ReloadState.get(stack);
         double speed = profile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
-        double offsetSeconds = 0;
-        if (existingState != null) {
-//            offsetSeconds = existingState.animationProgressSeconds(gunItem.getGunProfile());
-            offsetSeconds = existingState.progress();
+        double offsetSeconds = existingState != null ? existingState.progress() : 0;
+        double skipAt = 0;
+        double skipTo = 0;
+        TopLoadConfig topLoadConfig = gunItem.getGunProfile().topLoadConfig();
+        if (topLoadConfig != null && existingState != null && existingState.topLoadCount() > 0) {
+            skipAt = topLoadConfig.loopStart();
+            skipTo = topLoadConfig.resumeFrom(existingState.topLoadCount());
         }
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                "reload", speed, offsetSeconds);
+                "reload", speed, offsetSeconds, skipAt, skipTo);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
