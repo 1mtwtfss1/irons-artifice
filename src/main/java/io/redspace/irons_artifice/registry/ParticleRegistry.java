@@ -61,6 +61,9 @@ public final class ParticleRegistry {
     public static final DeferredHolder<ParticleType<?>, ParticleType<MuzzleFlashParticleOption>> MUZZLE_FLASH_SMALL_STAR =
             PARTICLE_TYPES.register("muzzle_flash_small_star", () -> new MuzzleFlashParticleType(false));
 
+    public static final DeferredHolder<ParticleType<?>, ParticleType<MuzzleFlashParticleOption>> EXPLOSION_96 =
+            PARTICLE_TYPES.register("explosion", () -> new MuzzleFlashParticleType(false));
+
     public static final DeferredHolder<ParticleType<?>, ParticleType<ColorTransitionParticleOption>> LIGHTNING_TRAIL =
             PARTICLE_TYPES.register("lightning_trail", () -> new BulletTrailParticleType(false));
 

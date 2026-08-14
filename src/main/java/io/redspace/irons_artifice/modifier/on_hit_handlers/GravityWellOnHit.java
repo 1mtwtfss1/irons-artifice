@@ -33,6 +33,6 @@ public class GravityWellOnHit implements OnHitEffect {
                 }
         );
         // todo: vfx/sound
-        Utils.spawnParticles(level, new MuzzleFlashParticleOption(ParticleRegistry.MUZZLE_FLASH_LARGE.get(), 0.8745098F, 0, 0.9764706F), center.x, center.y, center.z, 1, 0, 0, 0, 0, true);
+        Utils.spawnParticles(level, new MuzzleFlashParticleOption(ParticleRegistry.EXPLOSION_96.get(), 0.9F, 0.25f, 1f), center.x, center.y + 0.25, center.z, 1, 0, 0, 0, 0, true);
     }
 }
