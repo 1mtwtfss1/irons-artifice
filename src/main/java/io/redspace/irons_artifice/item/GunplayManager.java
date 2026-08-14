@@ -136,7 +136,8 @@ public final class GunplayManager {
         double speed = profile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
         double offsetSeconds = 0;
         if (existingState != null) {
-            offsetSeconds = existingState.animationProgressSeconds(gunItem.getGunProfile());
+//            offsetSeconds = existingState.animationProgressSeconds(gunItem.getGunProfile());
+            offsetSeconds = existingState.progress();
         }
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
                 "reload", speed, offsetSeconds);
@@ -215,7 +216,7 @@ public final class GunplayManager {
         return living instanceof Player player && !player.hasInfiniteMaterials();
     }
 
-    public static ReloadResult attemptFinishReload(LivingEntity living, ItemStack gun) {
+    public static ReloadResult attemptFinishReload(LivingEntity living, ItemStack gun, int maxToLoad) {
         // fixme: lots of duplicated checks with attemptStartReload
         if (!(gun.getItem() instanceof GunItem gunItem)) {
             return ReloadResult.NO_AMMO;
@@ -232,6 +233,9 @@ public final class GunplayManager {
             return ReloadResult.NO_AMMO;
         }
         int toLoad = Math.min(missing, available);
+        if (maxToLoad > 0) {
+            toLoad = Math.min(toLoad, maxToLoad);
+        }
         if (needsAmmo) {
             consumeBullets((Player) living, toLoad);
         } else {
@@ -254,13 +258,22 @@ public final class GunplayManager {
         }
 
         boolean needsAmmo = requiresAmmo(living);
-        if (needsAmmo && countBullets((Player) living) <= 0) {
-            return ReloadResult.NO_AMMO;
+        if (needsAmmo) {
+            int available = countBullets((Player) living);
+            if (available <= 0) {
+                return ReloadResult.NO_AMMO;
+            }
+            missing = Math.min(missing, available);
         }
         if (!living.level().isClientSide()) {
             ShotProfile shotProfile = compose(living, gunItem.getGunProfile(), gun);
-            int ticks = (int) (gunItem.getGunProfile().reloadTimeTicks() / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
-            GunItem.startReload(gun, gunItem.getGunProfile().reloadTimeTicks(), shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
+//            int ticks = (int) (gunItem.getGunProfile().reloadTimeTicks() / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
+            int ticks = gunItem.getGunProfile().reloadTimeTicks();
+            if (gunItem.getGunProfile().topLoadConfig() != null && missing != capacity) {
+                GunItem.startTopLoad(gun, gunItem.getGunProfile().reloadTimeTicks(), shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER), missing);
+            } else {
+                GunItem.startReload(gun, gunItem.getGunProfile().reloadTimeTicks(), shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
+            }
             if (living instanceof ServerPlayer serverPlayer) {
                 PacketDistributor.sendToPlayer(serverPlayer, new ClientboundReloadCrosshairAnimationPacket(ticks));
             }

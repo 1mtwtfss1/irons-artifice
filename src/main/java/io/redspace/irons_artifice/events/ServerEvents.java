@@ -82,7 +82,8 @@ public class ServerEvents {
         ShotProfile profile = GunplayManager.compose(entity, gunItem.getGunProfile(), equippedStack);
         double reloadSpeedMultiplier = profile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
         ReloadState reloadState = ReloadState.get(equippedStack);
-        double progress = reloadState.animationProgressSeconds(gunItem.getGunProfile());
+//        double progress = reloadState.animationProgressSeconds(gunItem.getGunProfile());
+        double progress = reloadState.progress();
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(entity.getId(), GeoItem.getOrAssignId(equippedStack, serverLevel),
                 equippedStack == entity.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
                 "reload", reloadSpeedMultiplier, progress);

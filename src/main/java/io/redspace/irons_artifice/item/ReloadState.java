@@ -1,11 +1,10 @@
 package io.redspace.irons_artifice.item;
 
-import io.redspace.irons_artifice.gun.GunProfile;
-import io.redspace.irons_artifice.gun.ReloadCueStack;
-import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import io.redspace.irons_artifice.gun.ReloadCueStack;
+import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundSource;
@@ -14,21 +13,36 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-public record ReloadState(int progress, int duration, int cueIndex, float pitchMultiplier) {
-    public static final ReloadState EMPTY = new ReloadState(0, 0, 0, 1);
+public record ReloadState(double progress, double duration, double speed, boolean jumped, int topLoadCount) {
+    public static final ReloadState EMPTY = new ReloadState(0, 0, 0, false, 0);
 
+    //    public static final Codec<ReloadState> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+//            Codec.INT.fieldOf("progress").forGetter(ReloadState::progress),
+//            Codec.INT.fieldOf("duration").forGetter(ReloadState::duration),
+//            Codec.INT.optionalFieldOf("cue_index", 0).forGetter(ReloadState::cueIndex),
+//            Codec.FLOAT.optionalFieldOf("pitch_multiplier", 1f).forGetter(ReloadState::pitchMultiplier)
+//    ).apply(builder, ReloadState::new));
+//
+//    public static final StreamCodec<ByteBuf, ReloadState> STREAM_CODEC = StreamCodec.composite(
+//            ByteBufCodecs.VAR_INT, ReloadState::progress,
+//            ByteBufCodecs.VAR_INT, ReloadState::duration,
+//            ByteBufCodecs.VAR_INT, ReloadState::cueIndex,
+//            ByteBufCodecs.FLOAT, ReloadState::pitchMultiplier,
+//            ReloadState::new
+//    );
     public static final Codec<ReloadState> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.INT.fieldOf("progress").forGetter(ReloadState::progress),
-            Codec.INT.fieldOf("duration").forGetter(ReloadState::duration),
-            Codec.INT.optionalFieldOf("cue_index", 0).forGetter(ReloadState::cueIndex),
-            Codec.FLOAT.optionalFieldOf("pitch_multiplier", 1f).forGetter(ReloadState::pitchMultiplier)
+            Codec.DOUBLE.fieldOf("progress").forGetter(ReloadState::progress),
+            Codec.DOUBLE.fieldOf("duration").forGetter(ReloadState::duration),
+            Codec.DOUBLE.fieldOf("speed").forGetter(ReloadState::speed),
+            Codec.BOOL.fieldOf("jumped").forGetter(ReloadState::jumped),
+            Codec.INT.fieldOf("topLoadCount").forGetter(ReloadState::topLoadCount)
     ).apply(builder, ReloadState::new));
-
     public static final StreamCodec<ByteBuf, ReloadState> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT, ReloadState::progress,
-            ByteBufCodecs.VAR_INT, ReloadState::duration,
-            ByteBufCodecs.VAR_INT, ReloadState::cueIndex,
-            ByteBufCodecs.FLOAT, ReloadState::pitchMultiplier,
+            ByteBufCodecs.DOUBLE, ReloadState::progress,
+            ByteBufCodecs.DOUBLE, ReloadState::duration,
+            ByteBufCodecs.DOUBLE, ReloadState::speed,
+            ByteBufCodecs.BOOL, ReloadState::jumped,
+            ByteBufCodecs.VAR_INT, ReloadState::topLoadCount,
             ReloadState::new
     );
 
@@ -56,21 +70,20 @@ public record ReloadState(int progress, int duration, int cueIndex, float pitchM
         if (duration <= 0) {
             return 1f;
         }
-        return (progress + partialTick) / duration;
+        return (float) ((progress + partialTick) / duration);
     }
 
-    public double animationProgressSeconds(GunProfile gunProfile) {
-        // calculate based on percent completed to animation time (base reload time) to avoid multipliers affecting pausing the animation at the wrong time
-        return this.percent(0) * gunProfile.reloadTimeTicks() / 20.0;
-    }
+//    public double animationProgressSeconds(GunProfile gunProfile) {
+//        return progress;
+//    }
 
     public ReloadState increment(int ticks) {
-        return new ReloadState(progress + ticks, duration, cueIndex, pitchMultiplier);
+        return new ReloadState(progress + ticks * speed / 20.0, duration, speed, jumped, topLoadCount);
     }
 
-    public ReloadState withCueIndex(int cueIndex) {
-        return new ReloadState(progress, duration, cueIndex, pitchMultiplier);
-    }
+//    public ReloadState withCueIndex(int cueIndex) {
+//        return new ReloadState(progress, duration, cueIndex, pitchMultiplier);
+//    }
 
     /**
      * Advances reload progress and plays due sound cues.
@@ -82,12 +95,20 @@ public record ReloadState(int progress, int duration, int cueIndex, float pitchM
         if (state == null) {
             return true;
         }
+        double previous = state.progress;
         state = state.increment(1);
 
         ReloadCueStack cues = gun.getReloadCues();
-        int nextCue = cues.playDueCues( owner, owner.position(), SoundSource.PLAYERS, state.percent(0), state.cueIndex(), state.pitchMultiplier);
-        state = state.withCueIndex(nextCue);
-
+        cues.playCuesBetween(owner, owner.position(), SoundSource.PLAYERS, previous, state.progress, (float) ((state.speed + 2) / 3));
+        if (state.topLoadCount > 0 && !state.jumped() && gun.getGunProfile().topLoadConfig() != null) {
+            TopLoadConfig topLoadConfig = gun.getGunProfile().topLoadConfig();
+            if (state.progress >= topLoadConfig.loopStart()) {
+                double resumeFrom = topLoadConfig.loopEnd() - topLoadConfig.loopDuration() * (state.topLoadCount - 1);
+                state = new ReloadState(resumeFrom, state.duration, state.speed, true, state.topLoadCount);
+            }
+        }
+//        int nextCue = cues.playDueCues(owner, owner.position(), SoundSource.PLAYERS, state.percent(0), state.cueIndex(), state.pitchMultiplier);
+//        state = state.withCueIndex(nextCue);
         if (state.isFinished()) {
             remove(stack);
             return true;
