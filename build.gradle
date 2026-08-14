@@ -132,6 +132,7 @@ dependencies {
     runtimeOnly "curse.maven:jei-238222:8548511"
 //    runtimeOnly "curse.maven:irons-simple-blood-1579118:8480387"
     runtimeOnly "curse.maven:atlasviewer-633577:7842742"
+    implementation "curse.maven:curios-309927:8463519"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
