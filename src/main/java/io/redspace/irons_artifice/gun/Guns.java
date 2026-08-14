@@ -142,11 +142,11 @@ public final class Guns {
 
     public static final GunProfile ARQUEBUS = new GunProfile(
             () -> {
-                var map = basicGun();
+                var map = basicGun();//
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(30f, .45f, -1.9f, 222));
                 map.set(ShotComponents.SPREAD, Value.of(1));
-                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
-                map.set(ShotComponents.DAMAGE, Value.of(14));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(20));
+                map.set(ShotComponents.DAMAGE, Value.of(12));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.LARGE));
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
                         new GunShotSoundSettings(SoundRegistry.ARQUEBUS_SHOOT, 0.9f, 1.1f, -1f, 0f, 192f),
@@ -155,9 +155,9 @@ public final class Guns {
                 ));
                 return map;
             },
-            1,
+            4,
             7,
-            30,
+            50,
             FireMode.SEMI
     );
 

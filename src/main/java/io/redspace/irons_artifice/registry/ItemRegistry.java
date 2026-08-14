@@ -104,11 +104,18 @@ public final class ItemRegistry {
     public static final DeferredItem<GunItem> ARQUEBUS = ITEMS.registerItem("arquebus",
             properties -> new GunItem(properties.stacksTo(1), Guns.ARQUEBUS, IronsArtifice.id("arquebus"), ArmPoseKind.RIFLE,
                     ReloadCueStack.of(
-                            new ReloadCue(0.0f / 1.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_OPEN_BREECH, 1.25f, 0.95f, 1.05f)),
-                            new ReloadCue(0.6f / 1.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
-                            new ReloadCue(1f / 1.5f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 1f, 1.1f)),
-                            new ReloadCue(1.3f / 1.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_CLOSE_BREECH, 1.25f, 0.95f, 1.1f))
-                    ), PlayableSound.of(SoundRegistry.ARQUEBUS_EQUIP, 0.5f, 0.9f, 1.1f), FireCycleCueStack.of(), AnimationAdjuster.LOWER_HAMMER, Map.of()),
+                            new ReloadCue(0.00f / 2.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_OPEN_BREECH, 1.25f, 0.95f, 1.05f)),
+                            new ReloadCue(0.60f / 2.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                            new ReloadCue(0.95f / 2.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                            new ReloadCue(1.30f / 2.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                            new ReloadCue(1.65f / 2.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                            new ReloadCue(2.13f / 2.5f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 1f, 1.1f)),
+                            new ReloadCue(2.50f / 2.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_CLOSE_BREECH, 1.25f, 0.95f, 1.1f))
+                    ), PlayableSound.of(SoundRegistry.ARQUEBUS_EQUIP, 0.5f, 0.9f, 1.1f),
+                    FireCycleCueStack.of(
+                            new FireCycleCue(0.25f / 0.75f, PlayableSound.of(SoundRegistry.ARQUEBUS_OPEN_BREECH, 1f, 0.9f, 1.1f)),
+                            new FireCycleCue(0.6f / 0.75f, PlayableSound.of(SoundRegistry.ARQUEBUS_CLOSE_BREECH, 1f, 0.9f, 1.1f))
+                    ), AnimationAdjuster.LOWER_HAMMER, Map.of()),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> CLOCKWORK_RIFLE = ITEMS.registerItem("clockwork_rifle",

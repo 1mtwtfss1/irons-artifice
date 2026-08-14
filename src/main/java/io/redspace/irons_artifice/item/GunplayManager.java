@@ -127,7 +127,7 @@ public final class GunplayManager {
     private static void playFireAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
         double fireSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.fireDelayTicks();
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                "fire", (fireSpeedMultiplier + 2) / 3, 0);
+                "fire", (fireSpeedMultiplier + 1) / 2, 0);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
