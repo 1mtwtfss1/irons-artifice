@@ -23,15 +23,15 @@ public class ReloadCueStack {
 
     public static ReloadCueStack of(ReloadCue... cues) {
         List<ReloadCue> sorted = Arrays.stream(cues)
-                .sorted(Comparator.comparingDouble(ReloadCue::percent))
+                .sorted(Comparator.comparingDouble(ReloadCue::seconds))
                 .toList();
         return new ReloadCueStack(sorted);
     }
 
-    public static ReloadCueStack of(PlayableSound sound, float... percents) {
-        ReloadCue[] cues = new ReloadCue[percents.length];
-        for (int i = 0; i < percents.length; i++) {
-            cues[i] = new ReloadCue(percents[i], sound);
+    public static ReloadCueStack of(PlayableSound sound, float... seconds) {
+        ReloadCue[] cues = new ReloadCue[seconds.length];
+        for (int i = 0; i < seconds.length; i++) {
+            cues[i] = new ReloadCue(seconds[i], sound);
         }
         return of(cues);
     }
@@ -49,33 +49,22 @@ public class ReloadCueStack {
     }
 
     /**
-     * Plays any cues crossed while advancing to {@code percent}, starting at {@code cueIndex}.
-     *
-     * @return the next cue index to fire
+     * Plays cues whose timestamps fall in {@code [start, end)}.
      */
-    public int playDueCues(Entity owner, Vec3 pos, SoundSource source, float percent, int cueIndex, float pitchMultiplier) {
-        while (cueIndex < cues.size() && percent >= cues.get(cueIndex).percent()) {
-            var sound = cues.get(cueIndex).sound();
-            var adjustedSound = new PlayableSound(sound.soundEventHolder(), sound.volume(), sound.minPitch() * pitchMultiplier, sound.maxPitch() * pitchMultiplier);
-            owner.level().playSound(owner, pos.x, pos.y, pos.z, adjustedSound.soundEventHolder().value(), source, adjustedSound.volume(), adjustedSound.samplePitch(owner.getRandom()));
-            if (owner instanceof ServerPlayer serverPlayer) {
-                PacketDistributor.sendToPlayer(serverPlayer, new ClientboundLocalSoundPacket(source, adjustedSound));
-            }
-            cueIndex++;
-        }
-        return cueIndex;
-    }
-
     public void playCuesBetween(Entity owner, Vec3 pos, SoundSource source, double start, double end, float pitchMultiplier) {
         for (ReloadCue cue : cues) {
-            if (cue.percent() >= start && cue.percent() < end) {
-                var sound = cue.sound();
-                var adjustedSound = new PlayableSound(sound.soundEventHolder(), sound.volume(), sound.minPitch() * pitchMultiplier, sound.maxPitch() * pitchMultiplier);
-                owner.level().playSound(owner, pos.x, pos.y, pos.z, adjustedSound.soundEventHolder().value(), source, adjustedSound.volume(), adjustedSound.samplePitch(owner.getRandom()));
-                if (owner instanceof ServerPlayer serverPlayer) {
-                    PacketDistributor.sendToPlayer(serverPlayer, new ClientboundLocalSoundPacket(source, adjustedSound));
-                }
+            if (cue.seconds() >= start && cue.seconds() < end) {
+                play(cue, owner, pos, source, pitchMultiplier);
             }
+        }
+    }
+
+    private static void play(ReloadCue cue, Entity owner, Vec3 pos, SoundSource source, float pitchMultiplier) {
+        var sound = cue.sound();
+        var adjustedSound = new PlayableSound(sound.soundEventHolder(), sound.volume(), sound.minPitch() * pitchMultiplier, sound.maxPitch() * pitchMultiplier);
+        owner.level().playSound(owner, pos.x, pos.y, pos.z, adjustedSound.soundEventHolder().value(), source, adjustedSound.volume(), adjustedSound.samplePitch(owner.getRandom()));
+        if (owner instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new ClientboundLocalSoundPacket(source, adjustedSound));
         }
     }
 }

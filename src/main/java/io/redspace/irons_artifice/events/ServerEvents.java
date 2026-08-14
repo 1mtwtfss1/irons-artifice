@@ -1,13 +1,9 @@
 package io.redspace.irons_artifice.events;
 
 import com.geckolib.animatable.GeoItem;
-import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.Bullet;
-import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
-import io.redspace.irons_artifice.item.ReloadState;
-import io.redspace.irons_artifice.item.TopLoadConfig;
 import io.redspace.irons_artifice.network.ClientboundEquipSoundPacket;
 import io.redspace.irons_artifice.network.ClientboundGunAnimationPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -62,7 +58,7 @@ public class ServerEvents {
                 !equippedStack.isEmpty() && equippedStack.getItem() instanceof GunItem gunItem &&
                 (gunItem != fromStack.getItem() || GeoItem.getId(equippedStack) != GeoItem.getId(fromStack))) {
             if (GunItem.isReloading(equippedStack)) {
-                resumeReloadState(serverLevel, gunItem, equippedStack, entity);
+                GunplayManager.playReloadAnimation(entity, equippedStack);
             } else {
                 performEquipEffects(serverLevel, gunItem, entity, equippedStack);
             }
@@ -77,23 +73,5 @@ public class ServerEvents {
         if (gunItem.getEquipSound() != null && entity instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new ClientboundEquipSoundPacket(SoundSource.PLAYERS, gunItem));
         }
-    }
-
-    private static void resumeReloadState(ServerLevel serverLevel, GunItem gunItem, ItemStack equippedStack, LivingEntity entity) {
-        ShotProfile profile = GunplayManager.compose(entity, gunItem.getGunProfile(), equippedStack);
-        double reloadSpeedMultiplier = profile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
-        ReloadState reloadState = ReloadState.get(equippedStack);
-        double progress = reloadState.progress();
-        double skipAt = 0;
-        double skipTo = 0;
-        TopLoadConfig topLoadConfig = gunItem.getGunProfile().topLoadConfig();
-        if (topLoadConfig != null && reloadState.topLoadCount() > 0) {
-            skipAt = topLoadConfig.loopStart();
-            skipTo = topLoadConfig.resumeFrom(reloadState.topLoadCount());
-        }
-        ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(entity.getId(), GeoItem.getOrAssignId(equippedStack, serverLevel),
-                equippedStack == entity.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                "reload", reloadSpeedMultiplier, progress, skipAt, skipTo);
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, packet);
     }
 }

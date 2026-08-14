@@ -162,15 +162,6 @@ public class GunItem extends BaseGeoItem {
         MagazineContents.set(stack, magazine);
     }
 
-    public static void startReload(ItemStack stack, int ticks, double speed) {
-//        ReloadState.set(stack, new ReloadState(0, (int) (ticks / speed), 0, (float) (speed + 2) / 3F));
-        ReloadState.set(stack, new ReloadState(0, ticks / 20.0, speed, false, 0));
-    }
-
-    public static void startTopLoad(ItemStack stack, int ticks, double speed, int topLoadCount) {
-        ReloadState.set(stack, new ReloadState(0, ticks / 20.0, speed, false, topLoadCount));
-    }
-
     public static boolean isReloading(ItemStack stack) {
         return ReloadState.has(stack);
     }
@@ -192,10 +183,9 @@ public class GunItem extends BaseGeoItem {
         }
 
         if (isReloading(itemStack)) {
-            // fixme: this is poor state tracking
-            int maxLoad = ReloadState.get(itemStack).topLoadCount();
-            if (ReloadState.tickReload(itemStack, this, level, living)) {
-                ReloadResult result = GunplayManager.attemptFinishReload(living, itemStack, maxLoad);
+            ReloadState finished = ReloadState.tickReload(itemStack, this, living);
+            if (finished != null) {
+                ReloadResult result = GunplayManager.attemptFinishReload(living, itemStack, finished.roundsToLoad());
                 if (living instanceof Player player) {
                     playReloadFeedback(level, player, result);
                 }
