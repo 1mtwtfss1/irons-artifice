@@ -12,6 +12,7 @@ import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
 import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.entity.Bullet;
+import io.redspace.irons_artifice.gun.HandOccupancy;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.network.ClientboundBulletImpactPacket;
 import io.redspace.irons_artifice.network.ClientboundBulletTrailPacket;
@@ -25,6 +26,7 @@ import io.redspace.irons_artifice.registry.ParticleRegistry;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
@@ -33,7 +35,9 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -128,15 +132,17 @@ public final class ClientHelper {
 
     public static void handleMuzzleFlash(ClientboundMuzzleFlashPacket msg) {
         ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) {
+        Player player = Minecraft.getInstance().player;
+        if (level == null || player == null) {
             return;
         }
         Vec3 offset = msg.offset();
-        if (msg.entityId() == Minecraft.getInstance().player.getId() && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+        if (msg.entityId() == player.getId() && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             double length = offset.length();
+            float direction = player.getMainArm() == HumanoidArm.LEFT ? -1.0F : 1.0F;
             offset = offset.scale(1 / length).scale(Math.max(1.25, 0.75 * length));
-            // fixme: main hand / right hand hardcode
-            offset = offset.add(Minecraft.getInstance().player.getForward().cross(new Vec3(0, 1, 0)).scale(0.5));
+            offset = offset.add(player.getForward().cross(new Vec3(0, 1, 0))
+                    .scale(0.5 * direction));
         }
         Vec3 pos = msg.position().add(offset);
         Vec3 random = new Vec3(level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5).scale(2).scale(0.02);
@@ -244,5 +250,15 @@ public final class ClientHelper {
 
     public static void reset() {
         localDryFireTime = 0;
+    }
+
+    public static InteractionHand getHandHoldingTwoHandedGun(LocalPlayer player) {
+        if (GunItem.currentOccupancy(player, InteractionHand.MAIN_HAND) == HandOccupancy.BOTH) {
+            return InteractionHand.MAIN_HAND;
+        }
+        if (GunItem.currentOccupancy(player, InteractionHand.OFF_HAND) == HandOccupancy.BOTH) {
+            return InteractionHand.OFF_HAND;
+        }
+        return null;
     }
 }

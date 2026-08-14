@@ -15,6 +15,7 @@ import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.item.AnimationAdjuster;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.MagazineContents;
+import io.redspace.irons_artifice.gun.HandOccupancy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
@@ -24,7 +25,9 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
+import org.joml.Matrix3f;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
@@ -57,7 +60,6 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
         if (!(Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player) instanceof AvatarRenderer renderer)) {
             return;
         }
-        // fixme: does this handle jacket layer?
         renderPassInfo.model().getBone("right_arm").ifPresent(bone ->
                 renderPassInfo.addPerBoneRender(bone, (renderPassInfo1, bone1, renderTasks1) -> {
                             var modelPart = ((PlayerModel) renderer.getModel()).rightArm;
@@ -65,13 +67,16 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
                         }
                 )
         );
-        renderPassInfo.model().getBone("left_arm").ifPresent(bone ->
-                renderPassInfo.addPerBoneRender(bone, (renderPassInfo1, bone1, renderTasks1) -> {
-                            var modelPart = ((PlayerModel) renderer.getModel()).leftArm;
-                            renderFirstPersonHand(renderTasks, renderType, modelPart, renderPassInfo.poseStack().last(), renderPassInfo);
-                        }
-                )
-        );
+        HandOccupancy occupancy = renderPassInfo.getOrDefaultGeckolibData(GunItem.HAND_OCCUPANCY_TICKET, HandOccupancy.BOTH);
+        if (occupancy == HandOccupancy.BOTH) {
+            renderPassInfo.model().getBone("left_arm").ifPresent(bone ->
+                    renderPassInfo.addPerBoneRender(bone, (renderPassInfo1, bone1, renderTasks1) -> {
+                                var modelPart = ((PlayerModel) renderer.getModel()).leftArm;
+                                renderFirstPersonHand(renderTasks, renderType, modelPart, renderPassInfo.poseStack().last(), renderPassInfo);
+                            }
+                    )
+            );
+        }
     }
 
     @Override
@@ -84,6 +89,26 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
         var controller = animatable.getAnimatableInstanceCache().getManagerForId(GeoItem.getId(renderData.itemStack())).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
         renderState.addGeckolibData(GunItem.RELOAD_PROGRESS_SECONDS_TICKET, controller.isTriggeredAnimation("reload") ? controller.getCurrentAnimationTime() : 0.0);
         renderState.addGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET, animatable.getAnimationAdjuster());
+        LivingEntity owner = renderData.itemOwner() instanceof LivingEntity living
+                ? living
+                : Minecraft.getInstance().player;
+        HandOccupancy occupancy = owner != null
+                ? GunItem.currentOccupancy(owner, renderData.itemStack())
+                : animatable.occupancyForCurrentAnimation(renderData.itemStack());
+        renderState.addGeckolibData(GunItem.HAND_OCCUPANCY_TICKET, occupancy);
+    }
+
+    @Override
+    public void adjustRenderPose(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo) {
+        super.adjustRenderPose(renderPassInfo);
+        var perspective = renderPassInfo.renderState().getGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE);
+        if (perspective != null && perspective.leftHand()) {
+            PoseStack.Pose last = renderPassInfo.poseStack().last();
+            last.pose().scale(-1f, 1f, 1f);
+            // compensate for weird lighting
+            Matrix3f normal = last.normal();
+            normal.scale(-1,-1,1);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.item;
 
 import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.animatable.GeoItem;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
@@ -17,6 +18,7 @@ import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.ArmPoseKind;
 import io.redspace.irons_artifice.gun.FireCycleCueStack;
 import io.redspace.irons_artifice.gun.GunProfile;
+import io.redspace.irons_artifice.gun.HandOccupancy;
 import io.redspace.irons_artifice.gun.ReloadCueStack;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.menu.GunContainer;
@@ -29,6 +31,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,6 +44,7 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -48,6 +52,7 @@ public class GunItem extends BaseGeoItem {
     public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(IronsArtifice.id("magazine_state").toString(), MagazineContents.class);
     public static final DataTicket<AnimationAdjuster> ANIMATION_ADJUSTER_TICKET = DataTicket.create(IronsArtifice.id("animation_adjuster").toString(), AnimationAdjuster.class);
     public static final DataTicket<Double> RELOAD_PROGRESS_SECONDS_TICKET = DataTicket.create(IronsArtifice.id("reload_progress_seconds").toString(), Double.class);
+    public static final DataTicket<HandOccupancy> HAND_OCCUPANCY_TICKET = DataTicket.create(IronsArtifice.id("hand_occupancy").toString(), HandOccupancy.class);
     public static final String TRIGGERED_ANIMATION_CONTROLLER = "Actions";
     public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
 
@@ -58,21 +63,13 @@ public class GunItem extends BaseGeoItem {
     private final FireCycleCueStack fireCycleCues;
     private final @Nullable PlayableSound equipSound;
     private final AnimationAdjuster animationAdjuster;
-
-    public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
-                   ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound) {
-        this(properties, gunProfile, geoModelId, armPoseKind, reloadCues, equipSound, FireCycleCueStack.EMPTY, AnimationAdjuster.NONE);
-    }
+    private final HandOccupancy defaultOccupancy;
+    private final Map<String, HandOccupancy> animationOccupancy;
 
     public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
                    ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound,
-                   AnimationAdjuster animationAdjuster) {
-        this(properties, gunProfile, geoModelId, armPoseKind, reloadCues, equipSound, FireCycleCueStack.EMPTY, animationAdjuster);
-    }
-
-    public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
-                   ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound,
-                   FireCycleCueStack fireCycleCues, AnimationAdjuster animationAdjuster) {
+                   FireCycleCueStack fireCycleCues, AnimationAdjuster animationAdjuster,
+                   Map<String, HandOccupancy> animationOccupancy) {
         super(properties
                 .component(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.CONTAINER, true))
                 .component(DataComponentRegistry.MAGAZINE, new MagazineContents(gunProfile.magazineCapacity()))
@@ -84,10 +81,8 @@ public class GunItem extends BaseGeoItem {
         this.fireCycleCues = fireCycleCues;
         this.equipSound = equipSound;
         this.animationAdjuster = animationAdjuster;
-    }
-
-    public GunItem(Properties properties, GunProfile gunProfile, ArmPoseKind armPoseKind) {
-        this(properties, gunProfile, null, armPoseKind, ReloadCueStack.EMPTY, null, FireCycleCueStack.EMPTY, AnimationAdjuster.NONE);
+        this.defaultOccupancy = armPoseKind == ArmPoseKind.RIFLE ? HandOccupancy.BOTH : HandOccupancy.MAINHAND;
+        this.animationOccupancy = Map.copyOf(animationOccupancy);
     }
 
     public GunProfile getGun() {
@@ -104,6 +99,50 @@ public class GunItem extends BaseGeoItem {
 
     public ArmPoseKind getArmPoseKind() {
         return armPoseKind;
+    }
+
+    public HandOccupancy occupancyForAnimation(String animation) {
+        return animationOccupancy.getOrDefault(animation, defaultOccupancy);
+    }
+
+    public HandOccupancy occupancyForCurrentAnimation(ItemStack stack) {
+        return occupancyForAnimation(currentAnimation(stack));
+    }
+
+    public static @Nullable HandOccupancy currentOccupancy(ItemStack stack) {
+        if (!(stack.getItem() instanceof GunItem gun)) {
+            return null;
+        }
+        return gun.occupancyForCurrentAnimation(stack);
+    }
+
+    public static @Nullable HandOccupancy currentOccupancy(LivingEntity entity, InteractionHand hand) {
+        return currentOccupancy(entity, entity.getItemInHand(hand));
+    }
+
+    public static @Nullable HandOccupancy currentOccupancy(LivingEntity entity, ItemStack stack) {
+        HandOccupancy occupancy = currentOccupancy(stack);
+        if (occupancy == HandOccupancy.BOTH && stack == entity.getOffhandItem() && !entity.getMainHandItem().isEmpty()) {
+            return HandOccupancy.MAINHAND;
+        }
+        return occupancy;
+    }
+
+    private String currentAnimation(ItemStack stack) {
+        var controller = getAnimatableInstanceCache().getManagerForId(GeoItem.getId(stack))
+                .getAnimationControllers().get(TRIGGERED_ANIMATION_CONTROLLER);
+        if (controller != null) {
+            if (controller.isTriggeredAnimation("reload")) {
+                return "reload";
+            }
+            if (controller.isTriggeredAnimation("fire")) {
+                return "fire";
+            }
+            if (controller.isTriggeredAnimation("equip")) {
+                return "equip";
+            }
+        }
+        return "idle";
     }
 
     public ReloadCueStack getReloadCues() {

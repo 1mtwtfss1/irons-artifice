@@ -39,8 +39,7 @@ public class EquipSoundInstance extends AbstractTickableSoundInstance {
 
     @Override
     public void tick() {
-        // fixme: hardcoded mainhand
-        if (player.getMainHandItem().getItem() != gunItem) {
+        if (player.getMainHandItem().getItem() != gunItem && player.getOffhandItem().getItem() != gunItem) {
             stop();
         } else {
             this.volume = baseVolume;

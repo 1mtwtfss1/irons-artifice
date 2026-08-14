@@ -21,7 +21,7 @@ public final class GunArmPoses {
 
     private static <T extends HumanoidRenderState> void applyPistolPose(HumanoidModel<?> model, T renderState, HumanoidArm arm) {
         boolean holdingInRightArm = arm == HumanoidArm.RIGHT;
-        ReloadState reloadState = ReloadState.get(renderState.getMainHandItemStack()); // fixme: mainhand hardcode
+        ReloadState reloadState = ReloadState.get(renderState.getUseItemStackForArm(arm));
         if (reloadState != null && !reloadState.isFinished()) {
             animateCrossbowCharge(model.rightArm, model.leftArm, reloadState.duration(), reloadState.progress(), holdingInRightArm);
         } else {
@@ -35,7 +35,7 @@ public final class GunArmPoses {
 
     private static <T extends HumanoidRenderState> void applyRiflePose(HumanoidModel<?> model, T renderState, HumanoidArm arm) {
         boolean holdingInRightArm = arm == HumanoidArm.RIGHT;
-        ReloadState reloadState = ReloadState.get(renderState.getMainHandItemStack()); // fixme: mainhand hardcode
+        ReloadState reloadState = ReloadState.get(renderState.getUseItemStackForArm(arm));
         ModelPart shootingArm = holdingInRightArm ? model.rightArm : model.leftArm;
         ModelPart supportArm = holdingInRightArm ? model.leftArm : model.rightArm;
         if (reloadState != null && !reloadState.isFinished()) {
