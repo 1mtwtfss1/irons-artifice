@@ -44,6 +44,7 @@
   "item.irons_artifice.cowboy_hat.ability.gain_ammo": "Reloaded +%d Bullets!",
   "item.irons_artifice.tricorne": "Tricorne",
   "item.irons_artifice.tricorne.ability": "First Shot from a Full Magazine does +%d%% Damage",
+  "item.irons_artifice.seeking_powder_modifier": "Seeking Powder Modifier",
 
   "container.irons_artifice.gun": "Gun",
   "key.irons_artifice.open_modifier_menu": "Open Gun Modifiers",

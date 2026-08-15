@@ -26,7 +26,7 @@ import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyModifier;
 import io.redspace.irons_artifice.modifier.modifiers.IncendiaryTipModifier;
-import io.redspace.irons_artifice.modifier.modifiers.InfinityModifier;
+import io.redspace.irons_artifice.modifier.modifiers.EnchantedBulletModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GunOilModifier;
 import io.redspace.irons_artifice.modifier.modifiers.MechanicalRepeaterModifier;
 import io.redspace.irons_artifice.modifier.modifiers.OverchargedPowderModifier;
@@ -152,8 +152,8 @@ public final class ItemRegistry {
             "singularity_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SingularityChargeModifier()));
     public static final DeferredItem<ModifierItem> STEEL_CORE = ITEMS.registerItem(
             "steel_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SteelCoreModifier()));
-    public static final DeferredItem<ModifierItem> ENCHANTED_BULLET_MODIFIER = ITEMS.registerItem(
-            "enchanted_bullet_modifier", properties -> new ModifierItem(properties.stacksTo(1).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true), new SeekingModifier()));
+    public static final DeferredItem<ModifierItem> SEEKING_POWDER = ITEMS.registerItem(
+            "seeking_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SeekingModifier()));
     public static final DeferredItem<ModifierItem> HAIR_TRIGGER = ITEMS.registerItem(
             "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
     public static final DeferredItem<ModifierItem> GUN_OIL = ITEMS.registerItem(
@@ -166,8 +166,8 @@ public final class ItemRegistry {
             "buffer_spring_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BufferSpringModifier()));
     public static final DeferredItem<ModifierItem> MECHANICAL_REPEATER = ITEMS.registerItem(
             "mechanical_repeater_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalRepeaterModifier()));
-    public static final DeferredItem<ModifierItem> INFINITY_MODIFIER = ITEMS.registerItem(
-            "infinity_modifier", properties -> new ModifierItem(properties.stacksTo(1), new InfinityModifier()));
+    public static final DeferredItem<ModifierItem> ENCHANTED_BULLET_MODIFIER = ITEMS.registerItem(
+            "enchanted_bullet_modifier", properties -> new ModifierItem(properties.stacksTo(1).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true), new EnchantedBulletModifier()));
     public static final DeferredItem<ModifierItem> MECHANICAL_ACCELERATOR_MODIFIER = ITEMS.registerItem(
             "mechanical_accelerator_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalAccelerator()));
 
