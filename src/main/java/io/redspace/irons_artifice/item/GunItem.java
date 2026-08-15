@@ -219,6 +219,7 @@ public class GunItem extends BaseGeoItem {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.fire_rate", highlightText.apply(fireRate)));
         }
         statBuilder.accept(Component.translatable("irons_artifice.tooltip.reload_time", highlightText.apply(reloadTime + "s")));
+        statBuilder.accept(Component.translatable("irons_artifice.tooltip.ammo_capacity", highlightText.apply("" + gunProfile.magazineCapacity())));
         builder.accept(Component.translatable("irons_artifice.tooltip.modifier_count", gunProfile.modifierSlots()).withStyle(ChatFormatting.GOLD));
         GunContainer container = new GunContainer(itemStack);
         for (var item : container.getItems()) {

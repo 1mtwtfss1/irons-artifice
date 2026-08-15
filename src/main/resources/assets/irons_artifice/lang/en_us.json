@@ -94,6 +94,7 @@
 
   "irons_artifice.tooltip.when_used_as_modifier": "When Used as Gun Modifier:",
   "irons_artifice.tooltip.damage_per_bullet": "%s/%s Damage",
+  "irons_artifice.tooltip.ammo_capacity": "%s Ammo Capacity",
   "irons_artifice.tooltip.bullet_count": "%s Bullets",
   "irons_artifice.tooltip.bullet_speed": "%s Blocks/s",
   "irons_artifice.tooltip.bullet_speed_percent": "%s Bullet Speed",
