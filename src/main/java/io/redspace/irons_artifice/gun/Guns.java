@@ -101,7 +101,8 @@ public final class Guns {
                 var map = basicGun();
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(15f, .5f, 2.7f, 465));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(3));
-                map.set(ShotComponents.DAMAGE, Value.of(6));
+                map.set(ShotComponents.SPREAD, Value.of(2.5));
+                map.set(ShotComponents.DAMAGE, Value.of(8));
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
                         new GunShotSoundSettings(SoundRegistry.SIX_SHOOTER_SHOOT, 0.9f, 1.1f, -1f, 0f, 192f),
                         new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_GENERIC, 0.7f, 0.9f, 48f, 96f, 192f),
@@ -168,7 +169,7 @@ public final class Guns {
                 map.set(ShotComponents.CHARACTER_BLOWBACK, Value.of(0.05));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(4));
                 map.set(ShotComponents.SPREAD, Value.of(2));
-                map.set(ShotComponents.DAMAGE, Value.of(5));
+                map.set(ShotComponents.DAMAGE, Value.of(6));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR));
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
                         new GunShotSoundSettings(SoundRegistry.CLOCKWORK_RIFLE_SHOOT, 0.9f, 1.1f, -1f, 0f, 192f),
