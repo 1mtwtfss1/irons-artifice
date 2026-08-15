@@ -1,6 +1,8 @@
 package io.redspace.irons_artifice.gun;
 
 import io.redspace.irons_artifice.data.ShotComponentMap;
+import io.redspace.irons_artifice.item.TopLoadConfig;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -18,7 +20,8 @@ public record GunProfile(
         int magazineCapacity,
         int modifierSlots,
         int reloadTimeTicks,
-        FireMode fireMode
+        FireMode fireMode,
+        @Nullable TopLoadConfig topLoadConfig
 ) {
     public ShotComponentMap baseProfile() {
         return baseProfileSupplier.get();

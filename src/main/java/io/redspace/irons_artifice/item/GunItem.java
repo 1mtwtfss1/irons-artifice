@@ -162,10 +162,6 @@ public class GunItem extends BaseGeoItem {
         MagazineContents.set(stack, magazine);
     }
 
-    public static void startReload(ItemStack stack, int ticks, double speed) {
-        ReloadState.set(stack, new ReloadState(0, (int) (ticks / speed), 0, (float) (speed + 2) / 3F));
-    }
-
     public static boolean isReloading(ItemStack stack) {
         return ReloadState.has(stack);
     }
@@ -186,10 +182,13 @@ public class GunItem extends BaseGeoItem {
             return;
         }
 
-        if (isReloading(itemStack) && ReloadState.tickReload(itemStack, this, level, living)) {
-            ReloadResult result = GunplayManager.attemptFinishReload(living, itemStack);
-            if (living instanceof Player player) {
-                playReloadFeedback(level, player, result);
+        if (isReloading(itemStack)) {
+            ReloadState finished = ReloadState.tickReload(itemStack, this, living);
+            if (finished != null) {
+                ReloadResult result = GunplayManager.attemptFinishReload(living, itemStack, finished.roundsToLoad());
+                if (living instanceof Player player) {
+                    playReloadFeedback(level, player, result);
+                }
             }
         }
     }
@@ -292,10 +291,36 @@ public class GunItem extends BaseGeoItem {
         return this.animationAdjuster;
     }
 
+    public void configureActionTimelineSkip(long instanceId, double skipAtSeconds, double skipToSeconds) {
+        AnimationController<?> controller = getAnimatableInstanceCache().getManagerForId(instanceId)
+                .getAnimationControllers().get(TRIGGERED_ANIMATION_CONTROLLER);
+        if (controller instanceof OffsetableAnimationController<?> skippable) {
+            skippable.setTimelineSkip(skipAtSeconds, skipToSeconds);
+        }
+    }
+
     private static class OffsetableAnimationController<T extends GeoAnimatable> extends AnimationController<T> {
+        private double skipAtSeconds;
+        private double skipToSeconds;
+        private boolean skipped;
 
         public OffsetableAnimationController(String name, AnimationStateHandler<T> stateHandler) {
             super(name, stateHandler);
+        }
+
+        public void setTimelineSkip(double skipAtSeconds, double skipToSeconds) {
+            this.skipAtSeconds = skipAtSeconds;
+            this.skipToSeconds = skipToSeconds;
+            this.skipped = false;
+        }
+
+        private boolean applyTimelineSkip() {
+            if (skipped || skipToSeconds <= skipAtSeconds || timelineTime < skipAtSeconds || timelineTime >= skipToSeconds) {
+                return false;
+            }
+            timelineTime = skipToSeconds;
+            skipped = true;
+            return true;
         }
 
         @Override
@@ -305,6 +330,18 @@ public class GunItem extends BaseGeoItem {
             if (offset > 0) {
                 timelineTime = offset;
             }
+            boolean skippedNow = applyTimelineSkip();
+            if (this.timeline != null && (offset > 0 || skippedNow)) {
+                this.animationPoint = this.timeline.createAnimationPoint(this.timelineTime, this.animationPoint, this.easingOverride);
+            }
+        }
+
+        @Override
+        protected void progressExistingAnimation(T animatable, GeoRenderState renderState, double prevTimelineTime, double timeAdvanced) {
+            if (applyTimelineSkip()) {
+                prevTimelineTime = timelineTime;
+            }
+            super.progressExistingAnimation(animatable, renderState, prevTimelineTime, timeAdvanced);
         }
 
     }

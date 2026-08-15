@@ -11,8 +11,14 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record ClientboundGunAnimationPacket(int entityId, long instanceId, InteractionHand interactionHand,
                                             String animName,
-                                            double speed, double offsetSeconds)
+                                            double speed, double offsetSeconds,
+                                            double skipAtSeconds, double skipToSeconds)
         implements CustomPacketPayload {
+
+    public ClientboundGunAnimationPacket(int entityId, long instanceId, InteractionHand interactionHand,
+                                         String animName, double speed, double offsetSeconds) {
+        this(entityId, instanceId, interactionHand, animName, speed, offsetSeconds, 0, 0);
+    }
 
     public static final Type<ClientboundGunAnimationPacket> TYPE =
             new Type<>(Identifier.fromNamespaceAndPath(IronsArtifice.MODID, "gun_animation"));
@@ -27,10 +33,12 @@ public record ClientboundGunAnimationPacket(int entityId, long instanceId, Inter
         buf.writeUtf(msg.animName);
         buf.writeDouble(msg.speed);
         buf.writeDouble(msg.offsetSeconds);
+        buf.writeDouble(msg.skipAtSeconds);
+        buf.writeDouble(msg.skipToSeconds);
     }
 
     private static ClientboundGunAnimationPacket decode(RegistryFriendlyByteBuf buf) {
-        return new ClientboundGunAnimationPacket(buf.readInt(), buf.readLong(), buf.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, buf.readUtf(), buf.readDouble(), buf.readDouble());
+        return new ClientboundGunAnimationPacket(buf.readInt(), buf.readLong(), buf.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, buf.readUtf(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble());
     }
 
     @Override

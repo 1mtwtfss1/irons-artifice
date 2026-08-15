@@ -171,10 +171,10 @@ public final class ClientHelper {
         if (!(stack.getItem() instanceof GunItem gun)) {
             return;
         }
-        playClientGunAnimation(gun, msg.instanceId(), msg.animName(), msg.speed(), msg.offsetSeconds());
+        playClientGunAnimation(gun, msg.instanceId(), msg.animName(), msg.speed(), msg.offsetSeconds(), msg.skipAtSeconds(), msg.skipToSeconds());
     }
 
-    public static void playClientGunAnimation(GunItem gun, long instanceId, String animName, double speed, double offsetSeconds) {
+    public static void playClientGunAnimation(GunItem gun, long instanceId, String animName, double speed, double offsetSeconds, double skipAtSeconds, double skipToSeconds) {
         var manager = gun.getAnimatableInstanceCache().getManagerForId(instanceId);
         manager.setAnimatableData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
         AnimationController<?> controller = gun.getAnimatableInstanceCache().getManagerForId(instanceId).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
@@ -185,6 +185,7 @@ public final class ClientHelper {
         controller.setAnimationSpeed(speed);
         // IMPORTANT: set even if zero (controller workaround doesn't handle context-free transitions)
         controller.setTimelineTime(offsetSeconds);
+        gun.configureActionTimelineSkip(instanceId, skipAtSeconds, skipToSeconds);
     }
 
     public static void handleCrosshairAnimation(ClientboundReloadCrosshairAnimationPacket msg) {

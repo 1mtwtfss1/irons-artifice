@@ -6,28 +6,13 @@ import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.Value;
 import io.redspace.irons_artifice.entity.Bullet;
+import io.redspace.irons_artifice.item.TopLoadConfig;
 import io.redspace.irons_artifice.recoil.RecoilProfile;
 import io.redspace.irons_artifice.registry.SoundRegistry;
 import net.minecraft.sounds.SoundEvents;
 
 // todo: should probably be converted into an item component, rather than hardcoded to gunitem
 public final class Guns {
-
-    public static final GunProfile BASIC = new GunProfile(
-            () -> {
-                var map = basicGun();
-                map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
-                        new GunShotSoundSettings(SoundRegistry.REVOLVER_SHOOT, 0.9f, 1.1f, -1f, 0f, 128f),
-                        new GunShotSoundSettings(SoundRegistry.BULLET_ECHO_GENERIC, 0.6f, 0.7f, 48f, 112f, 192f),
-                        PlayableSound.of(PlayableSound.holder(SoundEvents.DISPENSER_FAIL), 0.75f, 1.4f, 1.6f)
-                ));
-                return map;
-            },
-            6,
-            5,
-            40,
-            FireMode.SEMI
-    );
 
     public static final GunProfile FLINTLOCK_PISTOL = new GunProfile(
             () -> {
@@ -49,7 +34,8 @@ public final class Guns {
             1,
             5,
             60,
-            FireMode.SEMI
+            FireMode.SEMI,
+            null
     );
 
     public static final GunProfile MUSKET = new GunProfile(
@@ -71,7 +57,8 @@ public final class Guns {
             1,
             5,
             60,
-            FireMode.SEMI
+            FireMode.SEMI,
+            null
     );
 
     public static final GunProfile BLACKPOWDER_REVOLVER = new GunProfile(
@@ -92,7 +79,8 @@ public final class Guns {
             6,
             5,
             40,
-            FireMode.SEMI
+            FireMode.SEMI,
+            null
     );
 
 
@@ -113,7 +101,8 @@ public final class Guns {
             6,
             5,
             20,
-            FireMode.SEMI
+            FireMode.SEMI,
+            null
     );
 
 
@@ -137,17 +126,18 @@ public final class Guns {
             2,
             5,
             30,
-            FireMode.SEMI
+            FireMode.SEMI,
+            null
     );
 
 
     public static final GunProfile ARQUEBUS = new GunProfile(
             () -> {
-                var map = basicGun();
+                var map = basicGun();//
                 map.set(ShotComponents.CAMERA_RECOIL, RecoilProfile.of(30f, .45f, -1.9f, 222));
                 map.set(ShotComponents.SPREAD, Value.of(1));
-                map.set(ShotComponents.FIRE_DELAY, Value.of(1));
-                map.set(ShotComponents.DAMAGE, Value.of(14));
+                map.set(ShotComponents.FIRE_DELAY, Value.of(20));
+                map.set(ShotComponents.DAMAGE, Value.of(12));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of(2f, MuzzleFlashType.LARGE));
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
                         new GunShotSoundSettings(SoundRegistry.ARQUEBUS_SHOOT, 0.9f, 1.1f, -1f, 0f, 192f),
@@ -156,10 +146,11 @@ public final class Guns {
                 ));
                 return map;
             },
-            1,
+            4,
             7,
-            30,
-            FireMode.SEMI
+            50,
+            FireMode.SEMI,
+            new TopLoadConfig(0.75,1.75, 0.33)
     );
 
     public static final GunProfile CLOCKWORK_RIFLE = new GunProfile(
@@ -181,7 +172,8 @@ public final class Guns {
             10,
             6,
             30,
-            FireMode.AUTO
+            FireMode.AUTO,
+            null
     );
 
     private static ShotComponentMap basicGun() {

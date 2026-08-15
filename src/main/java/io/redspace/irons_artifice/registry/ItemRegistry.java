@@ -56,11 +56,11 @@ public final class ItemRegistry {
     public static final DeferredItem<GunItem> FLINTLOCK_PISTOL = ITEMS.registerItem("flintlock",
             properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL, IronsArtifice.id("flintlock"), ArmPoseKind.PISTOL,
                     ReloadCueStack.of(
-                            new ReloadCue(0.0f / 3.0f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 1.25f, 0.95f, 1.05f)),
-                            new ReloadCue(0.4f / 3.0f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_INSERT_BULLET, 1.25f, 0.95f, 1.05f)),
-                            new ReloadCue(1.3f / 3.0f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_PACK_BULLET, 1.25f, 0.95f, 1.05f)),
-                            new ReloadCue(2.75f / 3.0f, PlayableSound.of(SoundRegistry.LEATHER_ACCENT, 1.25f, 0.85f, 0.95f)),
-                            new ReloadCue(2.88f / 3.0f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 0.85f, 0.95f))
+                            new ReloadCue(0.0f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 1.25f, 0.95f, 1.05f)),
+                            new ReloadCue(0.4f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_INSERT_BULLET, 1.25f, 0.95f, 1.05f)),
+                            new ReloadCue(1.3f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_PACK_BULLET, 1.25f, 0.95f, 1.05f)),
+                            new ReloadCue(2.75f, PlayableSound.of(SoundRegistry.LEATHER_ACCENT, 1.25f, 0.85f, 0.95f)),
+                            new ReloadCue(2.88f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 0.85f, 0.95f))
                     ), PlayableSound.of(SoundRegistry.FLINTLOCK_EQUIP, 0.75f, 0.9f, 1.1f), FireCycleCueStack.of(), AnimationAdjuster.LOWER_HAMMER,
                     Map.of("reload", HandOccupancy.BOTH)),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
@@ -68,28 +68,28 @@ public final class ItemRegistry {
     /// ///
     public static final DeferredItem<GunItem> MUSKET = ITEMS.registerItem("musket",
             properties -> new GunItem(properties.stacksTo(1), Guns.MUSKET, IronsArtifice.id("musket"), ArmPoseKind.RIFLE, ReloadCueStack.of(
-                    new ReloadCue(0.0f / 3.0f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 1.25f, 0.75f, 0.85f)),
-                    new ReloadCue(0.9f / 3.0f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_INSERT_BULLET, 1.25f, 0.95f, 0.85f)),
-                    new ReloadCue(1.7f / 3.0f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_PACK_BULLET, 1.25f, 0.95f, 1.05f)),
-                    new ReloadCue(2.88f / 3.0f, PlayableSound.of(SoundRegistry.LEATHER_ACCENT, 1.25f, 0.85f, 0.95f)),
-                    new ReloadCue(2.88f / 3.0f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 0.85f, 0.95f))
+                    new ReloadCue(0.0f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 1.25f, 0.75f, 0.85f)),
+                    new ReloadCue(0.9f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_INSERT_BULLET, 1.25f, 0.95f, 0.85f)),
+                    new ReloadCue(1.7f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_PACK_BULLET, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(2.88f, PlayableSound.of(SoundRegistry.LEATHER_ACCENT, 1.25f, 0.85f, 0.95f)),
+                    new ReloadCue(2.88f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 0.85f, 0.95f))
             ), PlayableSound.of(SoundRegistry.MUSKET_EQUIP, 0.75f, 0.9f, 1.1f), FireCycleCueStack.of(), AnimationAdjuster.LOWER_HAMMER, Map.of()),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> BLUNDERBUSS = ITEMS.registerItem("blunderbuss",
             properties -> new GunItem(properties.stacksTo(1), Guns.BLUNDERBUSS, IronsArtifice.id("blunderbuss"), ArmPoseKind.RIFLE, ReloadCueStack.of(
-                    new ReloadCue(0.25f / 1.5f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_OPEN, 1.25f, 0.9f, 1.1f)),
-                    new ReloadCue(0.90f / 1.5f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_LOAD, 1.25f, 0.9f, 1.1f)),
-                    new ReloadCue(1.15f / 1.5f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 1.1f, 1.3f)),
-                    new ReloadCue(1.27f / 1.5f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_CLOSE, 1.25f, 0.9f, 1.1f))
+                    new ReloadCue(0.25f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_OPEN, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(0.90f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_LOAD, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(1.15f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 1.1f, 1.3f)),
+                    new ReloadCue(1.27f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_CLOSE, 1.25f, 0.9f, 1.1f))
             ), PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_CLOSE, 0.75f, 0.9f, 1.1f), FireCycleCueStack.of(), AnimationAdjuster.DOUBLE_BARREL_HAMMER, Map.of()),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> BLACKPOWDER_REVOLVER = ITEMS.registerItem("blackpowder_revolver",
             properties -> new GunItem(properties, Guns.BLACKPOWDER_REVOLVER, IronsArtifice.id("blackpowder_revolver"), ArmPoseKind.PISTOL, ReloadCueStack.of(
                     new ReloadCue(0f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_START, 1.25f, 0.95f, 1.05f)),
-                    new ReloadCue(1.33f / 2f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_MID, 1.25f, 0.95f, 1.05f)),
-                    new ReloadCue(1.71f / 2f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_END, 1.25f, 0.95f, 1.05f))
+                    new ReloadCue(1.33f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_MID, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(1.71f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_END, 1.25f, 0.95f, 1.05f))
             ), PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_EQUIP, 0.75f, 0.9f, 1.1f),
                     FireCycleCueStack.of(
                             new FireCycleCue(1.0f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1f, 0.9f, 1.1f))
@@ -99,24 +99,31 @@ public final class ItemRegistry {
     public static final DeferredItem<GunItem> SIX_SHOOTER = ITEMS.registerItem("six_shooter",
             properties -> new GunItem(properties.stacksTo(1), Guns.SIX_SHOOTER, IronsArtifice.id("six_shooter"), ArmPoseKind.PISTOL, ReloadCueStack.of(
                     new ReloadCue(0.1f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 1.25f, 0.95f, 1.05f)),
-                    new ReloadCue(0.38f / 1.25f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_EQUIP, 1.25f, 0.95f, 1.05f))
+                    new ReloadCue(0.38f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_EQUIP, 1.25f, 0.95f, 1.05f))
             ), PlayableSound.of(SoundRegistry.SIX_SHOOTER_EQUIP, 0.75f, 0.95f, 1.05f), FireCycleCueStack.of(), null, Map.of("fire", HandOccupancy.BOTH)),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> ARQUEBUS = ITEMS.registerItem("arquebus",
             properties -> new GunItem(properties.stacksTo(1), Guns.ARQUEBUS, IronsArtifice.id("arquebus"), ArmPoseKind.RIFLE,
                     ReloadCueStack.of(
-                            new ReloadCue(0.0f / 1.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_OPEN_BREECH, 1.25f, 0.95f, 1.05f)),
-                            new ReloadCue(0.6f / 1.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
-                            new ReloadCue(1f / 1.5f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 1f, 1.1f)),
-                            new ReloadCue(1.3f / 1.5f, PlayableSound.of(SoundRegistry.ARQUEBUS_CLOSE_BREECH, 1.25f, 0.95f, 1.1f))
-                    ), PlayableSound.of(SoundRegistry.ARQUEBUS_EQUIP, 0.5f, 0.9f, 1.1f), FireCycleCueStack.of(), AnimationAdjuster.LOWER_HAMMER, Map.of()),
+                            new ReloadCue(0.00f, PlayableSound.of(SoundRegistry.ARQUEBUS_OPEN_BREECH, 1.25f, 0.95f, 1.05f)),
+                            new ReloadCue(0.60f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                            new ReloadCue(0.95f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                            new ReloadCue(1.30f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                            new ReloadCue(1.65f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                            new ReloadCue(2.13f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 1f, 1.1f)),
+                            new ReloadCue(2.50f, PlayableSound.of(SoundRegistry.ARQUEBUS_CLOSE_BREECH, 1.25f, 0.95f, 1.1f))
+                    ), PlayableSound.of(SoundRegistry.ARQUEBUS_EQUIP, 0.5f, 0.9f, 1.1f),
+                    FireCycleCueStack.of(
+                            new FireCycleCue(0.25f / 0.75f, PlayableSound.of(SoundRegistry.ARQUEBUS_OPEN_BREECH, 1f, 0.9f, 1.1f)),
+                            new FireCycleCue(0.6f / 0.75f, PlayableSound.of(SoundRegistry.ARQUEBUS_CLOSE_BREECH, 1f, 0.9f, 1.1f))
+                    ), AnimationAdjuster.LOWER_HAMMER, Map.of()),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
     public static final DeferredItem<GunItem> CLOCKWORK_RIFLE = ITEMS.registerItem("clockwork_rifle",
             properties -> new GunItem(properties.stacksTo(1), Guns.CLOCKWORK_RIFLE, IronsArtifice.id("clockwork_rifle"), ArmPoseKind.RIFLE, ReloadCueStack.of(
-                    new ReloadCue(0.38f / 1.5f, PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_EJECT_MAG, 1.25f, 0.9f, 1.1f)),
-                    new ReloadCue(1.04f / 1.5f, PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_INSERT_MAG, 1.25f, 0.9f, 1.1f))
+                    new ReloadCue(0.38f, PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_EJECT_MAG, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(1.04f, PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_INSERT_MAG, 1.25f, 0.9f, 1.1f))
             ), PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_EQUIP, 0.75f, 0.9f, 1.1f), FireCycleCueStack.of(), AnimationAdjuster.HARMONICA_MAGAZINE, Map.of()),
             properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
     );
