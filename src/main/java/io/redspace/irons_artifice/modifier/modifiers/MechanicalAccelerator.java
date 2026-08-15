@@ -32,19 +32,20 @@ public final class MechanicalAccelerator implements GunModifier {
     @SubscribeEvent
     public static void onCompose(ComposeShotEvent event) {
         ShotProfile profile = event.getShotProfile();
-        int accelerateCount = (int) profile.value(ShotComponents.ACCELERATING);
-        if (accelerateCount == 0) {
-            return;
-        }
-        LivingEntity entity = event.getEntity();
-        int shots = RecentShots.count(entity, entity.level().getGameTime());
-        if (shots <= 0) {
+        double percent = getAcceleratePercent(event.getEntity(), event.getShotProfile());
+        if (percent <= 0) {
             return;
         }
         profile.get(ShotComponents.DAMAGE).addModifier(new ValueModifier(
-                shots * DAMAGE_PER_SHOT * accelerateCount,
+                percent,
                 ValueModifier.Operation.MULTIPLY_TOTAL,
                 ValueModifier.Type.BENEFICIAL
         ));
+    }
+
+    public static double getAcceleratePercent(LivingEntity entity, ShotProfile shotProfile) {
+        int accelerateCount = (int) shotProfile.value(ShotComponents.ACCELERATING);
+        int shots = RecentShots.count(entity, entity.level().getGameTime());
+        return shots * DAMAGE_PER_SHOT * accelerateCount;
     }
 }

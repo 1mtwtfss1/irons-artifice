@@ -1,11 +1,6 @@
 package io.redspace.irons_artifice.gun;
 
-import io.redspace.irons_artifice.data.ShotComponents;
-import io.redspace.irons_artifice.item.GunItem;
-import io.redspace.irons_artifice.item.GunplayManager;
 import io.redspace.irons_artifice.registry.DataAttachmentRegistry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.ArrayList;
@@ -62,9 +57,5 @@ public record RecentShots(List<Long> ticks) {
                 ? entity.getData(DataAttachmentRegistry.RECENT_SHOTS)
                 : NONE;
         entity.setData(DataAttachmentRegistry.RECENT_SHOTS, current.withShot(now));
-        if (entity instanceof ServerPlayer serverPlayer) {
-            ShotProfile profile = GunplayManager.compose(entity, ((GunItem) entity.getMainHandItem().getItem()).getGunProfile(), entity.getMainHandItem());
-            serverPlayer.sendSystemMessage(Component.literal(""+profile.value(ShotComponents.DAMAGE) / profile.get(ShotComponents.DAMAGE).base()), true);
-        }
     }
 }

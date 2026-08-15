@@ -15,6 +15,7 @@ import io.redspace.irons_artifice.gun.RecentShots;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.modifier.ModifierItem;
+import io.redspace.irons_artifice.modifier.modifiers.MechanicalAccelerator;
 import io.redspace.irons_artifice.network.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.ClientboundMuzzleFlashPacket;
 import io.redspace.irons_artifice.network.ClientboundReloadCrosshairAnimationPacket;
@@ -81,6 +82,7 @@ public final class GunplayManager {
         if (!testInfinityBullet(shooter, profile)) {
             GunItem.setMagazine(stack, magazine.deplete());
         } else {
+            // fixme: event for ammo consumption?
             PlayableSound.of(SoundRegistry.INFINITY_BULLET, 1, 0.9f, 1.1f).play(shooter.level(), shooter.position(), SoundSource.NEUTRAL);
             if (shooter instanceof Player player) {
                 player.sendOverlayMessage(Component.translatable("irons_artifice.tooltip.refunded_ammo", 1).withStyle(ChatFormatting.LIGHT_PURPLE));
@@ -91,8 +93,13 @@ public final class GunplayManager {
         fireShot(level, shooter, shooter.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
         applyCharacterBlowback(shooter, profile);
         playFireAnimation(shooter, stack, gunItem, profile);
+        // fixme: should be event for hooks like this
         if (profile.value(ShotComponents.ACCELERATING) > 0) {
             RecentShots.trackShot(shooter, now);
+            if (shooter instanceof ServerPlayer serverPlayer) {
+                // fixme: actionbar overreliance
+                serverPlayer.sendSystemMessage(Component.translatable("irons_artifice.tooltip.accelerated_percent", (int) (100 * (1 + MechanicalAccelerator.getAcceleratePercent(shooter, profile)))), true);
+            }
         }
         return true;
     }

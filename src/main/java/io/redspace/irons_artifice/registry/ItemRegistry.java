@@ -39,6 +39,7 @@ import io.redspace.irons_artifice.modifier.modifiers.VenomCapsuleModifier;
 import io.redspace.irons_artifice.modifier.modifiers.WindChamberModifier;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -186,4 +187,9 @@ public final class ItemRegistry {
     public static final DeferredItem<Item> SIMPLE_MECHANICAL_COMPONENTS = ITEMS.registerSimpleItem("simple_mechanical_components");
     public static final DeferredItem<Item> MECHANICAL_COMPONENTS = ITEMS.registerSimpleItem("mechanical_components");
     public static final DeferredItem<Item> CLOCKWORK_COMPONENTS = ITEMS.registerSimpleItem("clockwork_components");
+
+    public static final DeferredItem<SpawnEggItem> ILLIFICER_SPAWN_EGG = ITEMS.registerItem(
+            "illificer_spawn_egg",
+            properties -> new SpawnEggItem(properties.spawnEgg(EntityRegistry.ILLIFICER.get()))
+    );
 }
