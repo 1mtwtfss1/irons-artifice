@@ -406,8 +406,8 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .pattern("***")
                 .define('#', Items.COPPER_CHAIN.unaffected())
                 .define('*', commonTag("ingots/copper"))
-                .define('B', ItemRegistry.MECHANICAL_COMPONENTS)
-                .unlockedBy("has_precursor", this.has(ItemRegistry.MECHANICAL_COMPONENTS))
+                .define('B', ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS)
+                .unlockedBy("has_precursor", this.has(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS))
                 .save(this.output);
     }
 

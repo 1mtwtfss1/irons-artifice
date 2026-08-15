@@ -130,12 +130,12 @@ public final class ItemRegistry {
             "voltaic_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
     public static final DeferredItem<ModifierItem> FROZEN_JACKET = ITEMS.registerItem(
             "frozen_jacket_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FrozenJacketModifier()));
-    public static final DeferredItem<ModifierItem> VENOM_CAPSULE = ITEMS.registerItem(
-            "venom_capsule_modifier", properties -> new ModifierItem(properties.stacksTo(1), new VenomCapsuleModifier()));
     public static final DeferredItem<ModifierItem> BLACKPOWDER_CHARGE = ITEMS.registerItem(
             "blackpowder_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BlackpowderChargeModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_SHOT = ITEMS.registerItem(
             "chain_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainShotModifier()));
+    public static final DeferredItem<ModifierItem> VENOM_CAPSULE = ITEMS.registerItem(
+            "venom_capsule_modifier", properties -> new ModifierItem(properties.stacksTo(1), new VenomCapsuleModifier()));
     public static final DeferredItem<ModifierItem> SCATTERSHOT = ITEMS.registerItem(
             "scattershot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ScattershotModifier()));
     public static final DeferredItem<ModifierItem> BREACHING_SHELL = ITEMS.registerItem(
@@ -144,30 +144,30 @@ public final class ItemRegistry {
             "overcharged_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new OverchargedPowderModifier()));
     public static final DeferredItem<ModifierItem> ANTIGRAVITY_MODIFIER = ITEMS.registerItem(
             "antigravity_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new AntigravityModifier()));
-    public static final DeferredItem<ModifierItem> LEAD_CORE = ITEMS.registerItem(
-            "lead_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
-    public static final DeferredItem<ModifierItem> TRICK_BULLET_MODIFIER = ITEMS.registerItem(
-            "trick_bullet_modifier", properties -> new ModifierItem(properties.stacksTo(1), new TrickshotModifier()));
-    public static final DeferredItem<ModifierItem> SINGULARITY_CHARGE_MODIFIER = ITEMS.registerItem(
-            "singularity_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SingularityChargeModifier()));
-    public static final DeferredItem<ModifierItem> STEEL_CORE = ITEMS.registerItem(
-            "steel_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SteelCoreModifier()));
     public static final DeferredItem<ModifierItem> SEEKING_POWDER = ITEMS.registerItem(
             "seeking_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SeekingModifier()));
-    public static final DeferredItem<ModifierItem> HAIR_TRIGGER = ITEMS.registerItem(
-            "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
-    public static final DeferredItem<ModifierItem> GUN_OIL = ITEMS.registerItem(
-            "gun_oil_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GunOilModifier()));
-    public static final DeferredItem<ModifierItem> GAS_VENT = ITEMS.registerItem(
-            "gas_vent_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GasVentModifier()));
     public static final DeferredItem<ModifierItem> WIND_CHAMBER = ITEMS.registerItem(
             "wind_chamber_modifier", properties -> new ModifierItem(properties.stacksTo(1), new WindChamberModifier()));
+    public static final DeferredItem<ModifierItem> SINGULARITY_CHARGE_MODIFIER = ITEMS.registerItem(
+            "singularity_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SingularityChargeModifier()));
+    public static final DeferredItem<ModifierItem> ENCHANTED_BULLET_MODIFIER = ITEMS.registerItem(
+            "enchanted_bullet_modifier", properties -> new ModifierItem(properties.stacksTo(1).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true), new EnchantedBulletModifier()));
+    public static final DeferredItem<ModifierItem> TRICK_BULLET_MODIFIER = ITEMS.registerItem(
+            "trick_bullet_modifier", properties -> new ModifierItem(properties.stacksTo(1), new TrickshotModifier()));
+    public static final DeferredItem<ModifierItem> STEEL_CORE = ITEMS.registerItem(
+            "steel_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SteelCoreModifier()));
+    public static final DeferredItem<ModifierItem> LEAD_CORE = ITEMS.registerItem(
+            "lead_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
+    public static final DeferredItem<ModifierItem> HAIR_TRIGGER = ITEMS.registerItem(
+            "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
+    public static final DeferredItem<ModifierItem> GAS_VENT = ITEMS.registerItem(
+            "gas_vent_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GasVentModifier()));
+    public static final DeferredItem<ModifierItem> GUN_OIL = ITEMS.registerItem(
+            "gun_oil_modifier", properties -> new ModifierItem(properties.stacksTo(1), new GunOilModifier()));
     public static final DeferredItem<ModifierItem> BUFFER_SPRING = ITEMS.registerItem(
             "buffer_spring_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BufferSpringModifier()));
     public static final DeferredItem<ModifierItem> MECHANICAL_REPEATER = ITEMS.registerItem(
             "mechanical_repeater_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalRepeaterModifier()));
-    public static final DeferredItem<ModifierItem> ENCHANTED_BULLET_MODIFIER = ITEMS.registerItem(
-            "enchanted_bullet_modifier", properties -> new ModifierItem(properties.stacksTo(1).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true), new EnchantedBulletModifier()));
     public static final DeferredItem<ModifierItem> MECHANICAL_ACCELERATOR_MODIFIER = ITEMS.registerItem(
             "mechanical_accelerator_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalAccelerator()));
 

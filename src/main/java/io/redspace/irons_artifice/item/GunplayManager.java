@@ -3,6 +3,7 @@ package io.redspace.irons_artifice.item;
 import com.geckolib.animatable.GeoItem;
 import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.client.ClientHelper;
+import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
@@ -20,9 +21,13 @@ import io.redspace.irons_artifice.network.ClientboundReloadCrosshairAnimationPac
 import io.redspace.irons_artifice.recoil.RecoilState;
 import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ItemRegistry;
+import io.redspace.irons_artifice.registry.SoundRegistry;
 import io.redspace.irons_artifice.utils.Utils;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -73,8 +78,13 @@ public final class GunplayManager {
         Vec2 rotation = direction.rotation();
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
-        if (shouldConsumeAmmo(shooter, profile)) {
+        if (!testInfinityBullet(shooter, profile)) {
             GunItem.setMagazine(stack, magazine.deplete());
+        } else {
+            PlayableSound.of(SoundRegistry.INFINITY_BULLET, 1, 0.9f, 1.1f).play(shooter.level(), shooter.position(), SoundSource.NEUTRAL);
+            if (shooter instanceof Player player) {
+                player.sendOverlayMessage(Component.translatable("irons_artifice.tooltip.refunded_ammo", 1).withStyle(ChatFormatting.LIGHT_PURPLE));
+            }
         }
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, shooter.position());
         RecoilState.addImpulse(shooter, now, profile);
@@ -105,9 +115,9 @@ public final class GunplayManager {
         return true;
     }
 
-    private static boolean shouldConsumeAmmo(LivingEntity shooter, ShotProfile profile) {
+    private static boolean testInfinityBullet(LivingEntity shooter, ShotProfile profile) {
         double consumeChance = profile.value(ShotComponents.AMMO_CONSUME_CHANCE);
-        return consumeChance >= 1.0 || shooter.getRandom().nextDouble() < consumeChance;
+        return consumeChance < 1.0 && shooter.getRandom().nextDouble() >= consumeChance;
     }
 
     private static float pitchMultiplierForFire(ShotProfile profile) {

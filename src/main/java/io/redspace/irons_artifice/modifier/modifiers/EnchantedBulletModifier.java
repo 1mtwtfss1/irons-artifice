@@ -3,13 +3,23 @@ package io.redspace.irons_artifice.modifier.modifiers;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.ValueModifier;
 import io.redspace.irons_artifice.modifier.ValueStackModifier;
+import net.minecraft.network.chat.Component;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 public final class EnchantedBulletModifier extends ValueStackModifier {
+    public static final double INFINITY_CHANCE = 0.25;
+
     public EnchantedBulletModifier() {
         super(Map.of(
-                ShotComponents.AMMO_CONSUME_CHANCE, new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.HARMFUL)
+                ShotComponents.AMMO_CONSUME_CHANCE, new ValueModifier(-INFINITY_CHANCE, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.HARMFUL)
         ));
+    }
+
+    @Override
+    public void getDescriptionText(Consumer<Component> builder) {
+        super.getDescriptionText(builder);
+//        builder.accept(Component.translatable("irons_artifice.modifier.infinity", (int) (INFINITY_CHANCE * 100)).withStyle(ChatFormatting.GREEN));
     }
 }
