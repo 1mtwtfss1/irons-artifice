@@ -18,7 +18,8 @@ import org.jspecify.annotations.Nullable;
  * {@code progress} and {@code duration} are seconds on the reload animation timeline.
  * Top-off skips unused insert loops by snapping {@code progress} from {@code skipAt} to {@code skipTo}.
  */
-public record ReloadState(double progress, double duration, double speed, int roundsToLoad, double skipAt, double skipTo) {
+public record ReloadState(double progress, double duration, double speed, int roundsToLoad, double skipAt,
+                          double skipTo) {
     public static final ReloadState EMPTY = new ReloadState(0, 0, 1, 0, 0, 0);
 
     public static final Codec<ReloadState> CODEC = RecordCodecBuilder.create(builder -> builder.group(
@@ -89,7 +90,7 @@ public record ReloadState(double progress, double duration, double speed, int ro
         if (effectiveDuration <= 0) {
             return 1f;
         }
-        double timeline = applySkipTo(progress + partialTick * speed / 20.0);
+        double timeline = applySkipTo(progress + partialTick / 20.0);
         double effectiveTime = hasSkip() && timeline >= skipTo ? timeline - skip : timeline;
         return Mth.clamp((float) (effectiveTime / effectiveDuration), 0f, 1f);
     }

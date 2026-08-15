@@ -5,6 +5,7 @@ import io.redspace.irons_artifice.client.RecoilManager;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
+import io.redspace.irons_artifice.item.ReloadState;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -27,15 +28,8 @@ public final class CrosshairRenderer {
 
     private static float crosshairGapCursor = 0.0F;
     private static float crosshairGapCursorO = 0.0F;
-
     private static int reloadAnimationDuration;
     private static int reloadAnimationTick;
-
-
-    public static void triggerReloadAnimation(int reloadDuration) {
-        reloadAnimationDuration = reloadDuration;
-        reloadAnimationTick = reloadAnimationDuration;
-    }
 
     public static boolean renderGunCrosshair(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -61,10 +55,11 @@ public final class CrosshairRenderer {
         if (reloadAnimationTick > 0) {
             poseStack.translate(0.5f, 0.5f);
             float f = (reloadAnimationTick - partialTick) / reloadAnimationDuration;
+
+//            float remaining = 1f - Mth.lerp(partialTick, reloadProgressO, reloadProgress);
             f = crosshairAnimationInterpolation(f);
             poseStack.rotate(f * 180 * Mth.DEG_TO_RAD);
             poseStack.translate(-0.5f, -0.5f);
-
         }
         drawCross(graphics, gap);
         poseStack.popMatrix();
@@ -72,9 +67,8 @@ public final class CrosshairRenderer {
         return true;
     }
 
-    private static float crosshairAnimationInterpolation(float percent) {
-//        return (float) Mth.smoothstep(percent);
-        percent = 1 - percent;
+    private static float crosshairAnimationInterpolation(float remaining) {
+        float percent = 1 - remaining;
         return 1 - (percent * percent * percent * percent * percent);
     }
 
@@ -89,6 +83,30 @@ public final class CrosshairRenderer {
             return 0;
         }
         return (guiHeight * 0.5f) * (float) Math.tan(spreadRad) / denom;
+    }
+
+    private static void updateReloadProgress() {
+        if (reloadAnimationTick > 0) {
+            reloadAnimationTick--;
+        }
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer player = minecraft.player;
+        if (player == null) {
+            return;
+        }
+        ItemStack held = player.getMainHandItem();
+        ReloadState reloadState = ReloadState.get(held);
+        if (reloadState == null) {
+            if (reloadAnimationTick > 2 || reloadAnimationTick == 0) {
+                reloadAnimationDuration = 0;
+                reloadAnimationTick = 0;
+            }
+            return;
+        }
+        if (reloadAnimationDuration == 0) {
+            reloadAnimationDuration = reloadState.durationTicks();
+            reloadAnimationTick = reloadAnimationDuration;
+        }
     }
 
     private static void updateCrosshairCursor() {
@@ -122,10 +140,8 @@ public final class CrosshairRenderer {
             return;
         }
         crosshairGapCursorO = crosshairGapCursor;
-        if (reloadAnimationTick > 0) {
-            reloadAnimationTick--;
-        }
         updateCrosshairCursor();
+        updateReloadProgress();
     }
 
     private static void drawCross(GuiGraphicsExtractor graphics, float gap) {

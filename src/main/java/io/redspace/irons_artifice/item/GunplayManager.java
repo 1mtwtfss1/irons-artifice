@@ -16,9 +16,9 @@ import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.modifier.modifiers.MechanicalAccelerator;
+import io.redspace.irons_artifice.network.ClientboundCancelGunAnimationPacket;
 import io.redspace.irons_artifice.network.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.ClientboundMuzzleFlashPacket;
-import io.redspace.irons_artifice.network.ClientboundReloadCrosshairAnimationPacket;
 import io.redspace.irons_artifice.recoil.RecoilState;
 import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ItemRegistry;
@@ -172,6 +172,19 @@ public final class GunplayManager {
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
+    public static void cancelGunAnimation(LivingEntity living, ItemStack stack) {
+        if (!(living.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        InteractionHand hand = stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        ClientboundCancelGunAnimationPacket packet = new ClientboundCancelGunAnimationPacket(
+                living.getId(),
+                GeoItem.getOrAssignId(stack, serverLevel),
+                hand
+        );
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
+    }
+
     private static void fireShot(ServerLevel level, LivingEntity shooter, Vec3 origin, Vec3 direction, ShotProfile profile) {
         int projectileCount = Math.max(1, (int) Math.round(profile.value(ShotComponents.PROJECTILE_COUNT)));
         float speed = (float) profile.value(ShotComponents.BULLET_SPEED);
@@ -296,9 +309,6 @@ public final class GunplayManager {
             TopLoadConfig topLoad = gunItem.getGunProfile().topLoadConfig();
             boolean topOff = topLoad != null && missing < capacity;
             ReloadState state = ReloadState.start(gun, gunItem.getGunProfile().reloadTimeTicks(), speed, missing, topOff ? topLoad : null);
-            if (living instanceof ServerPlayer serverPlayer) {
-                PacketDistributor.sendToPlayer(serverPlayer, new ClientboundReloadCrosshairAnimationPacket(state.durationTicks()));
-            }
             playReloadAnimation(living, gun);
         }
         return ReloadResult.STARTING_RELOAD;

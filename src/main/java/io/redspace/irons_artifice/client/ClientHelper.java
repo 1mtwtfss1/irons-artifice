@@ -2,7 +2,6 @@ package io.redspace.irons_artifice.client;
 
 import com.geckolib.animation.AnimationController;
 import com.geckolib.constant.DataTickets;
-import io.redspace.irons_artifice.client.hud.CrosshairRenderer;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
 import io.redspace.irons_artifice.client.particle.FairyDustParticleOption;
 import io.redspace.irons_artifice.client.particle.ITrailParticle;
@@ -16,12 +15,12 @@ import io.redspace.irons_artifice.gun.HandOccupancy;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.network.ClientboundBulletImpactPacket;
 import io.redspace.irons_artifice.network.ClientboundBulletTrailPacket;
+import io.redspace.irons_artifice.network.ClientboundCancelGunAnimationPacket;
 import io.redspace.irons_artifice.network.ClientboundEquipSoundPacket;
 import io.redspace.irons_artifice.network.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.ClientboundGunshotSoundPacket;
 import io.redspace.irons_artifice.network.ClientboundLocalSoundPacket;
 import io.redspace.irons_artifice.network.ClientboundMuzzleFlashPacket;
-import io.redspace.irons_artifice.network.ClientboundReloadCrosshairAnimationPacket;
 import io.redspace.irons_artifice.registry.ParticleRegistry;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -188,8 +187,30 @@ public final class ClientHelper {
         gun.configureActionTimelineSkip(instanceId, skipAtSeconds, skipToSeconds);
     }
 
-    public static void handleCrosshairAnimation(ClientboundReloadCrosshairAnimationPacket msg) {
-        CrosshairRenderer.triggerReloadAnimation(msg.reloadDuration());
+    public static void handleCancelGunAnimationPacket(ClientboundCancelGunAnimationPacket msg) {
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+        Entity entity = level.getEntity(msg.entityId());
+        if (!(entity instanceof LivingEntity livingEntity)) {
+            return;
+        }
+        ItemStack stack = livingEntity.getItemInHand(msg.interactionHand());
+        if (!(stack.getItem() instanceof GunItem gun)) {
+            return;
+        }
+        cancelClientGunAnimation(gun, msg.instanceId());
+    }
+
+    public static void cancelClientGunAnimation(GunItem gun, long instanceId) {
+        AnimationController<?> controller = gun.getAnimatableInstanceCache().getManagerForId(instanceId)
+                .getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
+        if (controller == null) {
+            return;
+        }
+        controller.stopTriggeredAnimation();
+        controller.reset();
     }
 
     public static void handleGunshotSound(ClientboundGunshotSoundPacket msg) {

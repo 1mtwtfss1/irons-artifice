@@ -31,11 +31,6 @@ public final class PayloadRegistry {
                 ClientboundBulletTrailPacket::handle
         );
         registrar.playToClient(
-                ClientboundReloadCrosshairAnimationPacket.TYPE,
-                ClientboundReloadCrosshairAnimationPacket.STREAM_CODEC,
-                ClientboundReloadCrosshairAnimationPacket::handle
-        );
-        registrar.playToClient(
                 ClientboundBulletImpactPacket.TYPE,
                 ClientboundBulletImpactPacket.STREAM_CODEC,
                 ClientboundBulletImpactPacket::handle
@@ -49,6 +44,11 @@ public final class PayloadRegistry {
                 ClientboundGunAnimationPacket.TYPE,
                 ClientboundGunAnimationPacket.STREAM_CODEC,
                 ClientboundGunAnimationPacket::handle
+        );
+        registrar.playToClient(
+                ClientboundCancelGunAnimationPacket.TYPE,
+                ClientboundCancelGunAnimationPacket.STREAM_CODEC,
+                ClientboundCancelGunAnimationPacket::handle
         );
         registrar.playToClient(
                 ClientboundGunshotSoundPacket.TYPE,

@@ -89,9 +89,10 @@ public class CowboyHatItem extends BaseGeoItem {
         int missing = contents.missing(gunItem.magazineCapacity());
         MagazineContents.set(gunstack, contents.with(gunItem.magazineCapacity()));
         livingAttacker.level().playSound(null, livingAttacker.getX(), livingAttacker.getY(), livingAttacker.getZ(), SoundRegistry.INSTANT_RELOAD.get(), SoundSource.NEUTRAL, 1, 1);
-//        if (gunItem.getEquipSound() != null) {
-//            gunItem.getEquipSound().play(livingAttacker.level(), livingAttacker.position(), SoundSource.NEUTRAL);
-//        }
+        if (GunItem.isReloading(gunstack)) {
+            ReloadState.remove(gunstack);
+            GunplayManager.cancelGunAnimation(livingAttacker, gunstack);
+        }
         if (livingAttacker instanceof Player player) {
             player.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
             player.sendOverlayMessage(Component.translatable("item.irons_artifice.cowboy_hat.ability.gain_ammo", missing).withStyle(ChatFormatting.LIGHT_PURPLE));
