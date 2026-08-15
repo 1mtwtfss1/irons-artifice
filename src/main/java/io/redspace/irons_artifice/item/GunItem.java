@@ -27,13 +27,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -168,29 +165,6 @@ public class GunItem extends BaseGeoItem {
 
     public GunProfile getGunProfile() {
         return gunProfile;
-    }
-
-    @Override
-    public void inventoryTick(@NonNull ItemStack itemStack, @NonNull ServerLevel level, @NonNull Entity owner, @Nullable EquipmentSlot slot) {
-        super.inventoryTick(itemStack, level, owner, slot);
-        if (FireDelayState.isActive(itemStack)) {
-            FireDelayState.tick(itemStack, this, level, owner);
-        }
-        if (slot != EquipmentSlot.MAINHAND || !(owner instanceof LivingEntity living)) {
-            // fixme: will this cause issue in offhand? i think a lot of things (animations, dual-wielding) need specific offhand handling
-            //  not a v1 concern
-            return;
-        }
-
-        if (isReloading(itemStack)) {
-            ReloadState finished = ReloadState.tickReload(itemStack, this, living);
-            if (finished != null) {
-                ReloadResult result = GunplayManager.attemptFinishReload(living, itemStack, finished.roundsToLoad());
-                if (living instanceof Player player) {
-                    playReloadFeedback(level, player, result);
-                }
-            }
-        }
     }
 
     @Override
