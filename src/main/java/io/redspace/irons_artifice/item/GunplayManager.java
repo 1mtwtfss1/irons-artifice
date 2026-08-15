@@ -79,7 +79,7 @@ public final class GunplayManager {
         Vec2 rotation = direction.rotation();
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
-        if (!testInfinityBullet(shooter, profile)) {
+        if (shouldConsumeAmmoForEnchantedBullet(shooter, profile)) {
             GunItem.setMagazine(stack, magazine.deplete());
         } else {
             // fixme: event for ammo consumption?
@@ -122,9 +122,12 @@ public final class GunplayManager {
         return true;
     }
 
-    private static boolean testInfinityBullet(LivingEntity shooter, ShotProfile profile) {
+    private static boolean shouldConsumeAmmoForEnchantedBullet(LivingEntity shooter, ShotProfile profile) {
         double consumeChance = profile.value(ShotComponents.AMMO_CONSUME_CHANCE);
-        return consumeChance < 1.0 && shooter.getRandom().nextDouble() >= consumeChance;
+        if (consumeChance >= 1) {
+            return true;
+        }
+        return shooter.getRandom().nextDouble() <= consumeChance;
     }
 
     private static float pitchMultiplierForFire(ShotProfile profile) {
@@ -132,9 +135,6 @@ public final class GunplayManager {
     }
 
     private static void beginFireDelay(LivingEntity shooter, ItemStack stack, int ticks, float pitchMultiplier) {
-        // item cooldowns seem to tick before inventory tick. new system uses latter
-        // advance one tick in order to maintain intended parity, and one-tick cooldowns meaning "can shoot next tick"
-        ticks -= 1;
         if (ticks > 0) {
             FireDelayState.start(stack, ticks, pitchMultiplier);
         }

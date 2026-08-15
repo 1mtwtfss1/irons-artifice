@@ -83,7 +83,7 @@
   "irons_artifice.modifier.antigravity": "Removes Bullet Gravity",
   "irons_artifice.modifier.negate": "Removes %s",
   "irons_artifice.modifier.gravity_well": "Create a %s block Gravity Well on Hit",
-  "irons_artifice.modifier.accelerating": "+%s%% Damage for each shot fired in the last second",
+  "irons_artifice.modifier.accelerating": "+%s%% Damage per shot fired in the last second",
   "irons_artifice.modifier.infinity": "%s%% Reduced Chance to consume Ammo",
 
   "irons_artifice.value_modifier.plus": "+%s %s",

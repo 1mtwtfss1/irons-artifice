@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public final class EnchantedBulletModifier extends ValueStackModifier {
-    public static final double INFINITY_CHANCE = 0.25;
+    public static final double INFINITY_CHANCE = 0.1;
 
     public EnchantedBulletModifier() {
         super(Map.of(
