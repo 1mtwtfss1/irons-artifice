@@ -2,6 +2,7 @@ package io.redspace.irons_artifice.registry;
 
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.gun.LastHitTarget;
+import io.redspace.irons_artifice.gun.RecentShots;
 import io.redspace.irons_artifice.recoil.RecoilState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -21,6 +22,10 @@ public final class DataAttachmentRegistry {
     public static final Supplier<AttachmentType<LastHitTarget>> LAST_HIT_TARGET =
             ATTACHMENT_TYPES.register("last_hit_target",
                     () -> AttachmentType.builder(() -> LastHitTarget.NONE).build());
+
+    public static final Supplier<AttachmentType<RecentShots>> RECENT_SHOTS =
+            ATTACHMENT_TYPES.register("recent_shots",
+                    () -> AttachmentType.builder(() -> RecentShots.NONE).build());
 
     public static void register(IEventBus modEventBus) {
         ATTACHMENT_TYPES.register(modEventBus);

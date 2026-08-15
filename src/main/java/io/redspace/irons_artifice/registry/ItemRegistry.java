@@ -15,6 +15,7 @@ import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.TricorneItem;
 import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.modifier.modifiers.AntigravityModifier;
+import io.redspace.irons_artifice.modifier.modifiers.MechanicalAccelerator;
 import io.redspace.irons_artifice.modifier.modifiers.BlackpowderChargeModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BreachModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BufferSpringModifier;
@@ -25,6 +26,7 @@ import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyModifier;
 import io.redspace.irons_artifice.modifier.modifiers.IncendiaryTipModifier;
+import io.redspace.irons_artifice.modifier.modifiers.InfinityModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GunOilModifier;
 import io.redspace.irons_artifice.modifier.modifiers.MechanicalRepeaterModifier;
 import io.redspace.irons_artifice.modifier.modifiers.OverchargedPowderModifier;
@@ -164,6 +166,10 @@ public final class ItemRegistry {
             "buffer_spring_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BufferSpringModifier()));
     public static final DeferredItem<ModifierItem> MECHANICAL_REPEATER = ITEMS.registerItem(
             "mechanical_repeater_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalRepeaterModifier()));
+    public static final DeferredItem<ModifierItem> INFINITY_MODIFIER = ITEMS.registerItem(
+            "infinity_modifier", properties -> new ModifierItem(properties.stacksTo(1), new InfinityModifier()));
+    public static final DeferredItem<ModifierItem> MECHANICAL_ACCELERATOR_MODIFIER = ITEMS.registerItem(
+            "mechanical_accelerator_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalAccelerator()));
 
     //    public static final DeferredItem<ModifierItem> FAIRY_DUST = ITEMS.registerItem(
     //            "fairy_dust_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FairyDustModifier()));

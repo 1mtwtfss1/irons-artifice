@@ -10,6 +10,7 @@ import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.GunProfile;
 import io.redspace.irons_artifice.gun.MuzzleFlashSettings;
 import io.redspace.irons_artifice.gun.MuzzleFlashType;
+import io.redspace.irons_artifice.gun.RecentShots;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.modifier.ModifierItem;
@@ -72,12 +73,17 @@ public final class GunplayManager {
         Vec2 rotation = direction.rotation();
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
-        GunItem.setMagazine(stack, magazine.deplete());
+        if (shouldConsumeAmmo(shooter, profile)) {
+            GunItem.setMagazine(stack, magazine.deplete());
+        }
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, shooter.position());
         RecoilState.addImpulse(shooter, now, profile);
         fireShot(level, shooter, shooter.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
         applyCharacterBlowback(shooter, profile);
         playFireAnimation(shooter, stack, gunItem, profile);
+        if (profile.value(ShotComponents.ACCELERATING) > 0) {
+            RecentShots.trackShot(shooter, now);
+        }
         return true;
     }
 
@@ -93,7 +99,15 @@ public final class GunplayManager {
         fireShot(level, player, origin, direction, profile);
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
         playFireAnimation(player, stack, gunItem, profile);
+        if (profile.value(ShotComponents.ACCELERATING) > 0) {
+            RecentShots.trackShot(player, level.getGameTime());
+        }
         return true;
+    }
+
+    private static boolean shouldConsumeAmmo(LivingEntity shooter, ShotProfile profile) {
+        double consumeChance = profile.value(ShotComponents.AMMO_CONSUME_CHANCE);
+        return consumeChance >= 1.0 || shooter.getRandom().nextDouble() < consumeChance;
     }
 
     private static float pitchMultiplierForFire(ShotProfile profile) {
