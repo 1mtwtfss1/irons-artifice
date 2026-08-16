@@ -26,6 +26,7 @@ import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -197,7 +198,10 @@ public class GunItem extends BaseGeoItem {
         builder.accept(Component.translatable("irons_artifice.tooltip.modifier_count",
                         gunProfile.modifierSlots()
                 ).withStyle(ChatFormatting.GOLD)
-                .append(" ").append(Component.translatable("irons_artifice.tooltip.keybind_hint", Component.keybind("key.irons_artifice.open_modifier_menu").withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.YELLOW)));
+                .append(" ").append(Component.translatable("irons_artifice.tooltip.keybind_hint",
+                        Component.keybind("key.irons_artifice.open_modifier_menu")
+                                .withStyle(Style.EMPTY.withColor(ChatFormatting.GOLD).withItalic(false)))
+                        .withStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW).withItalic(true))));
         GunContainer container = new GunContainer(itemStack);
         for (var item : container.getItems()) {
             if (!item.isEmpty()) {
