@@ -43,6 +43,6 @@ public class PoisonPostHit implements PostHitEffect {
         MobEffectInstance existing = living.getEffect(MobEffects.POISON);
         int duration = durationTicks + (existing != null ? existing.getDuration() : 0);
         int amp = existing != null ? Math.max(existing.getAmplifier(), amplifier) : amplifier;
-        living.addEffect(new MobEffectInstance(MobEffects.POISON, duration, Math.max(0, amp)), bullet.getOwner());
+        living.addEffect(new MobEffectInstance(MobEffects.POISON, Math.min(duration, 20 * 30), Math.max(0, amp)), bullet.getOwner());
     }
 }

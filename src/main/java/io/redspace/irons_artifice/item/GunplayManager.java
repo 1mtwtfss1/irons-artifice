@@ -15,7 +15,6 @@ import io.redspace.irons_artifice.gun.RecentShots;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.modifier.ModifierItem;
-import io.redspace.irons_artifice.modifier.modifiers.MechanicalAccelerator;
 import io.redspace.irons_artifice.network.ClientboundCancelGunAnimationPacket;
 import io.redspace.irons_artifice.network.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.ClientboundMuzzleFlashPacket;
@@ -96,10 +95,11 @@ public final class GunplayManager {
         // fixme: should be event for hooks like this
         if (profile.value(ShotComponents.ACCELERATING) > 0) {
             RecentShots.trackShot(shooter, now);
-            if (shooter instanceof ServerPlayer serverPlayer) {
-                // fixme: actionbar overreliance
-                serverPlayer.sendSystemMessage(Component.translatable("irons_artifice.tooltip.accelerated_percent", (int) (100 * (1 + MechanicalAccelerator.getAcceleratePercent(shooter, profile)))), true);
-            }
+            // todo: dedicated hud element
+//            if (shooter instanceof ServerPlayer serverPlayer) {
+//                // fixme: actionbar overreliance
+//                serverPlayer.sendSystemMessage(Component.translatable("irons_artifice.tooltip.accelerated_percent", (int) (100 * (1 + MechanicalAccelerator.getAcceleratePercent(shooter, profile)))), true);
+//            }
         }
         return true;
     }

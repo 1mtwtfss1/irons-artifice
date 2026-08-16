@@ -27,6 +27,6 @@ public class IgnitePostHit implements PostHitEffect {
         if (!Utils.canHarm(bullet.getOwner(), entity)) {
             return;
         }
-        entity.igniteForTicks(entity.getRemainingFireTicks() + durationTicks);
+        entity.igniteForTicks(durationTicks);
     }
 }
