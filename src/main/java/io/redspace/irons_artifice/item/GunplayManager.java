@@ -2,23 +2,25 @@ package io.redspace.irons_artifice.item;
 
 import com.geckolib.animatable.GeoItem;
 import io.redspace.irons_artifice.api.ComposeShotEvent;
+import io.redspace.irons_artifice.api.ConsumeAmmoEvent;
+import io.redspace.irons_artifice.api.GunAboutToShootEvent;
+import io.redspace.irons_artifice.api.GunShootEvent;
 import io.redspace.irons_artifice.client.ClientHelper;
+import io.redspace.irons_artifice.data.MuzzleFlashSettings;
+import io.redspace.irons_artifice.data.MuzzleFlashType;
 import io.redspace.irons_artifice.data.PlayableSound;
+import io.redspace.irons_artifice.data.RecoilState;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.GunProfile;
-import io.redspace.irons_artifice.data.MuzzleFlashSettings;
-import io.redspace.irons_artifice.data.MuzzleFlashType;
-import io.redspace.irons_artifice.data.RecentShots;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.network.packets.ClientboundCancelGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundMuzzleFlashPacket;
-import io.redspace.irons_artifice.data.RecoilState;
 import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ItemRegistry;
 import io.redspace.irons_artifice.registry.SoundRegistry;
@@ -62,6 +64,9 @@ public final class GunplayManager {
             }
             return false;
         }
+        if (NeoForge.EVENT_BUS.post(new GunAboutToShootEvent(shooter, profile)).isCanceled()) {
+            return false;
+        }
         beginFireDelay(shooter, stack, (int) Math.round(profile.fireDelayTicks()), pitchMultiplierForFire(profile));
         if (!(shooter.level() instanceof ServerLevel level)) {
             return true;
@@ -79,9 +84,9 @@ public final class GunplayManager {
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
         if (shouldConsumeAmmoForEnchantedBullet(shooter, profile)) {
-            GunItem.setMagazine(stack, magazine.deplete());
+            int ammoToConsume = NeoForge.EVENT_BUS.post(new ConsumeAmmoEvent(shooter, profile)).getAmmoToConsume();
+            GunItem.setMagazine(stack, magazine.deplete(ammoToConsume));
         } else {
-            // fixme: event for ammo consumption?
             PlayableSound.of(SoundRegistry.INFINITY_BULLET, 1, 0.9f, 1.1f).play(shooter.level(), shooter.position(), SoundSource.NEUTRAL);
             if (shooter instanceof Player player) {
                 player.sendOverlayMessage(Component.translatable("irons_artifice.tooltip.refunded_ammo", 1).withStyle(ChatFormatting.LIGHT_PURPLE));
@@ -92,15 +97,6 @@ public final class GunplayManager {
         fireShot(level, shooter, shooter.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
         applyCharacterBlowback(shooter, profile);
         playFireAnimation(shooter, stack, gunItem, profile);
-        // fixme: should be event for hooks like this
-        if (profile.value(ShotComponents.ACCELERATING) > 0) {
-            RecentShots.trackShot(shooter, now);
-            // todo: dedicated hud element
-//            if (shooter instanceof ServerPlayer serverPlayer) {
-//                // fixme: actionbar overreliance
-//                serverPlayer.sendSystemMessage(Component.translatable("irons_artifice.tooltip.accelerated_percent", (int) (100 * (1 + MechanicalAccelerator.getAcceleratePercent(shooter, profile)))), true);
-//            }
-        }
         return true;
     }
 
@@ -116,9 +112,6 @@ public final class GunplayManager {
         fireShot(level, player, origin, direction, profile);
         profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
         playFireAnimation(player, stack, gunItem, profile);
-        if (profile.value(ShotComponents.ACCELERATING) > 0) {
-            RecentShots.trackShot(player, level.getGameTime());
-        }
         return true;
     }
 
@@ -186,6 +179,9 @@ public final class GunplayManager {
     }
 
     private static void fireShot(ServerLevel level, LivingEntity shooter, Vec3 origin, Vec3 direction, ShotProfile profile) {
+        var event = NeoForge.EVENT_BUS.post(new GunShootEvent.Pre(shooter, profile, origin, direction));
+        origin = event.getOrigin();
+        direction = event.getDirection();
         int projectileCount = Math.max(1, (int) Math.round(profile.value(ShotComponents.PROJECTILE_COUNT)));
         float speed = (float) profile.value(ShotComponents.BULLET_SPEED);
         float spread = getSpreadForEntity(profile, shooter);
@@ -198,6 +194,7 @@ public final class GunplayManager {
             level.addFreshEntity(bullet);
         }
         spawnMuzzleFlash(level, shooter, direction, profile);
+        NeoForge.EVENT_BUS.post(new GunShootEvent.Post(shooter, profile));
     }
 
     private static void spawnMuzzleFlash(ServerLevel level, LivingEntity shooter, Vec3 direction, ShotProfile profile) {

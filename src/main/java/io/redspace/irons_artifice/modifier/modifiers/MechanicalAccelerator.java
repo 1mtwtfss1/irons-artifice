@@ -1,10 +1,11 @@
 package io.redspace.irons_artifice.modifier.modifiers;
 
 import io.redspace.irons_artifice.api.ComposeShotEvent;
+import io.redspace.irons_artifice.api.GunShootEvent;
+import io.redspace.irons_artifice.data.RecentShots;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.ValueModifier;
-import io.redspace.irons_artifice.data.RecentShots;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.modifier.GunModifier;
 import net.minecraft.ChatFormatting;
@@ -30,6 +31,18 @@ public final class MechanicalAccelerator implements GunModifier {
     }
 
     @SubscribeEvent
+    public static void onShoot(GunShootEvent.Post event) {
+        if (event.getShotProfile().value(ShotComponents.ACCELERATING) > 0) {
+            RecentShots.trackShot(event.getEntity());
+//            // todo: dedicated hud element
+//            if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+//                // fixme: actionbar overreliance
+//                serverPlayer.sendSystemMessage(Component.translatable("irons_artifice.tooltip.accelerated_percent", (int) (100 * (1 + MechanicalAccelerator.getAcceleratePercent(event.getEntity(), event.getShotProfile())))), true);
+//            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onCompose(ComposeShotEvent event) {
         ShotProfile profile = event.getShotProfile();
         double percent = getAcceleratePercent(event.getEntity(), event.getShotProfile());
@@ -45,7 +58,7 @@ public final class MechanicalAccelerator implements GunModifier {
 
     public static double getAcceleratePercent(LivingEntity entity, ShotProfile shotProfile) {
         int accelerateCount = (int) shotProfile.value(ShotComponents.ACCELERATING);
-        int shots = RecentShots.count(entity, entity.level().getGameTime());
+        int shots = RecentShots.count(entity);
         return shots * DAMAGE_PER_SHOT * accelerateCount;
     }
 }

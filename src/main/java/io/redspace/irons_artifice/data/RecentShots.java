@@ -36,12 +36,12 @@ public record RecentShots(List<Long> ticks) {
         return new RecentShots(next);
     }
 
-    public static int count(LivingEntity entity, long now) {
+    public static int count(LivingEntity entity) {
         if (!entity.hasData(DataAttachmentRegistry.RECENT_SHOTS)) {
             return 0;
         }
         RecentShots current = entity.getData(DataAttachmentRegistry.RECENT_SHOTS);
-        RecentShots pruned = current.pruned(now);
+        RecentShots pruned = current.pruned(entity.level().getGameTime());
         if (pruned.isEmpty()) {
             entity.removeData(DataAttachmentRegistry.RECENT_SHOTS);
             return 0;
@@ -52,10 +52,10 @@ public record RecentShots(List<Long> ticks) {
         return pruned.size();
     }
 
-    public static void trackShot(LivingEntity entity, long now) {
+    public static void trackShot(LivingEntity entity) {
         RecentShots current = entity.hasData(DataAttachmentRegistry.RECENT_SHOTS)
                 ? entity.getData(DataAttachmentRegistry.RECENT_SHOTS)
                 : NONE;
-        entity.setData(DataAttachmentRegistry.RECENT_SHOTS, current.withShot(now));
+        entity.setData(DataAttachmentRegistry.RECENT_SHOTS, current.withShot(entity.level().getGameTime()));
     }
 }
