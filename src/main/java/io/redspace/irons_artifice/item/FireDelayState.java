@@ -14,6 +14,21 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 public record FireDelayState(int progress, int duration, int cueIndex, float pitchMultiplier) {
+    @Override
+    public boolean equals(Object o) {
+        // hacky workaround for letting a live tick state component not spam the network -- omit ticking volatiles from hashing/equals
+        if (this == o) return true;
+        if (!(o instanceof FireDelayState that)) return false;
+        return this.duration == that.duration
+                && Float.compare(this.pitchMultiplier, that.pitchMultiplier) == 0;
+    }
+    @Override
+    public int hashCode() {
+        // hacky workaround for letting a live tick state component not spam the network -- omit ticking volatiles from hashing/equals
+        int result = Integer.hashCode(duration);
+        result = 31 * result + Float.hashCode(pitchMultiplier);
+        return result;
+    }
     public static final FireDelayState EMPTY = new FireDelayState(0, 0, 0, 1);
 
     public static final Codec<FireDelayState> CODEC = RecordCodecBuilder.create(builder -> builder.group(

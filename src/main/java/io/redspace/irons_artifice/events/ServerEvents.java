@@ -55,17 +55,13 @@ public class ServerEvents {
             return;
         }
         var level = living.level();
-        // ticking fire delay server only can cause fire rate desync when server and client disagree by fractions of second
         if (FireDelayState.isActive(itemStack)) {
             FireDelayState.tick(itemStack, gunItem, level, living);
-        }
-        if (level.isClientSide()) {
-            return;
         }
         // let reload ticking (and sfx handling) be server authoritative
         if (GunItem.isReloading(itemStack)) {
             ReloadState finished = ReloadState.tickReload(itemStack, gunItem, living);
-            if (finished != null) {
+            if (finished != null && !level.isClientSide()) {
                 ReloadResult result = GunplayManager.attemptFinishReload(living, itemStack, finished.roundsToLoad());
                 if (living instanceof Player player) {
                     GunItem.playReloadFeedback(level, player, result);

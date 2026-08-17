@@ -5,8 +5,7 @@
   "client": [
     "GuiCrosshairMixin",
     "ItemInHandRendererMixin",
-    "MinecraftMixin",
-    "MultiPlayerGameModeMixin"
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

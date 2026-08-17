@@ -20,6 +20,29 @@ import org.jspecify.annotations.Nullable;
  */
 public record ReloadState(double progress, double duration, double speed, int roundsToLoad, double skipAt,
                           double skipTo) {
+    @Override
+    public boolean equals(Object o) {
+        // hacky workaround for letting a live tick state component not spam the network -- omit ticking volatiles from hashing/equals
+        if (this == o) return true;
+        if (!(o instanceof ReloadState that)) return false;
+        return Double.compare(this.duration, that.duration) == 0
+                && Double.compare(this.speed, that.speed) == 0
+                && this.roundsToLoad == that.roundsToLoad
+                && Double.compare(this.skipAt, that.skipAt) == 0
+                && Double.compare(this.skipTo, that.skipTo) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        // hacky workaround for letting a live tick state component not spam the network -- omit ticking volatiles from hashing/equals
+        int result = Double.hashCode(duration);
+        result = 31 * result + Double.hashCode(speed);
+        result = 31 * result + roundsToLoad;
+        result = 31 * result + Double.hashCode(skipAt);
+        result = 31 * result + Double.hashCode(skipTo);
+        return result;
+    }
+
     public static final ReloadState EMPTY = new ReloadState(0, 0, 1, 0, 0, 0);
 
     public static final Codec<ReloadState> CODEC = RecordCodecBuilder.create(builder -> builder.group(
@@ -132,7 +155,9 @@ public record ReloadState(double progress, double duration, double speed, int ro
         }
         double previous = state.progress;
         state = state.increment(1);
-        gun.getReloadCues().playCuesBetween(owner, owner.position(), SoundSource.PLAYERS, previous, state.progress, state.pitchMultiplier());
+        if (!owner.level().isClientSide()) {
+            gun.getReloadCues().playCuesBetween(owner, owner.position(), SoundSource.PLAYERS, previous, state.progress, state.pitchMultiplier());
+        }
         state = state.applySkip();
         if (state.isFinished()) {
             remove(stack);
