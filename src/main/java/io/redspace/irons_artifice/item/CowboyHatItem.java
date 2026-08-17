@@ -5,7 +5,6 @@ import com.geckolib.renderer.GeoArmorRenderer;
 import com.google.common.base.Suppliers;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.armor.GenericArmorModel;
-import io.redspace.irons_artifice.client.armor.TransmogArmorRenderer;
 import io.redspace.irons_artifice.damage.DamageSources;
 import io.redspace.irons_artifice.registry.ItemRegistry;
 import io.redspace.irons_artifice.registry.SoundRegistry;
@@ -42,8 +41,8 @@ public class CowboyHatItem extends BaseGeoItem {
     public CowboyHatItem(Properties properties) {
         super(properties.humanoidArmor(COWBOY_HAT_MATERIAL, ArmorType.HELMET));
         geoRenderProvider.setValue(new GeoRenderProvider() {
-            private final Supplier<TransmogArmorRenderer<?, ?>> renderer =
-                    Suppliers.memoize(() -> new TransmogArmorRenderer<>(new GenericArmorModel<>("cowboy_hat")));
+            private final Supplier<GeoArmorRenderer<?, ?>> renderer =
+                    Suppliers.memoize(() -> new GeoArmorRenderer<>(new GenericArmorModel<>("cowboy_hat")));
 
             @Override
             public @org.jspecify.annotations.Nullable GeoArmorRenderer<?, ?> getGeoArmorRenderer(ItemStack itemStack, EquipmentSlot equipmentSlot) {

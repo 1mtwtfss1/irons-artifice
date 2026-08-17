@@ -1,5 +1,16 @@
 package io.redspace.irons_artifice.network;
 
+import io.redspace.irons_artifice.network.packets.ClientboundBulletImpactPacket;
+import io.redspace.irons_artifice.network.packets.ClientboundBulletTrailPacket;
+import io.redspace.irons_artifice.network.packets.ClientboundCancelGunAnimationPacket;
+import io.redspace.irons_artifice.network.packets.ClientboundEquipSoundPacket;
+import io.redspace.irons_artifice.network.packets.ClientboundGunAnimationPacket;
+import io.redspace.irons_artifice.network.packets.ClientboundGunshotSoundPacket;
+import io.redspace.irons_artifice.network.packets.ClientboundLocalSoundPacket;
+import io.redspace.irons_artifice.network.packets.ClientboundMuzzleFlashPacket;
+import io.redspace.irons_artifice.network.packets.ServerboundFireGunPacket;
+import io.redspace.irons_artifice.network.packets.ServerboundOpenModifierMenuPacket;
+import io.redspace.irons_artifice.network.packets.ServerboundReloadGunPacket;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 

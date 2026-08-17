@@ -7,7 +7,7 @@ import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.Value;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
-import io.redspace.irons_artifice.gun.OnHitEffect;
+import io.redspace.irons_artifice.modifier.OnHitEffect;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ParticleRegistry;

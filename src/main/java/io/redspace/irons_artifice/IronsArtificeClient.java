@@ -8,7 +8,7 @@ import io.redspace.irons_artifice.client.entity.IllificerRenderer;
 import io.redspace.irons_artifice.client.gui.GunPreviewRenderState;
 import io.redspace.irons_artifice.client.gui.GunPreviewRenderer;
 import io.redspace.irons_artifice.client.gun.GunInHandRenderer;
-import io.redspace.irons_artifice.client.hud.AmmoCountHudOverlay;
+import io.redspace.irons_artifice.client.gui.AmmoCountHudOverlay;
 import io.redspace.irons_artifice.client.particle.BlockDustParticle;
 import io.redspace.irons_artifice.client.particle.BulletImpactParticle;
 import io.redspace.irons_artifice.client.particle.BulletTrailParticle;

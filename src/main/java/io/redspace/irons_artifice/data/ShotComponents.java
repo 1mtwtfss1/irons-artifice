@@ -3,12 +3,8 @@ package io.redspace.irons_artifice.data;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
 import io.redspace.irons_artifice.entity.Bullet;
-import io.redspace.irons_artifice.gun.GunShotSoundStack;
-import io.redspace.irons_artifice.gun.ImpactSoundStack;
-import io.redspace.irons_artifice.gun.MuzzleFlashSettings;
-import io.redspace.irons_artifice.gun.OnHitEffects;
-import io.redspace.irons_artifice.gun.PostHitEffects;
-import io.redspace.irons_artifice.recoil.RecoilProfile;
+import io.redspace.irons_artifice.modifier.OnHitEffects;
+import io.redspace.irons_artifice.modifier.PostHitEffects;
 import io.redspace.irons_artifice.registry.SoundRegistry;
 import net.minecraft.sounds.SoundEvents;
 

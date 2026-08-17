@@ -15,7 +15,7 @@ import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.item.AnimationAdjuster;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.MagazineContents;
-import io.redspace.irons_artifice.gun.HandOccupancy;
+import io.redspace.irons_artifice.data.HandOccupancy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;

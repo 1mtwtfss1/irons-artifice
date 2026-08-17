@@ -1,14 +1,23 @@
 package io.redspace.irons_artifice.gun;
 
 import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
+import io.redspace.irons_artifice.data.FireCycleCue;
+import io.redspace.irons_artifice.data.FireCycleCueStack;
+import io.redspace.irons_artifice.data.FireMode;
+import io.redspace.irons_artifice.data.GunShotSoundStack;
+import io.redspace.irons_artifice.data.HandOccupancy;
+import io.redspace.irons_artifice.data.MuzzleFlashSettings;
+import io.redspace.irons_artifice.data.MuzzleFlashType;
 import io.redspace.irons_artifice.data.PlayableSound;
+import io.redspace.irons_artifice.data.ReloadCue;
+import io.redspace.irons_artifice.data.ReloadCueStack;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.Value;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.item.AnimationAdjuster;
 import io.redspace.irons_artifice.item.TopLoadConfig;
-import io.redspace.irons_artifice.recoil.RecoilProfile;
+import io.redspace.irons_artifice.data.RecoilProfile;
 import io.redspace.irons_artifice.registry.SoundRegistry;
 import net.minecraft.sounds.SoundEvents;
 

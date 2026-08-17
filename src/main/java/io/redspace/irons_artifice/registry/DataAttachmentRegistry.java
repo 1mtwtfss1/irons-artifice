@@ -1,9 +1,9 @@
 package io.redspace.irons_artifice.registry;
 
 import io.redspace.irons_artifice.IronsArtifice;
-import io.redspace.irons_artifice.gun.LastHitTarget;
-import io.redspace.irons_artifice.gun.RecentShots;
-import io.redspace.irons_artifice.recoil.RecoilState;
+import io.redspace.irons_artifice.data.LastHitTarget;
+import io.redspace.irons_artifice.data.RecentShots;
+import io.redspace.irons_artifice.data.RecoilState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;

@@ -6,7 +6,6 @@ import com.google.common.base.Suppliers;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.client.armor.GenericArmorModel;
-import io.redspace.irons_artifice.client.armor.TransmogArmorRenderer;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.ValueModifier;
 import io.redspace.irons_artifice.gun.ShotProfile;
@@ -43,8 +42,8 @@ public class TricorneItem extends BaseGeoItem {
     public TricorneItem(Properties properties) {
         super(properties.humanoidArmor(TRICORNE_MATERIAL, ArmorType.HELMET));
         geoRenderProvider.setValue(new GeoRenderProvider() {
-            private final Supplier<TransmogArmorRenderer<?, ?>> renderer =
-                    Suppliers.memoize(() -> new TransmogArmorRenderer<>(new GenericArmorModel<>("tricorne")));
+            private final Supplier<GeoArmorRenderer<?, ?>> renderer =
+                    Suppliers.memoize(() -> new GeoArmorRenderer<>(new GenericArmorModel<>("tricorne")));
 
             @Override
             public @org.jspecify.annotations.Nullable GeoArmorRenderer<?, ?> getGeoArmorRenderer(ItemStack itemStack, EquipmentSlot equipmentSlot) {

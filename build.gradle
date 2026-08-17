@@ -97,6 +97,7 @@ configurations {
 
 dependencies {
     implementation "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+    implementation "io.redspace:irons_lib:${irons_lib_version}"
     runtimeOnly "curse.maven:jei-238222:8548511"
 }
 
@@ -110,6 +111,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_license            : mod_license,
             mod_version            : mod_version,
             geckolib_version       : geckolib_version,
+            irons_lib_version      : irons_lib_version
     ]
     inputs.properties replaceProperties
     expand replaceProperties
@@ -170,8 +172,8 @@ ${latestChangesContent}
         projectId = projectCurseforge
         projectSlug = slug
         minecraftVersions.add(minecraft_version)
-        client=true
-        server=true
+        client = true
+        server = true
     }
 //    modrinth {
 //        accessToken = System.getenv("MODRINTH_PUBLISH")

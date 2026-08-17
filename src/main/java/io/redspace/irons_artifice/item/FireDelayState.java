@@ -3,7 +3,7 @@ package io.redspace.irons_artifice.item;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import io.redspace.irons_artifice.gun.FireCycleCueStack;
+import io.redspace.irons_artifice.data.FireCycleCueStack;
 import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
