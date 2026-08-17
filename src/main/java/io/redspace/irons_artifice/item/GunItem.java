@@ -11,15 +11,11 @@ import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.base.GeoRenderState;
 import io.redspace.irons_artifice.IronsArtifice;
-import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.Bullet;
-import io.redspace.irons_artifice.gun.ArmPoseKind;
-import io.redspace.irons_artifice.gun.FireCycleCueStack;
 import io.redspace.irons_artifice.gun.GunProfile;
 import io.redspace.irons_artifice.gun.HandOccupancy;
-import io.redspace.irons_artifice.gun.ReloadCueStack;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.registry.DataComponentRegistry;
@@ -27,7 +23,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -42,7 +37,6 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -55,32 +49,13 @@ public class GunItem extends BaseGeoItem {
     public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
 
     private final GunProfile gunProfile;
-    private final @Nullable Identifier geoModelId;
-    private final ArmPoseKind armPoseKind;
-    private final ReloadCueStack reloadCues;
-    private final FireCycleCueStack fireCycleCues;
-    private final @Nullable PlayableSound equipSound;
-    private final AnimationAdjuster animationAdjuster;
-    private final HandOccupancy defaultOccupancy;
-    private final Map<String, HandOccupancy> animationOccupancy;
 
-    public GunItem(Properties properties, GunProfile gunProfile, @Nullable Identifier geoModelId,
-                   ArmPoseKind armPoseKind, ReloadCueStack reloadCues, @Nullable PlayableSound equipSound,
-                   FireCycleCueStack fireCycleCues, AnimationAdjuster animationAdjuster,
-                   Map<String, HandOccupancy> animationOccupancy) {
+    public GunItem(Properties properties, GunProfile gunProfile) {
         super(properties
                 .component(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.CONTAINER, true))
                 .component(DataComponentRegistry.MAGAZINE, new MagazineContents(gunProfile.magazineCapacity()))
         );
         this.gunProfile = gunProfile;
-        this.geoModelId = geoModelId;
-        this.armPoseKind = armPoseKind;
-        this.reloadCues = reloadCues;
-        this.fireCycleCues = fireCycleCues;
-        this.equipSound = equipSound;
-        this.animationAdjuster = animationAdjuster;
-        this.defaultOccupancy = armPoseKind == ArmPoseKind.RIFLE ? HandOccupancy.BOTH : HandOccupancy.MAINHAND;
-        this.animationOccupancy = Map.copyOf(animationOccupancy);
     }
 
     public GunProfile getGun() {
@@ -91,20 +66,8 @@ public class GunItem extends BaseGeoItem {
         return gunProfile.magazineCapacity();
     }
 
-    public @Nullable Identifier getGeoModelId() {
-        return geoModelId;
-    }
-
-    public ArmPoseKind getArmPoseKind() {
-        return armPoseKind;
-    }
-
-    public HandOccupancy occupancyForAnimation(String animation) {
-        return animationOccupancy.getOrDefault(animation, defaultOccupancy);
-    }
-
     public HandOccupancy occupancyForCurrentAnimation(ItemStack stack) {
-        return occupancyForAnimation(currentAnimation(stack));
+        return gunProfile.occupancyForAnimation(currentAnimation(stack));
     }
 
     public static @Nullable HandOccupancy currentOccupancy(ItemStack stack) {
@@ -143,14 +106,6 @@ public class GunItem extends BaseGeoItem {
         return "idle";
     }
 
-    public ReloadCueStack getReloadCues() {
-        return reloadCues;
-    }
-
-    public FireCycleCueStack getFireCycleCues() {
-        return fireCycleCues;
-    }
-
     public static MagazineContents getMagazine(ItemStack stack) {
         MagazineContents magazine = MagazineContents.get(stack);
         return magazine != null ? magazine : MagazineContents.EMPTY;
@@ -162,10 +117,6 @@ public class GunItem extends BaseGeoItem {
 
     public static boolean isReloading(ItemStack stack) {
         return ReloadState.has(stack);
-    }
-
-    public GunProfile getGunProfile() {
-        return gunProfile;
     }
 
     @Override
@@ -263,14 +214,6 @@ public class GunItem extends BaseGeoItem {
     private PlayState gunIdleHandler(AnimationTest<GunItem> animationTest) {
         animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
         return PlayState.CONTINUE;
-    }
-
-    public PlayableSound getEquipSound() {
-        return this.equipSound;
-    }
-
-    public AnimationAdjuster getAnimationAdjuster() {
-        return this.animationAdjuster;
     }
 
     public void configureActionTimelineSkip(long instanceId, double skipAtSeconds, double skipToSeconds) {

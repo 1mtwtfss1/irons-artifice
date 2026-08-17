@@ -101,7 +101,7 @@ public record FireDelayState(int progress, int duration, int cueIndex, float pit
         }
         state = state.increment(1);
 
-        FireCycleCueStack cues = gun.getFireCycleCues();
+        FireCycleCueStack cues = gun.getGun().fireCycleCues();
         int nextCue = cues.playDueCues(owner, owner.position(), SoundSource.PLAYERS, state.percent(0), state.cueIndex(), state.pitchMultiplier);
         state = state.withCueIndex(nextCue);
 

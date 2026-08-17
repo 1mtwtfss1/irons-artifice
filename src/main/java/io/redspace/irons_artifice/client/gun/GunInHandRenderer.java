@@ -88,7 +88,7 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
         }
         var controller = animatable.getAnimatableInstanceCache().getManagerForId(GeoItem.getId(renderData.itemStack())).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
         renderState.addGeckolibData(GunItem.RELOAD_PROGRESS_SECONDS_TICKET, controller.isTriggeredAnimation("reload") ? controller.getCurrentAnimationTime() : 0.0);
-        renderState.addGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET, animatable.getAnimationAdjuster());
+        renderState.addGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET, animatable.getGun().animationAdjuster());
         LivingEntity owner = renderData.itemOwner() instanceof LivingEntity living
                 ? living
                 : Minecraft.getInstance().player;

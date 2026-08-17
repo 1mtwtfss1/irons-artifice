@@ -253,7 +253,7 @@ public final class ClientHelper {
         if (!(payload.item() instanceof GunItem gunItem)) {
             return;
         }
-        PlayableSound sound = gunItem.getEquipSound();
+        PlayableSound sound = gunItem.getGun().equipSound();
         if (sound == null) {
             return;
         }

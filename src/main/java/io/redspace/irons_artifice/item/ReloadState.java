@@ -156,7 +156,7 @@ public record ReloadState(double progress, double duration, double speed, int ro
         double previous = state.progress;
         state = state.increment(1);
         if (!owner.level().isClientSide()) {
-            gun.getReloadCues().playCuesBetween(owner, owner.position(), SoundSource.PLAYERS, previous, state.progress, state.pitchMultiplier());
+            gun.getGun().reloadCues().playCuesBetween(owner, owner.position(), SoundSource.PLAYERS, previous, state.progress, state.pitchMultiplier());
         }
         state = state.applySkip();
         if (state.isFinished()) {

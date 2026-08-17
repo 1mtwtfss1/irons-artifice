@@ -304,11 +304,11 @@ public final class GunplayManager {
             missing = Math.min(missing, available);
         }
         if (!living.level().isClientSide()) {
-            ShotProfile shotProfile = compose(living, gunItem.getGunProfile(), gun);
+            ShotProfile shotProfile = compose(living, gunItem.getGun(), gun);
             double speed = shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER);
-            TopLoadConfig topLoad = gunItem.getGunProfile().topLoadConfig();
+            TopLoadConfig topLoad = gunItem.getGun().topLoadConfig();
             boolean topOff = topLoad != null && missing < capacity;
-            ReloadState state = ReloadState.start(gun, gunItem.getGunProfile().reloadTimeTicks(), speed, missing, topOff ? topLoad : null);
+            ReloadState state = ReloadState.start(gun, gunItem.getGun().reloadTimeTicks(), speed, missing, topOff ? topLoad : null);
             playReloadAnimation(living, gun);
         }
         return ReloadResult.STARTING_RELOAD;

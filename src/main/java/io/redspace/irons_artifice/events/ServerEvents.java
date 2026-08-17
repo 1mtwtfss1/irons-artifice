@@ -101,7 +101,7 @@ public class ServerEvents {
                 equippedStack == entity.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
                 "equip", 1.0, 0);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, packet);
-        if (gunItem.getEquipSound() != null && entity instanceof ServerPlayer serverPlayer) {
+        if (gunItem.getGun().equipSound() != null && entity instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new ClientboundEquipSoundPacket(SoundSource.PLAYERS, gunItem));
         }
     }

@@ -6,10 +6,13 @@ import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.Value;
 import io.redspace.irons_artifice.entity.Bullet;
+import io.redspace.irons_artifice.item.AnimationAdjuster;
 import io.redspace.irons_artifice.item.TopLoadConfig;
 import io.redspace.irons_artifice.recoil.RecoilProfile;
 import io.redspace.irons_artifice.registry.SoundRegistry;
 import net.minecraft.sounds.SoundEvents;
+
+import java.util.Map;
 
 // todo: should probably be converted into an item component, rather than hardcoded to gunitem
 public final class Guns {
@@ -35,7 +38,19 @@ public final class Guns {
             5,
             60,
             FireMode.SEMI,
-            null
+            null,
+            ArmPoseKind.PISTOL,
+            ReloadCueStack.of(
+                    new ReloadCue(0.0f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(0.4f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_INSERT_BULLET, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(1.3f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_PACK_BULLET, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(2.75f, PlayableSound.of(SoundRegistry.LEATHER_ACCENT, 1.25f, 0.85f, 0.95f)),
+                    new ReloadCue(2.88f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 0.85f, 0.95f))
+            ),
+            PlayableSound.of(SoundRegistry.FLINTLOCK_EQUIP, 0.75f, 0.9f, 1.1f),
+            FireCycleCueStack.EMPTY,
+            AnimationAdjuster.LOWER_HAMMER,
+            Map.of("reload", HandOccupancy.BOTH)
     );
 
     public static final GunProfile MUSKET = new GunProfile(
@@ -58,7 +73,19 @@ public final class Guns {
             5,
             60,
             FireMode.SEMI,
-            null
+            null,
+            ArmPoseKind.RIFLE,
+            ReloadCueStack.of(
+                    new ReloadCue(0.0f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 1.25f, 0.75f, 0.85f)),
+                    new ReloadCue(0.9f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_INSERT_BULLET, 1.25f, 0.95f, 0.85f)),
+                    new ReloadCue(1.7f, PlayableSound.of(SoundRegistry.FLINTLOCK_RELOAD_PACK_BULLET, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(2.88f, PlayableSound.of(SoundRegistry.LEATHER_ACCENT, 1.25f, 0.85f, 0.95f)),
+                    new ReloadCue(2.88f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 0.85f, 0.95f))
+            ),
+            PlayableSound.of(SoundRegistry.MUSKET_EQUIP, 0.75f, 0.9f, 1.1f),
+            FireCycleCueStack.EMPTY,
+            AnimationAdjuster.LOWER_HAMMER,
+            Map.of()
     );
 
     public static final GunProfile BLACKPOWDER_REVOLVER = new GunProfile(
@@ -80,7 +107,19 @@ public final class Guns {
             5,
             40,
             FireMode.SEMI,
-            null
+            null,
+            ArmPoseKind.PISTOL,
+            ReloadCueStack.of(
+                    new ReloadCue(0f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_START, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(1.33f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_MID, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(1.71f, PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_RELOAD_END, 1.25f, 0.95f, 1.05f))
+            ),
+            PlayableSound.of(SoundRegistry.BLACKPOWDER_REVOLVER_EQUIP, 0.75f, 0.9f, 1.1f),
+            FireCycleCueStack.of(
+                    new FireCycleCue(1.0f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1f, 0.9f, 1.1f))
+            ),
+            AnimationAdjuster.NONE,
+            Map.of("reload", HandOccupancy.BOTH)
     );
 
 
@@ -102,7 +141,16 @@ public final class Guns {
             5,
             20,
             FireMode.SEMI,
-            null
+            null,
+            ArmPoseKind.PISTOL,
+            ReloadCueStack.of(
+                    new ReloadCue(0.1f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_HOLSTER, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(0.38f, PlayableSound.of(SoundRegistry.SIX_SHOOTER_EQUIP, 1.25f, 0.95f, 1.05f))
+            ),
+            PlayableSound.of(SoundRegistry.SIX_SHOOTER_EQUIP, 0.75f, 0.95f, 1.05f),
+            FireCycleCueStack.EMPTY,
+            AnimationAdjuster.NONE,
+            Map.of("fire", HandOccupancy.BOTH)
     );
 
 
@@ -127,7 +175,18 @@ public final class Guns {
             5,
             30,
             FireMode.SEMI,
-            null
+            null,
+            ArmPoseKind.RIFLE,
+            ReloadCueStack.of(
+                    new ReloadCue(0.25f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_OPEN, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(0.90f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_LOAD, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(1.15f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 1.1f, 1.3f)),
+                    new ReloadCue(1.27f, PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_CLOSE, 1.25f, 0.9f, 1.1f))
+            ),
+            PlayableSound.of(SoundRegistry.BLUNDERBUSS_RELOAD_CLOSE, 0.75f, 0.9f, 1.1f),
+            FireCycleCueStack.EMPTY,
+            AnimationAdjuster.DOUBLE_BARREL_HAMMER,
+            Map.of()
     );
 
 
@@ -150,7 +209,24 @@ public final class Guns {
             7,
             50,
             FireMode.SEMI,
-            new TopLoadConfig(0.75, 1.75, 0.33)
+            new TopLoadConfig(0.75, 1.75, 0.33),
+            ArmPoseKind.RIFLE,
+            ReloadCueStack.of(
+                    new ReloadCue(0.00f, PlayableSound.of(SoundRegistry.ARQUEBUS_OPEN_BREECH, 1.25f, 0.95f, 1.05f)),
+                    new ReloadCue(0.60f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(0.95f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(1.30f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(1.65f, PlayableSound.of(SoundRegistry.ARQUEBUS_LOAD, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(2.13f, PlayableSound.of(SoundRegistry.COCK_HAMMER, 1.25f, 1f, 1.1f)),
+                    new ReloadCue(2.50f, PlayableSound.of(SoundRegistry.ARQUEBUS_CLOSE_BREECH, 1.25f, 0.95f, 1.1f))
+            ),
+            PlayableSound.of(SoundRegistry.ARQUEBUS_EQUIP, 0.5f, 0.9f, 1.1f),
+            FireCycleCueStack.of(
+                    new FireCycleCue(0.25f / 0.75f, PlayableSound.of(SoundRegistry.ARQUEBUS_OPEN_BREECH, 1f, 0.9f, 1.1f)),
+                    new FireCycleCue(0.6f / 0.75f, PlayableSound.of(SoundRegistry.ARQUEBUS_CLOSE_BREECH, 1f, 0.9f, 1.1f))
+            ),
+            AnimationAdjuster.LOWER_HAMMER,
+            Map.of()
     );
 
     public static final GunProfile CLOCKWORK_RIFLE = new GunProfile(
@@ -173,7 +249,16 @@ public final class Guns {
             6,
             30,
             FireMode.AUTO,
-            null
+            null,
+            ArmPoseKind.RIFLE,
+            ReloadCueStack.of(
+                    new ReloadCue(0.38f, PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_EJECT_MAG, 1.25f, 0.9f, 1.1f)),
+                    new ReloadCue(1.04f, PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_INSERT_MAG, 1.25f, 0.9f, 1.1f))
+            ),
+            PlayableSound.of(SoundRegistry.CLOCKWORK_RIFLE_EQUIP, 0.75f, 0.9f, 1.1f),
+            FireCycleCueStack.EMPTY,
+            AnimationAdjuster.HARMONICA_MAGAZINE,
+            Map.of()
     );
 
     private static ShotComponentMap basicGun() {
