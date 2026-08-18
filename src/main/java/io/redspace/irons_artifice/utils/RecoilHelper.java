@@ -1,9 +1,8 @@
 package io.redspace.irons_artifice.utils;
 
+import io.redspace.irons_artifice.data.RecoilProfile;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.gun.ShotProfile;
-import io.redspace.irons_artifice.item.GunItem;
-import io.redspace.irons_artifice.data.RecoilProfile;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 
@@ -20,7 +19,7 @@ public final class RecoilHelper {
      * Used for client-server agreement, and consistent recoil patterns
      */
     public static int getBulletIndex(ShotProfile shotProfile) {
-        return shotProfile.gun().magazineCapacity() - GunItem.getMagazine(shotProfile.itemStack()).count();
+        return shotProfile.gun().magazineCapacity() - shotProfile.magazineContents().count();
     }
 
     /**

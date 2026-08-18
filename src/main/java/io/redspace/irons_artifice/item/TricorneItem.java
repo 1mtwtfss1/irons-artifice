@@ -72,8 +72,7 @@ public class TricorneItem extends BaseGeoItem {
     public static void handleTricorneAbility(ComposeShotEvent event) {
         if (event.getEntity().getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.TRICORNE_HAT)) {
             ShotProfile shotProfile = event.getShotProfile();
-            MagazineContents magazineContents = MagazineContents.get(shotProfile.itemStack());
-            if (magazineContents != null && magazineContents.count() == shotProfile.gun().magazineCapacity()) {
+            if (shotProfile.magazineContents().count() == shotProfile.gun().magazineCapacity()) {
                 shotProfile.get(ShotComponents.DAMAGE).addModifier(new ValueModifier(DAMAGE_BUFF_PERCENT, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
             }
         }

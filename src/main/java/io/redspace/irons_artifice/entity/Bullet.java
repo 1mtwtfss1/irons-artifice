@@ -3,9 +3,12 @@ package io.redspace.irons_artifice.entity;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.damage.DamageSources;
 import io.redspace.irons_artifice.data.ParticleStack;
+import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.gun.BlockDamageManager;
+import io.redspace.irons_artifice.gun.Guns;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
+import io.redspace.irons_artifice.item.MagazineContents;
 import io.redspace.irons_artifice.modifier.OnHitEffect;
 import io.redspace.irons_artifice.modifier.PostHitEffect;
 import io.redspace.irons_artifice.gun.ShotProfile;
@@ -30,6 +33,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gamerules.GameRules;
@@ -61,8 +65,7 @@ public class Bullet extends Projectile {
     public static final double BASE_SPEED = 12;
     public static final double TRAIL_DENSITY = 3.0;
 
-    @Nullable
-    private ShotProfile profile;
+    private ShotProfile profile = new ShotProfile(ItemStack.EMPTY, Guns.MUSKET, MagazineContents.EMPTY, new ShotComponentMap());
     private int piercingRemaining = 0;
     private final Set<Integer> piercedEntities = new HashSet<>();
     private HitState hitState = HitState.CONTINUE;
@@ -87,7 +90,7 @@ public class Bullet extends Projectile {
         this.entityData.set(DATA_DRAG, (float) profile.value(ShotComponents.BULLET_DRAG));
     }
 
-    public @Nullable ShotProfile getProfile() {
+    public ShotProfile getProfile() {
         return profile;
     }
 
@@ -108,10 +111,6 @@ public class Bullet extends Projectile {
     }
 
     public float resolveDamage() {
-        if (profile == null) {
-            return 0;
-        }
-        // fixme: this is dumb
         return (float) (profile.value(ShotComponents.DAMAGE) / Math.max(1, profile.value(ShotComponents.PROJECTILE_COUNT)));
     }
 
@@ -141,9 +140,6 @@ public class Bullet extends Projectile {
     private static final double SEEK_FORWARD_DOT = 0.2;
 
     protected void handleSeeking() {
-        if (this.profile == null || level().isClientSide()) {
-            return;
-        }
         double seeking = profile.value(ShotComponents.SEEKING);
         if (seeking <= 0) {
             return;
@@ -266,7 +262,7 @@ public class Bullet extends Projectile {
             IronsArtifice.LOGGER.warn("Bullet ran to max iterations! Did something break, or did you just shoot 64 things?");
         }
 
-        if (level() instanceof ServerLevel serverLevel && profile != null) {
+        if (level() instanceof ServerLevel serverLevel) {
             Vec3 particleStart = position;
             Vec3 particleEnd = destination;
             if (tickCount < TRAIL_COMPENSATION_TICKS) {
@@ -328,7 +324,7 @@ public class Bullet extends Projectile {
     @Override
     protected void onHitEntity(@NonNull EntityHitResult result) {
         super.onHitEntity(result);
-        if (!(level() instanceof ServerLevel serverLevel) || profile == null) {
+        if (!(level() instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -382,9 +378,6 @@ public class Bullet extends Projectile {
     protected void onHitBlock(@NonNull BlockHitResult hitResult) {
         super.onHitBlock(hitResult);
         playBlockHitEffects(hitResult);
-        if (profile == null) {
-            return;
-        }
         boolean brokeThroughBlock = attemptApplyBlockDamage(hitResult);
         if (brokeThroughBlock) {
             // if we break through block, continue forward, and maybe pierce for additional buffs
@@ -423,9 +416,6 @@ public class Bullet extends Projectile {
     }
 
     private void emitTrail(ServerLevel level, Vec3 from, Vec3 to) {
-        if (profile == null) {
-            return;
-        }
         ParticleStack particles = profile.get(ShotComponents.PARTICLE_TRAIL);
         if (particles == null) {
             return;
