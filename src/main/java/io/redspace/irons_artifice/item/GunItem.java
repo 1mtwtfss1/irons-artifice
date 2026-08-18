@@ -11,11 +11,11 @@ import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.base.GeoRenderState;
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.data.HandOccupancy;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.GunProfile;
-import io.redspace.irons_artifice.data.HandOccupancy;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.registry.DataComponentRegistry;
@@ -27,9 +27,12 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -44,6 +47,7 @@ import java.util.function.Function;
 public class GunItem extends BaseGeoItem {
     public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(IronsArtifice.id("magazine_state").toString(), MagazineContents.class);
     public static final DataTicket<AnimationAdjuster> ANIMATION_ADJUSTER_TICKET = DataTicket.create(IronsArtifice.id("animation_adjuster").toString(), AnimationAdjuster.class);
+    public static final DataTicket<AttachmentMap> ATTACHMENTS = DataTicket.create(IronsArtifice.id("attachments").toString(), AttachmentMap.class);
     public static final DataTicket<Double> RELOAD_PROGRESS_SECONDS_TICKET = DataTicket.create(IronsArtifice.id("reload_progress_seconds").toString(), Double.class);
     public static final DataTicket<HandOccupancy> HAND_OCCUPANCY_TICKET = DataTicket.create(IronsArtifice.id("hand_occupancy").toString(), HandOccupancy.class);
     public static final String TRIGGERED_ANIMATION_CONTROLLER = "Actions";
@@ -59,6 +63,49 @@ public class GunItem extends BaseGeoItem {
                 .component(DataComponentRegistry.MAGAZINE, new MagazineContents(gunProfile.magazineCapacity()))
         );
         this.gunProfile = gunProfile;
+    }
+
+    public static final int SCOPE_USE_DURATION = 1200;
+
+    public static boolean hasGunSpyglass(ItemInstance stack) {
+        return stack.has(DataComponentRegistry.GUN_SPYGLASS);
+    }
+
+    public static boolean isScoping(LivingEntity entity) {
+        return entity.isUsingItem() && hasGunSpyglass(entity.getUseItem());
+    }
+
+    @Override
+    public @NonNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!hasGunSpyglass(stack)) {
+            return super.use(level, player, hand);
+        }
+        player.playSound(SoundEvents.SPYGLASS_USE, 1.0F, 1.0F);
+        return ItemUtils.startUsingInstantly(level, player, hand);
+    }
+
+    @Override
+    public int getUseDuration(@NonNull ItemStack stack, @NonNull LivingEntity user) {
+        return hasGunSpyglass(stack) ? SCOPE_USE_DURATION : super.getUseDuration(stack, user);
+    }
+
+    @Override
+    public @NonNull ItemStack finishUsingItem(@NonNull ItemStack stack, @NonNull Level level, @NonNull LivingEntity entity) {
+        if (hasGunSpyglass(stack)) {
+            entity.playSound(SoundEvents.SPYGLASS_STOP_USING, 1.0F, 1.0F);
+            return stack;
+        }
+        return super.finishUsingItem(stack, level, entity);
+    }
+
+    @Override
+    public boolean releaseUsing(@NonNull ItemStack stack, @NonNull Level level, @NonNull LivingEntity entity, int remainingTime) {
+        if (hasGunSpyglass(stack)) {
+            entity.playSound(SoundEvents.SPYGLASS_STOP_USING, 1.0F, 1.0F);
+            return true;
+        }
+        return super.releaseUsing(stack, level, entity, remainingTime);
     }
 
     public GunProfile getGun() {

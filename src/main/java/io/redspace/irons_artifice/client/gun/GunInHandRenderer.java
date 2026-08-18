@@ -12,10 +12,12 @@ import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.data.HandOccupancy;
 import io.redspace.irons_artifice.item.AnimationAdjuster;
+import io.redspace.irons_artifice.item.AttachmentMap;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.MagazineContents;
-import io.redspace.irons_artifice.data.HandOccupancy;
+import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
@@ -38,28 +40,54 @@ import java.util.Set;
 public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
     public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(IronsArtifice.id("magazine_state").toString(), MagazineContents.class);
 
-
     public GunInHandRenderer(GeoModel<GunItem> model) {
         super(model);
+
     }
 
     @Override
     public void preRenderPass(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull SubmitNodeCollector renderTasks) {
         super.preRenderPass(renderPassInfo, renderTasks);
+        handleAttachmentRendering(renderPassInfo, renderTasks);
+        handleFirstPersonHandRendering(renderPassInfo, renderTasks);
+    }
+
+    private void handleAttachmentRendering(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull SubmitNodeCollector renderTasks) {
+        AttachmentMap attachments = renderPassInfo.getGeckolibData(GunItem.ATTACHMENTS);
+        if (attachments == null || attachments.isEmpty()) {
+            return;
+        }
+        for (var entry : attachments.attachments().entrySet()) {
+            Optional<AttachmentGeoRenderer> renderer = AttachmentRenderableRegistry.get(entry.getValue());
+            if (renderer.isEmpty()) {
+                continue;
+            }
+            Optional<GeoBone> attachmentOpt = renderPassInfo.model().getBone(entry.getKey());
+            if (attachmentOpt.isEmpty()) {
+                continue;
+            }
+            renderPassInfo.addPerBoneRender(attachmentOpt.get(), (opticPass, bone, opticTasks) ->
+                    renderer.get().performRenderPass(opticPass, opticTasks)
+            );
+        }
+    }
+
+    private void handleFirstPersonHandRendering(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull SubmitNodeCollector renderTasks) {
         // Use Marker Bones "right_arm" and "left_arm" to render the player's hands in first person
         if (!isFirstPersonPerspective(renderPassInfo.renderState())) {
             return;
         }
+
+        final GeoRenderState renderState = renderPassInfo.renderState();
         AbstractClientPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
-        final GeoRenderState renderState = renderPassInfo.renderState();
-        Identifier skinTexture = player.getSkin().body().texturePath();
-        final RenderType renderType = getRenderType(renderState, skinTexture);
         if (!(Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player) instanceof AvatarRenderer renderer)) {
             return;
         }
+        Identifier skinTexture = player.getSkin().body().texturePath();
+        final RenderType renderType = getRenderType(renderState, skinTexture);
         renderPassInfo.model().getBone("right_arm").ifPresent(bone ->
                 renderPassInfo.addPerBoneRender(bone, (renderPassInfo1, bone1, renderTasks1) -> {
                             var modelPart = ((PlayerModel) renderer.getModel()).rightArm;
@@ -89,7 +117,10 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
         var controller = animatable.getAnimatableInstanceCache().getManagerForId(GeoItem.getId(renderData.itemStack())).getAnimationControllers().get(GunItem.TRIGGERED_ANIMATION_CONTROLLER);
         renderState.addGeckolibData(GunItem.RELOAD_PROGRESS_SECONDS_TICKET, controller.isTriggeredAnimation("reload") ? controller.getCurrentAnimationTime() : 0.0);
         renderState.addGeckolibData(GunItem.ANIMATION_ADJUSTER_TICKET, animatable.getGun().animationAdjuster());
-        LivingEntity owner = renderData.itemOwner() instanceof LivingEntity living
+        renderState.addGeckolibData(
+                GunItem.ATTACHMENTS,
+                renderData.itemStack().getOrDefault(DataComponentRegistry.ATTACHMENT, AttachmentMap.EMPTY)
+        );LivingEntity owner = renderData.itemOwner() instanceof LivingEntity living
                 ? living
                 : Minecraft.getInstance().player;
         HandOccupancy occupancy = owner != null
@@ -107,7 +138,7 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
             last.pose().scale(-1f, 1f, 1f);
             // compensate for weird lighting
             Matrix3f normal = last.normal();
-            normal.scale(-1,-1,1);
+            normal.scale(-1, -1, 1);
         }
     }
 

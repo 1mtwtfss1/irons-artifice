@@ -13,6 +13,7 @@ import io.redspace.irons_artifice.data.RecoilState;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
+import io.redspace.irons_artifice.data.ValueModifier;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.GunProfile;
 import io.redspace.irons_artifice.gun.ShotProfile;
@@ -231,7 +232,7 @@ public final class GunplayManager {
             float penalty = Mth.clamp(penaltyPerMovement * entitySpeed - 0.05f, 0, maxMovementPenalty);
             spread += penalty;
         }
-        return spread;
+        return Math.max(0, spread);
     }
 
     public static ShotProfile compose(@Nullable LivingEntity living, GunProfile gunProfile, ItemStack gunStack) {
@@ -245,6 +246,9 @@ public final class GunplayManager {
         }
         ShotProfile profile = new ShotProfile(gunStack, gunProfile, MagazineContents.get(gunStack), components);
         if (living != null) {
+            if (living instanceof Player player && GunItem.isScoping(player)) {
+                profile.components().getOrCreate(ShotComponents.CAMERA_RECOIL_MULTIPLIER).addModifier(new ValueModifier(-0.5, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.HARMFUL));
+            }
             NeoForge.EVENT_BUS.post(new ComposeShotEvent(living, profile));
         }
         return profile;
