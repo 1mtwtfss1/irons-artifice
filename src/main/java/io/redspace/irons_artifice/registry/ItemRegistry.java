@@ -7,19 +7,19 @@ import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.TricorneItem;
 import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.modifier.modifiers.AntigravityModifier;
-import io.redspace.irons_artifice.modifier.modifiers.MechanicalAccelerator;
 import io.redspace.irons_artifice.modifier.modifiers.BlackpowderChargeModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BreachModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BufferSpringModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainLightningModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ChainShotModifier;
+import io.redspace.irons_artifice.modifier.modifiers.EnchantedBulletModifier;
 import io.redspace.irons_artifice.modifier.modifiers.FrozenJacketModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
+import io.redspace.irons_artifice.modifier.modifiers.GunOilModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyModifier;
 import io.redspace.irons_artifice.modifier.modifiers.IncendiaryTipModifier;
-import io.redspace.irons_artifice.modifier.modifiers.EnchantedBulletModifier;
-import io.redspace.irons_artifice.modifier.modifiers.GunOilModifier;
+import io.redspace.irons_artifice.modifier.modifiers.MechanicalAccelerator;
 import io.redspace.irons_artifice.modifier.modifiers.MechanicalRepeaterModifier;
 import io.redspace.irons_artifice.modifier.modifiers.OverchargedPowderModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ScattershotModifier;
@@ -32,7 +32,6 @@ import io.redspace.irons_artifice.modifier.modifiers.WindChamberModifier;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -45,32 +44,25 @@ public final class ItemRegistry {
     }
 
     public static final DeferredItem<GunItem> FLINTLOCK_PISTOL = ITEMS.registerItem("flintlock",
-            properties -> new GunItem(properties.stacksTo(1), Guns.FLINTLOCK_PISTOL),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+            properties -> new GunItem(properties, Guns.FLINTLOCK_PISTOL)
     );
     public static final DeferredItem<GunItem> MUSKET = ITEMS.registerItem("musket",
-            properties -> new GunItem(properties.stacksTo(1), Guns.MUSKET),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+            properties -> new GunItem(properties, Guns.MUSKET)
     );
     public static final DeferredItem<GunItem> BLUNDERBUSS = ITEMS.registerItem("blunderbuss",
-            properties -> new GunItem(properties.stacksTo(1), Guns.BLUNDERBUSS),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+            properties -> new GunItem(properties, Guns.BLUNDERBUSS)
     );
     public static final DeferredItem<GunItem> BLACKPOWDER_REVOLVER = ITEMS.registerItem("blackpowder_revolver",
-            properties -> new GunItem(properties, Guns.BLACKPOWDER_REVOLVER),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+            properties -> new GunItem(properties, Guns.BLACKPOWDER_REVOLVER)
     );
     public static final DeferredItem<GunItem> SIX_SHOOTER = ITEMS.registerItem("six_shooter",
-            properties -> new GunItem(properties.stacksTo(1), Guns.SIX_SHOOTER),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+            properties -> new GunItem(properties, Guns.SIX_SHOOTER)
     );
     public static final DeferredItem<GunItem> ARQUEBUS = ITEMS.registerItem("arquebus",
-            properties -> new GunItem(properties.stacksTo(1), Guns.ARQUEBUS),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+            properties -> new GunItem(properties, Guns.ARQUEBUS)
     );
     public static final DeferredItem<GunItem> CLOCKWORK_RIFLE = ITEMS.registerItem("clockwork_rifle",
-            properties -> new GunItem(properties.stacksTo(1), Guns.CLOCKWORK_RIFLE),
-            properties -> properties.stacksTo(1).component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+            properties -> new GunItem(properties, Guns.CLOCKWORK_RIFLE)
     );
 
     public static final DeferredItem<Item> COWBOY_HAT = ITEMS.registerItem("cowboy_hat", CowboyHatItem::new);
