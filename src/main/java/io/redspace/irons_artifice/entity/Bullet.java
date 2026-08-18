@@ -254,7 +254,6 @@ public class Bullet extends Projectile {
             if (hitState == HitState.STOP) {
                 break;
             } else if (hitState == HitState.DISCARD) {
-            } else if (hitState == HitState.DISCARD) {
                 discard();
                 break;
             }
