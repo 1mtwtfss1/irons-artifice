@@ -21,7 +21,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class FrozenShrapnelOnHit implements OnHitEffect {
-    public static final int SHRAPNEL_COUNT = 5;
+    public static final int SHRAPNEL_COUNT = 3;
     public static final float DAMAGE_FRACTION = 0.5f;
     public static final float SPEED = 3f;
     public static final float DRAG = 0.8f;
