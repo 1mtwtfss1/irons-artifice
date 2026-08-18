@@ -300,9 +300,6 @@ public class Bullet extends Projectile {
     protected void onHit(@NonNull HitResult hitResult) {
         hitState = HitState.DISCARD; // setup default hit state
         super.onHit(hitResult);
-        if (profile == null) {
-            return;
-        }
         if (level() instanceof ServerLevel serverLevel) {
             HitEntityAccumulator accumulator = new HitEntityAccumulator();
             if (hitResult instanceof EntityHitResult entityHit) {
@@ -320,7 +317,7 @@ public class Bullet extends Projectile {
             profile.get(ShotComponents.IMPACT_SOUND).playImpactSound(serverLevel, hitResult.getLocation(), hitResult.getType() == HitResult.Type.ENTITY);
         }
         if (hitState != HitState.CONTINUE && hitResult instanceof BlockHitResult blockHitResult) {
-            // normally this would be handled in block hit, but we want to wait until bullet onhit effects have run
+            // normally this would be handled in block hit, but we want to wait until bullet onhit effects have run before mutating entity direction
             // on solid block impact, attempt to ricochet
             int ricochet = this.entityData.get(DATA_RICOCHET);
             if (ricochet > 0) {
