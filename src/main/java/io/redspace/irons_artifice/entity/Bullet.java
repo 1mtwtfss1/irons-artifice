@@ -319,6 +319,16 @@ public class Bullet extends Projectile {
             }
             profile.get(ShotComponents.IMPACT_SOUND).playImpactSound(serverLevel, hitResult.getLocation(), hitResult.getType() == HitResult.Type.ENTITY);
         }
+        if (hitState != HitState.CONTINUE && hitResult instanceof BlockHitResult blockHitResult) {
+            // normally this would be handled in block hit, but we want to wait until bullet onhit effects have run
+            // on solid block impact, attempt to ricochet
+            int ricochet = this.entityData.get(DATA_RICOCHET);
+            if (ricochet > 0) {
+                this.entityData.set(DATA_RICOCHET, ricochet - 1);
+                reflectMotion(blockHitResult.getDirection());
+                hitState = HitState.STOP; // stop in place and resume next tick, raycaster doesn't handle bent segments
+            }
+        }
     }
 
     @Override
@@ -327,12 +337,10 @@ public class Bullet extends Projectile {
         if (!(level() instanceof ServerLevel serverLevel)) {
             return;
         }
-
         Entity target = result.getEntity();
         if (!piercedEntities.add(target.getId())) {
             return;
         }
-
         Entity owner = getOwner();
         float damage = resolveDamage();
         DamageSource source = DamageSources.bullet(level(), this, owner);
@@ -343,7 +351,6 @@ public class Bullet extends Projectile {
             Vec3 v = getDeltaMovement();
             living.knockback(knockback, -v.x, -v.z);
         }
-
         if (piercingRemaining > 0) {
             this.hitState = HitState.CONTINUE;
             piercingRemaining--;
@@ -362,16 +369,21 @@ public class Bullet extends Projectile {
      * @return whether the block was completed destroyed
      */
     protected boolean attemptApplyBlockDamage(BlockHitResult hitResult) {
-        if (!(level() instanceof ServerLevel serverLevel) || this.profile == null
-                || !profile.get(ShotComponents.BREAKS_BLOCKS)) {
+        if (!(level() instanceof ServerLevel serverLevel) || !profile.get(ShotComponents.BREAKS_BLOCKS)) {
             return false;
         }
+
         if (getOwner() instanceof Mob
                 && !serverLevel.getGameRules().get(GameRules.MOB_GRIEFING)) {
             return false;
         }
+        var pos = hitResult.getBlockPos();
+        var state = level().getBlockState(pos);
+        if (state.isAir()) {
+            return false;
+        }
         float damage = (float) (this.profile.value(ShotComponents.BLOCK_DAMAGE_MULTIPLIER) * resolveDamage());
-        return BlockDamageManager.applyDamage(serverLevel, hitResult.getBlockPos(), level().getBlockState(hitResult.getBlockPos()), damage, this);
+        return BlockDamageManager.applyDamage(serverLevel, pos, state, damage, this);
     }
 
     @Override
@@ -387,16 +399,6 @@ public class Bullet extends Projectile {
             } else {
                 // allow the bullet to continue without piercing, but do not allow additional block damage thereafter
                 profile.remove(ShotComponents.BREAKS_BLOCKS);
-            }
-        } else {
-            // on solid block impact, ricochet or discard
-            int ricochet = this.entityData.get(DATA_RICOCHET);
-            if (ricochet > 0) {
-                this.entityData.set(DATA_RICOCHET, ricochet - 1);
-                reflectMotion(hitResult.getDirection());
-                hitState = HitState.STOP; // stop in place and resume next tick, raycaster doesn't handle bent segments
-            } else {
-                hitState = HitState.DISCARD;
             }
         }
     }
