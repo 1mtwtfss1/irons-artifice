@@ -35,6 +35,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -48,6 +49,9 @@ import org.jspecify.annotations.Nullable;
 public final class GunplayManager {
 
     public static boolean tryFire(LivingEntity shooter, Vec3 direction) {
+        if (!shooter.isAlive() || shooter.isSpectator()) {
+            return false;
+        }
         InteractionHand hand = InteractionHand.MAIN_HAND;
         ItemStack stack = shooter.getItemInHand(hand);
         if (!(stack.getItem() instanceof GunItem gunItem)) {
@@ -206,7 +210,12 @@ public final class GunplayManager {
         }
         MuzzleFlashType type = settings.pick(level.getRandom());
         Vec3 position = shooter.getEyePosition();
-        Vec3 offset = direction.normalize().scale(settings.muzzleDistanceScalar());
+        Vec3 offset = direction.normalize();
+        double length = settings.muzzleDistanceScalar();
+        float offsetDirection = shooter.getMainArm() == HumanoidArm.LEFT ? -1.0F : 1.0F;
+        offset = offset.scale(Math.max(1.25, 0.75 * length));
+        offset = offset.add(shooter.getForward().cross(new Vec3(0, 1, 0))
+                .scale(0.25 * offsetDirection));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(shooter, new ClientboundMuzzleFlashPacket(
                 type.particle(settings.pickTint(level.getRandom())),
                 shooter.getId(),

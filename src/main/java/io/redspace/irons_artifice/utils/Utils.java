@@ -113,7 +113,10 @@ public class Utils {
     }
 
     public static boolean canHarm(@Nullable Entity attacker, @Nullable Entity target) {
-        if (attacker == null || target == null || attacker == target) {
+        if (attacker == null || target == null) {
+            return true;
+        }
+        if (attacker == target) {
             return false;
         }
         if (!target.isAlive()) {
