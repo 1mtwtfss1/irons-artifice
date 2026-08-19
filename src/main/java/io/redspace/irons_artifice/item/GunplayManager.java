@@ -221,12 +221,16 @@ public final class GunplayManager {
         float maxMovementPenalty = 25f;
 
         float spread = (float) shotProfile.value(ShotComponents.SPREAD);
+        if (GunItem.isChargingBayonet(entity)) {
+            spread += 4;
+        }
         if (entity.isCrouching()) {
             spread *= crouchingMultiplier;
         }
         if (!entity.onGround()) {
             spread *= (float) shotProfile.value(ShotComponents.IN_AIR_PENALTY);
         }
+
         float entitySpeed = (float) entity.getDeltaMovement().length();
         if (entitySpeed > 0.1) {
             float penalty = Mth.clamp(penaltyPerMovement * entitySpeed - 0.05f, 0, maxMovementPenalty);
@@ -311,6 +315,9 @@ public final class GunplayManager {
             boolean topOff = topLoad != null && missing < capacity;
             ReloadState state = ReloadState.start(gun, gunItem.getGun().reloadTimeTicks(), speed, missing, topOff ? topLoad : null);
             playReloadAnimation(living, gun);
+        }
+        if (living.isUsingItem()) {
+            living.stopUsingItem();
         }
         return ReloadResult.STARTING_RELOAD;
     }

@@ -98,12 +98,19 @@ public class IronsArtificeClient {
                     return this.renderer.get();
                 }
             });
-        }////
+        }
         AttachmentRenderableRegistry.register(
                 IronsArtifice.id("spyglass_scope"),
                 new AttachmentGeoRenderer(new SimpleItemGeoModel<>(IronsArtifice.MODID,
                         "spyglass_scope",
                         "model/spyglass_scope",
+                        "empty"))
+        );
+        AttachmentRenderableRegistry.register(
+                IronsArtifice.id("iron_bayonet"),
+                new AttachmentGeoRenderer(new SimpleItemGeoModel<>(IronsArtifice.MODID,
+                        "iron_bayonet",
+                        "model/iron_bayonet",
                         "empty"))
         );
     }

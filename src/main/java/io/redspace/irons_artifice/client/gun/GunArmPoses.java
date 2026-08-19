@@ -1,9 +1,11 @@
 package io.redspace.irons_artifice.client.gun;
 
 import io.redspace.irons_artifice.item.ReloadState;
+import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
@@ -30,12 +32,32 @@ public final class GunArmPoses {
             armModel.yRot = head.yRot;
             armModel.xRot = -1.5F + head.xRot;
             counteractCrouch(armModel, renderState);
+            handleUseAnimation(renderState, arm, armModel, holdingInRightArm);
         }
     }
 
-    private static void aimDownSights(ModelPart arm, boolean isRightArm) {
-//        if(GunItem.isScoping())
-//        arm.x += 4 * (isRightArm ? 1 : -1)
+    private static <T extends HumanoidRenderState> void handleUseAnimation(T renderState, HumanoidArm arm, ModelPart armModel, boolean holdingInRightArm) {
+        float ticksUsingItem = renderState.ticksUsingItem(arm);
+        if (ticksUsingItem > 0) {
+            var stack = renderState.getUseItemStackForArm(arm);
+            // todo: addon hook for this?
+            if (stack.has(DataComponents.KINETIC_WEAPON)) {
+                handleBayonetPose(armModel, holdingInRightArm);
+            } else if (stack.has(DataComponentRegistry.GUN_SPYGLASS)) {
+                handleScopingPose(armModel, holdingInRightArm);
+            }
+        }
+    }
+
+    private static void handleBayonetPose(ModelPart arm, boolean isRightArm) {
+        arm.x += 4f * (isRightArm ? 1 : -1);
+        arm.z += -4f;
+    }
+
+    private static void handleScopingPose(ModelPart arm, boolean isRightArm) {
+        arm.x += 3f * (isRightArm ? 1 : -1);
+        arm.z += -1;
+        arm.y += -1;
     }
 
     private static <T extends HumanoidRenderState> void applyRiflePose(HumanoidModel<?> model, T renderState, HumanoidArm arm) {
@@ -63,6 +85,7 @@ public final class GunArmPoses {
             }
             counteractCrouch(supportArm, renderState);
             counteractCrouch(shootingArm, renderState);
+            handleUseAnimation(renderState, arm, shootingArm, holdingInRightArm);
         }
         supportArm.y += 1;
         shootingArm.y += 2;

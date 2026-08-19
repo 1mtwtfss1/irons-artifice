@@ -28,6 +28,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemInstance;
@@ -75,9 +76,16 @@ public class GunItem extends BaseGeoItem {
         return entity.isUsingItem() && hasGunSpyglass(entity.getUseItem());
     }
 
+    public static boolean isChargingBayonet(Entity entity) {
+        return entity instanceof LivingEntity living && living.isUsingItem() && living.getUseItem().has(DataComponents.KINETIC_WEAPON);
+    }
+
     @Override
     public @NonNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        if (GunItem.isReloading(stack)) {
+            return InteractionResult.FAIL;
+        }
         if (!hasGunSpyglass(stack)) {
             return super.use(level, player, hand);
         }
@@ -200,8 +208,8 @@ public class GunItem extends BaseGeoItem {
                         gunProfile.modifierSlots()
                 ).withStyle(ChatFormatting.GOLD)
                 .append(" ").append(Component.translatable("irons_artifice.tooltip.keybind_hint",
-                        Component.keybind("key.irons_artifice.open_modifier_menu")
-                                .withStyle(Style.EMPTY.withColor(ChatFormatting.GOLD).withItalic(false)))
+                                Component.keybind("key.irons_artifice.open_modifier_menu")
+                                        .withStyle(Style.EMPTY.withColor(ChatFormatting.GOLD).withItalic(false)))
                         .withStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW).withItalic(true))));
         GunContainer container = new GunContainer(itemStack);
         for (var item : container.getItems()) {

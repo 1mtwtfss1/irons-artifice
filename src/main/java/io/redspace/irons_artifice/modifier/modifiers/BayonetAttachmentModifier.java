@@ -7,29 +7,18 @@ import io.redspace.irons_artifice.modifier.GunModifier;
 import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.component.AttackRange;
+import net.minecraft.world.item.component.KineticWeapon;
+import net.minecraft.world.item.component.UseEffects;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public class BayonetAttachmentModifier implements GunModifier {
-    // TODO: gun geos need an `attachment_bayonet` marker bone to show the mesh
-    public static final String ATTACHMENT_BONE = "attachment_bayonet";
-    public static final String MESH_ID = "bayonet";
-
-    private static final List<DataComponentType<?>> IRON_SPEAR_USE_COMPONENTS = List.of(
-            DataComponents.KINETIC_WEAPON,
-            DataComponents.ATTACK_RANGE,
-            DataComponents.ATTRIBUTE_MODIFIERS,
-            DataComponents.USE_EFFECTS,
-            DataComponents.DAMAGE_TYPE
-    );
 
     @Override
     public void apply(ShotComponentMap components) {
@@ -42,21 +31,42 @@ public class BayonetAttachmentModifier implements GunModifier {
 
     @Override
     public Optional<DataComponentPatch> getPatch() {
-        ItemStack ironSpear = new ItemStack(Items.IRON_SPEAR);
         DataComponentPatch.Builder builder = DataComponentPatch.builder();
-        for (DataComponentType<?> type : IRON_SPEAR_USE_COMPONENTS) {
-            copy(builder, ironSpear, type);
-        }
+        AttackRange defaultSpearAttackRange = new AttackRange(2.0F, 4.5F, 2.0F, 6.5F, 0.125F, 0.5F);
+        builder.set(DataComponents.ATTACK_RANGE, defaultSpearAttackRange);
+        builder.set(DataComponents.KINETIC_WEAPON,
+                createVanillaSpear(
+                        1f,
+                        0.5f,
+                        2.5F, 11.0F, 6.75F, 5.1F, 11.25F, 4.6F
+                ));
+        builder.set(DataComponents.USE_EFFECTS, new UseEffects(true, false, 1));
         builder.set(DataComponentRegistry.ATTACHMENT.get(), new AttachmentMap(Map.of(
-                ATTACHMENT_BONE, IronsArtifice.id(MESH_ID)
+                "attachment_bayonet", IronsArtifice.id("iron_bayonet")
         )));
         return Optional.of(builder.build());
     }
 
-    private static <T> void copy(DataComponentPatch.Builder builder, ItemStack source, DataComponentType<T> type) {
-        T value = source.get(type);
-        if (value != null) {
-            builder.set(type, value);
-        }
+    public KineticWeapon createVanillaSpear(
+            float damageMultiplier,
+            float delay,
+            float dismountTime,
+            float dismountThreshold,
+            float knockbackTime,
+            float knockbackThreshold,
+            float damageTime,
+            float damageThreshold
+    ) {
+        return new KineticWeapon(
+                10,
+                (int) (delay * 20.0F),
+                KineticWeapon.Condition.ofAttackerSpeed((int) (dismountTime * 20.0F), dismountThreshold),
+                KineticWeapon.Condition.ofAttackerSpeed((int) (knockbackTime * 20.0F), knockbackThreshold),
+                KineticWeapon.Condition.ofRelativeSpeed((int) (damageTime * 20.0F), damageThreshold),
+                0.38F,
+                damageMultiplier,
+                Optional.of(SoundEvents.SPEAR_USE),
+                Optional.of(SoundEvents.SPEAR_HIT)
+        );
     }
 }

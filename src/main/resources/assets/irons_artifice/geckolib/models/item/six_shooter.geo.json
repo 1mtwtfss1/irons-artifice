@@ -223,6 +223,11 @@
 					]
 				},
 				{
+					"name": "attachment_bayonet",
+					"parent": "gun",
+					"pivot": [0, 3, -8.25]
+				},
+				{
 					"name": "right_arm",
 					"parent": "root",
 					"pivot": [0, 0, 0]

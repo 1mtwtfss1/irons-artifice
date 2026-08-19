@@ -188,6 +188,11 @@
 					"name": "attachment_optic",
 					"parent": "gun",
 					"pivot": [0, 3, -6]
+				},
+				{
+					"name": "attachment_bayonet",
+					"parent": "gun",
+					"pivot": [0, 0.5, -28.75]
 				}
 			]
 		}

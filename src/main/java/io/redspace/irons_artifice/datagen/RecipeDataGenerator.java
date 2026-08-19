@@ -418,8 +418,8 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .unlockedBy("has_precursor", this.has(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS))
                 .save(this.output);
         ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.BAYONET_ATTACHMENT_MODIFIER.get())
-                .pattern("#")
                 .pattern("*")
+                .pattern("#")
                 .define('#', Items.IRON_SPEAR)
                 .define('*', ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS)
                 .unlockedBy("has_precursor", this.has(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS))

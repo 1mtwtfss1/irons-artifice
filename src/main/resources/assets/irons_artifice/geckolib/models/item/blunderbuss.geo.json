@@ -91,6 +91,11 @@
 					]
 				},
 				{
+					"name": "attachment_bayonet",
+					"parent": "break_action",
+					"pivot": [0, 0.25, -25]
+				},
+				{
 					"name": "attachment_optic",
 					"parent": "break_action",
 					"pivot": [0, 3.5, -6]

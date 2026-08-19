@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:iron_spear",
+    "*": "irons_artifice:simple_mechanical_components"
+  },
+  "pattern": [
+    "*",
+    "#"
+  ],
+  "result": {
+    "id": "irons_artifice:bayonet_attachment_modifier"
+  }
+}
