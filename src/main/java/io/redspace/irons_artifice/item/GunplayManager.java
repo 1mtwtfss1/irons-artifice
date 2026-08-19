@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.item;
 
 import com.geckolib.animatable.GeoItem;
+import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.api.ConsumeAmmoEvent;
 import io.redspace.irons_artifice.api.GunAboutToShootEvent;
@@ -219,7 +220,10 @@ public final class GunplayManager {
         float crouchingMultiplier = 0.667f;
         float penaltyPerMovement = 12f;
         float maxMovementPenalty = 25f;
-
+        Vec3 reconstructedDeltaMovement = new Vec3(entity.getX(), entity.getY(), entity.getZ()).subtract(entity.xOld, entity.yOld, entity.zOld);
+        if (!entity.level().isClientSide()) {
+            IronsArtifice.LOGGER.debug("getSpreadForEntity dmvt: {}", reconstructedDeltaMovement);
+        }
         float spread = (float) shotProfile.value(ShotComponents.SPREAD);
         if (GunItem.isChargingBayonet(entity)) {
             spread += 4;
@@ -231,7 +235,7 @@ public final class GunplayManager {
             spread *= (float) shotProfile.value(ShotComponents.IN_AIR_PENALTY);
         }
 
-        float entitySpeed = (float) entity.getDeltaMovement().length();
+        float entitySpeed = (float) reconstructedDeltaMovement.length();
         if (entitySpeed > 0.1) {
             float penalty = Mth.clamp(penaltyPerMovement * entitySpeed - 0.05f, 0, maxMovementPenalty);
             spread += penalty;

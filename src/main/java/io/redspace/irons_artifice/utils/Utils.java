@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.ClipContext;
@@ -119,6 +120,10 @@ public class Utils {
             return false;
         }
         if (target.isAlliedTo(attacker) || attacker.isAlliedTo(target)) {
+            return false;
+        }
+        if (target instanceof OwnableEntity ownableEntity && !canHarm(attacker, ownableEntity.getOwner())) {
+            // warning: recursion. ownership loops can overflow.
             return false;
         }
         if (target instanceof Player player && attacker instanceof Player player1 && !player1.canHarmPlayer(player)) {
