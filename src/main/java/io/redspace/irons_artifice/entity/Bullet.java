@@ -61,15 +61,18 @@ public class Bullet extends Projectile {
             SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DATA_DRAG =
             SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_UNDERWATER_DRAG =
+            SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
 
     public static final double BASE_SPEED = 12;
     public static final double TRAIL_DENSITY = 3.0;
+    public static final int TRAIL_COMPENSATION_TICKS = 5;
 
+    private final Set<Integer> piercedEntities = new HashSet<>();
     private ShotProfile profile = new ShotProfile(ItemStack.EMPTY, Guns.MUSKET, MagazineContents.EMPTY, new ShotComponentMap());
     private int piercingRemaining = 0;
-    private final Set<Integer> piercedEntities = new HashSet<>();
     private HitState hitState = HitState.CONTINUE;
-    private static final int TRAIL_COMPENSATION_TICKS = 5;
+    private boolean appliedWaterSlowdown;
 
     public Bullet(EntityType<? extends Bullet> type, Level level) {
         super(type, level);
@@ -88,6 +91,7 @@ public class Bullet extends Projectile {
         this.entityData.set(DATA_GRAVITY, (float) profile.value(ShotComponents.GRAVITY));
         this.entityData.set(DATA_RICOCHET, (int) profile.value(ShotComponents.RICOCHET));
         this.entityData.set(DATA_DRAG, (float) profile.value(ShotComponents.BULLET_DRAG));
+        this.entityData.set(DATA_UNDERWATER_DRAG, (float) profile.value(ShotComponents.UNDERWATER_DRAG));
     }
 
     public ShotProfile getProfile() {
@@ -102,7 +106,8 @@ public class Bullet extends Projectile {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(DATA_GRAVITY, 0.05f);
         builder.define(DATA_RICOCHET, 0);
-        builder.define(DATA_DRAG, 0.98f);
+        builder.define(DATA_DRAG, (float) ShotComponents.BULLET_DRAG.provideDefaultValue().base());
+        builder.define(DATA_UNDERWATER_DRAG, (float) ShotComponents.UNDERWATER_DRAG.provideDefaultValue().base());
     }
 
     @Override
@@ -111,7 +116,8 @@ public class Bullet extends Projectile {
     }
 
     public float resolveDamage() {
-        return (float) (profile.value(ShotComponents.DAMAGE) / Math.max(1, profile.value(ShotComponents.PROJECTILE_COUNT)));
+        double velocityFactor = Math.clamp(getDeltaMovement().length(), 0, 2) / 2.0;
+        return (float) (velocityFactor * profile.value(ShotComponents.DAMAGE) / Math.max(1, profile.value(ShotComponents.PROJECTILE_COUNT)));
     }
 
     public static @Nullable EntityHitResult getEntityHitResult(
@@ -228,6 +234,13 @@ public class Bullet extends Projectile {
     @Override
     public void tick() {
         super.tick();
+        if (isUnderWater()) {
+            if (!appliedWaterSlowdown) {
+                appliedWaterSlowdown = true;
+                this.setDeltaMovement(getDeltaMovement().scale(Math.pow(getUnderwaterDrag(), 40)));
+            }
+            this.setDeltaMovement(getDeltaMovement().scale(getUnderwaterDrag()));
+        }
 
         handleSeeking();
         Vec3 delta = getDeltaMovement();
@@ -280,7 +293,7 @@ public class Bullet extends Projectile {
         this.setDeltaMovement(getDeltaMovement().scale(getDrag()));
         this.applyGravity();
         this.setPos(destination);
-        if (this.getDeltaMovement().lengthSqr() < 1) {
+        if (this.getDeltaMovement().lengthSqr() < 0.125) {
             discard();
         }
     }
@@ -412,6 +425,10 @@ public class Bullet extends Projectile {
 
     public float getDrag() {
         return this.entityData.get(DATA_DRAG);
+    }
+
+    public float getUnderwaterDrag() {
+        return this.entityData.get(DATA_UNDERWATER_DRAG);
     }
 
     private void emitTrail(ServerLevel level, Vec3 from, Vec3 to) {

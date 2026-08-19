@@ -27,6 +27,7 @@ public final class ShotComponents {
     public static final ComponentType<Value> GRAVITY = new ComponentType<>(IronsArtifice.id("gravity"), () -> Value.of(0.05));
     public static final ComponentType<Value> KNOCKBACK = new ComponentType<>(IronsArtifice.id("knockback"), () -> Value.of(0));
     public static final ComponentType<Value> BULLET_DRAG = new ComponentType<>(IronsArtifice.id("bullet_drag"), () -> Value.of(.98));
+    public static final ComponentType<Value> UNDERWATER_DRAG = new ComponentType<>(IronsArtifice.id("underwater_drag"), () -> Value.of(0.95));
     public static final ComponentType<Value> BLOCK_DAMAGE_MULTIPLIER = new ComponentType<>(IronsArtifice.id("block_damage_multiplier"), () -> Value.of(1));
     public static final ComponentType<Value> RELOAD_SPEED_MULTIPLIER = new ComponentType<>(IronsArtifice.id("reload_speed_multiplier"), () -> Value.of(1));
 
