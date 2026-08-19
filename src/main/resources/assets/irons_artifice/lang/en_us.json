@@ -47,6 +47,7 @@
   "item.irons_artifice.tricorne.ability": "First Shot from a Full Magazine does +%d%% Damage",
   "item.irons_artifice.seeking_powder_modifier": "Seeking Powder Modifier",
   "item.irons_artifice.scope_attachment_modifier": "Scope Attachment Modifier",
+  "item.irons_artifice.bayonet_attachment_modifier": "Bayonet Attachment Modifier",
 
   "container.irons_artifice.gun": "Gun",
   "key.irons_artifice.open_modifier_menu": "Open Gun Modifiers",
@@ -87,6 +88,7 @@
   "irons_artifice.modifier.accelerating": "+%s%% Damage per shot fired in the last second",
   "irons_artifice.modifier.infinity": "%s%% Reduced Chance to consume Ammo",
   "irons_artifice.modifier.scope": "Enables Scoping",
+  "irons_artifice.modifier.bayonet": "Enables Bayonet Charge",
 
   "irons_artifice.value_modifier.plus": "+%s %s",
   "irons_artifice.value_modifier.minus": "-%s %s",

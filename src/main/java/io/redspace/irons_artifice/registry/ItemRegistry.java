@@ -7,6 +7,7 @@ import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.TricorneItem;
 import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.modifier.modifiers.AntigravityModifier;
+import io.redspace.irons_artifice.modifier.modifiers.BayonetAttachmentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BlackpowderChargeModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BreachModifier;
 import io.redspace.irons_artifice.modifier.modifiers.BufferSpringModifier;
@@ -117,6 +118,8 @@ public final class ItemRegistry {
             "mechanical_accelerator_modifier", properties -> new ModifierItem(properties.stacksTo(1), new MechanicalAccelerator()));
     public static final DeferredItem<ModifierItem> SCOPE_ATTACHMENT_MODIFIER = ITEMS.registerItem(
             "scope_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SpyglassAttachmentModifier()));
+    public static final DeferredItem<ModifierItem> BAYONET_ATTACHMENT_MODIFIER = ITEMS.registerItem(
+            "bayonet_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BayonetAttachmentModifier()));
 
     //    public static final DeferredItem<ModifierItem> FAIRY_DUST = ITEMS.registerItem(
     //            "fairy_dust_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FairyDustModifier()));

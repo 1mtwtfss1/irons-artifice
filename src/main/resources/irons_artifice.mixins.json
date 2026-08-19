@@ -5,13 +5,14 @@
   "client": [
     "GuiCrosshairMixin",
     "ItemInHandRendererMixin",
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "SpearAnimationsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-    "mixins": [
-        "AbstractSkeletonMixin",
-        "IllagerPatrolMixin"
-    ]
+  "mixins": [
+    "AbstractSkeletonMixin",
+    "IllagerPatrolMixin"
+  ]
 }

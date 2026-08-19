@@ -2,6 +2,8 @@ package io.redspace.irons_artifice.client;
 
 import com.geckolib.animation.AnimationController;
 import com.geckolib.constant.DataTickets;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
 import io.redspace.irons_artifice.client.particle.FairyDustParticleOption;
 import io.redspace.irons_artifice.client.particle.ITrailParticle;
