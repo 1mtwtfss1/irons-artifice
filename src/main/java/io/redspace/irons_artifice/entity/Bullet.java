@@ -282,13 +282,14 @@ public class Bullet extends Projectile {
             Vec3 particleEnd = destination;
             if (tickCount < TRAIL_COMPENSATION_TICKS) {
                 Vec3 right = particleEnd.subtract(particleStart).cross(new Vec3(0, 1, 0)).normalize();
-                Vec3 offset = new Vec3(0, -0.25, 0).add(right.scale(0.2));
+                Vec3 offset = new Vec3(0, -0.25, 0).add(right.scale(0.25));
                 particleStart = position.add(offset.lerp(Vec3.ZERO, this.tickCount / (float) TRAIL_COMPENSATION_TICKS));
                 if (tickCount == 1) {
                     particleStart = particleStart.add(delta.scale(0.1));
                 }
                 particleEnd = destination.add(offset.lerp(Vec3.ZERO, (this.tickCount + 1) / (float) TRAIL_COMPENSATION_TICKS));
             }
+            particleEnd = particleEnd.add(0, 0, 0);
             emitTrail(serverLevel, particleStart, particleEnd);
         }
 

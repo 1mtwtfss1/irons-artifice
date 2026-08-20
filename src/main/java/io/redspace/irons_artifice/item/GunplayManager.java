@@ -215,7 +215,7 @@ public final class GunplayManager {
         float offsetDirection = shooter.getMainArm() == HumanoidArm.LEFT ? -1.0F : 1.0F;
         offset = offset.scale(Math.max(1.25, 0.75 * length));
         offset = offset.add(shooter.getForward().cross(new Vec3(0, 1, 0))
-                .scale(0.25 * offsetDirection));
+                .scale(0.5 * offsetDirection));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(shooter, new ClientboundMuzzleFlashPacket(
                 type.particle(settings.pickTint(level.getRandom())),
                 shooter.getId(),
