@@ -8,10 +8,10 @@ import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.gun.BlockDamageManager;
 import io.redspace.irons_artifice.gun.Guns;
 import io.redspace.irons_artifice.gun.HitEntityAccumulator;
+import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.MagazineContents;
 import io.redspace.irons_artifice.modifier.OnHitEffect;
 import io.redspace.irons_artifice.modifier.PostHitEffect;
-import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.network.packets.ClientboundBulletImpactPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundBulletTrailPacket;
 import io.redspace.irons_artifice.utils.Utils;
@@ -36,6 +36,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -50,6 +51,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -354,6 +356,39 @@ public class Bullet extends Projectile {
                 hitState = HitState.STOP; // stop in place and resume next tick, raycaster doesn't handle bent segments
             }
         }
+    }
+
+    @Override
+    protected void doWaterSplashEffect() {
+        Entity entity = Objects.requireNonNullElse(this.getControllingPassenger(), this);
+        Vec3 movement = entity.getDeltaMovement();
+        Vec3 pos = position();
+        Vec3 lastPos = pos.subtract(movement);
+        Vec3 waterImpactPos = level().clip(new ClipContext(lastPos, pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.WATER, CollisionContext.empty())).getLocation();
+
+        for (int i = 0; i < 25; i++) {
+            Vec3 random = new Vec3(this.random.nextDouble(), this.random.nextDouble(), this.random.nextDouble()).subtract(0.5, 0.5, 0.5);
+            this.level().addParticle(ParticleTypes.BUBBLE_POP,
+                    waterImpactPos.x,
+                    waterImpactPos.y,
+                    waterImpactPos.z,
+                    random.x, random.y, random.z);
+        }
+
+        for (int i = 0; i < 25; i++) {
+            double xo = (this.random.nextDouble() * 2.0 - 1.0) * 0.1;
+            double zo = (this.random.nextDouble() * 2.0 - 1.0) * 0.1;
+
+            double d = this.random.nextDouble();
+            double d2 = this.random.nextDouble();
+            this.level().addParticle(ParticleTypes.SPLASH,
+                    waterImpactPos.x + xo,
+                    waterImpactPos.y + d2 * 3,
+                    waterImpactPos.z + zo,
+                    movement.x * 0.05 * d + xo, 0, movement.z * 0.05 * d + zo);
+        }
+
+        this.gameEvent(GameEvent.SPLASH);
     }
 
     @Override

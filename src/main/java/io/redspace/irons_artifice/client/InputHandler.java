@@ -55,7 +55,7 @@ public final class InputHandler {
         }
 
         while (Keybinds.RELOAD.consumeClick()) {
-            if (minecraft.screen == null && player.getMainHandItem().getItem() instanceof GunItem
+            if (minecraft.screen == null && !player.isSpectator() && player.getMainHandItem().getItem() instanceof GunItem
                     && !GunItem.isReloading(player.getMainHandItem())) {
                 ClientPacketDistributor.sendToServer(ServerboundReloadGunPacket.INSTANCE);
             }
