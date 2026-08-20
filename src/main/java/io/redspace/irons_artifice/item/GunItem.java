@@ -1,7 +1,6 @@
 package io.redspace.irons_artifice.item;
 
 import com.geckolib.animatable.GeoAnimatable;
-import com.geckolib.animatable.GeoItem;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
@@ -124,15 +123,17 @@ public class GunItem extends BaseGeoItem {
         return gunProfile.magazineCapacity();
     }
 
-    public HandOccupancy occupancyForCurrentAnimation(ItemStack stack) {
-        return gunProfile.occupancyForAnimation(currentAnimation(stack));
-    }
-
     public static @Nullable HandOccupancy currentOccupancy(ItemStack stack) {
         if (!(stack.getItem() instanceof GunItem gun)) {
             return null;
         }
-        return gun.occupancyForCurrentAnimation(stack);
+        if (isReloading(stack)) {
+            return gun.getGun().occupancyFor("reload");
+        }
+        if (FireDelayState.isActive(stack)) {
+            return gun.getGun().occupancyFor("fire");
+        }
+        return gun.getGun().defaultOccupancy();
     }
 
     public static @Nullable HandOccupancy currentOccupancy(LivingEntity entity, InteractionHand hand) {
@@ -147,21 +148,8 @@ public class GunItem extends BaseGeoItem {
         return occupancy;
     }
 
-    private String currentAnimation(ItemStack stack) {
-        var controller = getAnimatableInstanceCache().getManagerForId(GeoItem.getId(stack))
-                .getAnimationControllers().get(TRIGGERED_ANIMATION_CONTROLLER);
-        if (controller != null) {
-            if (controller.isTriggeredAnimation("reload")) {
-                return "reload";
-            }
-            if (controller.isTriggeredAnimation("fire")) {
-                return "fire";
-            }
-            if (controller.isTriggeredAnimation("equip")) {
-                return "equip";
-            }
-        }
-        return "idle";
+    public static boolean isOffhandItemUseBlocked(LivingEntity entity) {
+        return currentOccupancy(entity, InteractionHand.MAIN_HAND) == HandOccupancy.BOTH;
     }
 
     public static MagazineContents getMagazine(ItemStack stack) {

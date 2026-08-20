@@ -102,6 +102,9 @@ public final class GunplayManager {
         fireShot(level, shooter, shooter.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
         applyCharacterBlowback(shooter, profile);
         playFireAnimation(shooter, stack, gunItem, profile);
+        if (hand == InteractionHand.MAIN_HAND && shooter.isUsingItem() && shooter.getUseItem() != stack && GunItem.isOffhandItemUseBlocked(shooter)) {
+            shooter.stopUsingItem();
+        }
         return true;
     }
 

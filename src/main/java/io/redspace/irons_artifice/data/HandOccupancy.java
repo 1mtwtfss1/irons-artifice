@@ -1,7 +1,7 @@
 package io.redspace.irons_artifice.data;
 
 /**
- * Which first-person arms a gun animation occupies
+ * Which arms a gun occupies for the current item state (idle, reload, or fire).
  */
 public enum HandOccupancy {
     MAINHAND,

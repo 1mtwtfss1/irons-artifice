@@ -33,10 +33,10 @@ public record GunProfile(
         @Nullable PlayableSound equipSound,
         FireCycleCueStack fireCycleCues,
         AnimationAdjuster animationAdjuster,
-        Map<String, HandOccupancy> animationOccupancy
+        Map<String, HandOccupancy> occupancyOverrides
 ) {
     public GunProfile {
-        animationOccupancy = Map.copyOf(animationOccupancy);
+        occupancyOverrides = Map.copyOf(occupancyOverrides);
     }
 
     public ShotComponentMap baseProfile() {
@@ -47,7 +47,7 @@ public record GunProfile(
         return armPoseKind == ArmPoseKind.RIFLE ? HandOccupancy.BOTH : HandOccupancy.MAINHAND;
     }
 
-    public HandOccupancy occupancyForAnimation(String animation) {
-        return animationOccupancy.getOrDefault(animation, defaultOccupancy());
+    public HandOccupancy occupancyFor(String state) {
+        return occupancyOverrides.getOrDefault(state, defaultOccupancy());
     }
 }

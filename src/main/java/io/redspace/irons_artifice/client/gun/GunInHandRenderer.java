@@ -125,7 +125,7 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
                 : Minecraft.getInstance().player;
         HandOccupancy occupancy = owner != null
                 ? GunItem.currentOccupancy(owner, renderData.itemStack())
-                : animatable.occupancyForCurrentAnimation(renderData.itemStack());
+                : GunItem.currentOccupancy(renderData.itemStack());
         renderState.addGeckolibData(GunItem.HAND_OCCUPANCY_TICKET, occupancy);
     }
 

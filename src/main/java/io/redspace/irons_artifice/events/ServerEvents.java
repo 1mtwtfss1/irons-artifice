@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +24,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -76,6 +78,17 @@ public class ServerEvents {
                 areaEffectCloud.getOwner() == event.getEntity() &&
                 areaEffectCloud.getPersistentData().getBooleanOr("irons_artifice:venom_cloud", false)) {
             event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onOffhandItemUse(PlayerInteractEvent.RightClickItem event) {
+        if (event.getHand() != InteractionHand.OFF_HAND) {
+            return;
+        }
+        if (GunItem.isOffhandItemUseBlocked(event.getEntity())) {
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.FAIL);
         }
     }
 
