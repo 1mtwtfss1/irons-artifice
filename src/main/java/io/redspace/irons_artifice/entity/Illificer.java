@@ -163,6 +163,7 @@ public class Illificer extends AbstractIllager implements IGunslingerMob {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
+                .add(Attributes.STEP_HEIGHT, 1)
                 .add(Attributes.MOVEMENT_SPEED, 0.35)
                 .add(Attributes.FOLLOW_RANGE, 48.0)
                 .add(Attributes.MAX_HEALTH, 36.0)

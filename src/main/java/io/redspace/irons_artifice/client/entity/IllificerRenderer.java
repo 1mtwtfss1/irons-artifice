@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.IllagerRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.IllagerRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.monster.illager.AbstractIllager;
@@ -49,6 +50,10 @@ public class IllificerRenderer extends IllagerRenderer<Illificer, IllificerRende
         super.extractRenderState(entity, state, partialTicks);
         state.mobGunPose = MobGunPose.NONE;
         state.humanoidPose = HumanoidModel.ArmPose.EMPTY;
+        ((HumanoidRenderState) state).ticksUsingItem = entity.getTicksUsingItem();
+        if (entity.isUsingItem()) {
+            state.isUsingItem = true;
+        }
         if (entity.getWeaponItem().getItem() instanceof GunItem gun) {
             state.armPose = AbstractIllager.IllagerArmPose.NEUTRAL;
             if (entity.isAggressive() || FireDelayState.isActive(entity.getWeaponItem()) || GunItem.isReloading(entity.getWeaponItem())) {

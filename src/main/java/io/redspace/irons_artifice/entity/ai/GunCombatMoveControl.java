@@ -13,7 +13,9 @@ public final class GunCombatMoveControl {
         FLEE,
         BACKPEDAL,
         ORBIT,
-        CLOSE_GAP
+        CLOSE_GAP,
+        CHARGE,
+        PLANT
     }
 
     private int pathDelay;
@@ -21,7 +23,7 @@ public final class GunCombatMoveControl {
     private boolean strafingClockwise;
     private boolean strafingBackwards;
 
-    public PositionMode select(double distSqr, boolean hasLos, AiGunRange bands) {
+    public PositionMode selectKiting(double distSqr, boolean hasLos, AiGunRange bands) {
         if (!hasLos || distSqr > bands.idealMaxSqr()) {
             return PositionMode.CLOSE_GAP;
         }
@@ -34,14 +36,15 @@ public final class GunCombatMoveControl {
         return PositionMode.ORBIT;
     }
 
-    public void tick(Mob mob, LivingEntity target, AiGunRange bands, boolean hasLos) {
+    public void tick(Mob mob, LivingEntity target, AiGunRange bands, PositionMode mode, double chargeSpeed) {
         double distSqr = mob.distanceToSqr(target);
-        PositionMode mode = select(distSqr, hasLos, bands);
         switch (mode) {
             case FLEE -> flee(mob, target, bands);
             case BACKPEDAL -> backpedal(mob, target, distSqr, bands);
             case ORBIT -> orbit(mob, target, distSqr, bands);
             case CLOSE_GAP -> closeGap(mob, target);
+            case CHARGE -> charge(mob, target, chargeSpeed);
+            case PLANT -> plant(mob, target);
         }
     }
 
@@ -106,6 +109,21 @@ public final class GunCombatMoveControl {
         }
         mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
         strafingTime = -1;
+    }
+
+    private void charge(Mob mob, LivingEntity target, double chargeSpeed) {
+        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+        mob.setYRot(mob.yHeadRot);
+        mob.getNavigation().stop();
+        mob.getMoveControl().strafe((float) chargeSpeed, 0);
+        strafingTime = -1;
+    }
+
+    private void plant(Mob mob, LivingEntity target) {
+        mob.getNavigation().stop();
+        mob.getMoveControl().strafe(0, 0);
+        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+        mob.setYRot(mob.yHeadRot);
     }
 
     private void updateStrafeDirection(Mob mob) {

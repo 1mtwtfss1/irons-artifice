@@ -6,8 +6,13 @@ import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.FireDelayState;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
+import io.redspace.irons_artifice.item.ReloadState;
+import io.redspace.irons_artifice.utils.Utils;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -22,8 +27,11 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
     private enum ShootPhase {
         IDLE,
         TELEGRAPHING_VOLLEY,
-        VOLLEY
+        VOLLEY,
+        CHARGING_BAYONET
     }
+
+    private static final double CHARGE_CHASE_MULTIPLIER = 1.5;
 
     private final T mob;
     // todo: factor gun spread into effective range
@@ -34,6 +42,9 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
     private final int telegraphMax;
     private final int volleyIntervalMin;
     private final int volleyIntervalMax;
+    private final double chargeSpeed;
+    private final int chargeMaxTicks;
+    private final int chargeCooldownTicks;
 
     private LivingEntity target;
     private boolean hasLos;
@@ -43,6 +54,8 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
     private int telegraphRemaining;
     private int shotsRemaining;
     private int volleyCooldown;
+    private int bayonetCooldown;
+    private int chargeTicksRemaining;
 
     public RangedGunAttackGoal(T mob) {
         this(mob, 24, 15, 45, 40, 80);
@@ -54,6 +67,12 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
 
     public RangedGunAttackGoal(T mob, float range, int telegraphMinTicks, int telegraphMaxTicks,
                                int volleyIntervalMin, int volleyIntervalMax) {
+        this(mob, range, telegraphMinTicks, telegraphMaxTicks, volleyIntervalMin, volleyIntervalMax, 1.25, 40, 60);
+    }
+
+    public RangedGunAttackGoal(T mob, float range, int telegraphMinTicks, int telegraphMaxTicks,
+                               int volleyIntervalMin, int volleyIntervalMax,
+                               double chargeSpeed, int chargeMaxTicks, int chargeCooldownTicks) {
         this.mob = mob;
         this.bands = new AiGunRange(range);
         float follow = Math.max(mob.getAttributes().hasAttribute(Attributes.FOLLOW_RANGE)
@@ -64,6 +83,9 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         this.telegraphMax = Math.max(telegraphMinTicks, telegraphMaxTicks);
         this.volleyIntervalMin = Math.min(volleyIntervalMin, volleyIntervalMax);
         this.volleyIntervalMax = Math.max(volleyIntervalMin, volleyIntervalMax);
+        this.chargeSpeed = chargeSpeed;
+        this.chargeMaxTicks = chargeMaxTicks;
+        this.chargeCooldownTicks = chargeCooldownTicks;
         this.setFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
     }
 
@@ -102,6 +124,9 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
 
     @Override
     public void stop() {
+        if (mob.isUsingItem()) {
+            mob.stopUsingItem();
+        }
         mob.setAggressive(false);
         mob.setTarget(null);
         target = null;
@@ -111,6 +136,8 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         telegraphRemaining = 0;
         shotsRemaining = 0;
         volleyCooldown = 0;
+        bayonetCooldown = 0;
+        chargeTicksRemaining = 0;
         mover.reset();
         mob.getNavigation().stop();
         mob.getMoveControl().strafe(0, 0);
@@ -144,30 +171,29 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
 
         double distSqr = mob.distanceToSqr(target);
 
-        if (phase == ShootPhase.IDLE) {
-            mover.tick(mob, target, bands, hasLos);
-            if (volleyCooldown > 0) {
-                volleyCooldown--;
-            }
-            if (GunItem.getMagazine(gun).isEmpty() && !GunItem.isReloading(gun)) {
-                GunplayManager.attemptStartReload(mob, gun);
-            }
-        } else {
-            mob.getNavigation().stop();
-            mob.getMoveControl().strafe(0, 0);
-            holdPlant();
-        }
-
         switch (phase) {
             case IDLE -> {
-                if (canStartVolley(gun, distSqr)) {
+                if (volleyCooldown > 0) {
+                    volleyCooldown--;
+                }
+                if (bayonetCooldown > 0) {
+                    bayonetCooldown--;
+                }
+                if (canStartBayonetCharge(gun, distSqr)) {
+                    beginBayonetCharge(gun);
+                } else if (canStartVolley(gun, distSqr)) {
                     runHook(IGunslingerMob::onVolleyStart);
                     phase = ShootPhase.TELEGRAPHING_VOLLEY;
                     telegraphRemaining = randomBetween(telegraphMin, telegraphMax);
-                    mob.getNavigation().stop();
+                } else if (GunItem.getMagazine(gun).isEmpty() && !GunItem.isReloading(gun)) {
+                    GunplayManager.attemptStartReload(mob, gun);
                 }
             }
             case TELEGRAPHING_VOLLEY -> {
+                if (canStartBayonetCharge(gun, distSqr)) {
+                    beginBayonetCharge(gun);
+                    break;
+                }
                 if (shouldCancelVolley(distSqr)) {
                     phase = ShootPhase.IDLE;
                     break;
@@ -179,6 +205,11 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
                 }
             }
             case VOLLEY -> {
+                if (canStartBayonetCharge(gun, distSqr)) {
+                    endVolley();
+                    beginBayonetCharge(gun);
+                    break;
+                }
                 if (shouldCancelVolley(distSqr)) {
                     endVolley();
                     break;
@@ -198,7 +229,61 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
                     }
                 }
             }
+            case CHARGING_BAYONET -> {
+                if (shouldEndBayonetCharge(distSqr)) {
+                    endBayonetCharge();
+                }
+            }
         }
+
+        GunCombatMoveControl.PositionMode mode = switch (phase) {
+            case IDLE -> mover.selectKiting(distSqr, hasLos, bands);
+            case CHARGING_BAYONET -> GunCombatMoveControl.PositionMode.CHARGE;
+            case TELEGRAPHING_VOLLEY, VOLLEY -> GunCombatMoveControl.PositionMode.PLANT;
+        };
+        mover.tick(mob, target, bands, mode, chargeSpeed);
+    }
+
+    private void beginBayonetCharge(ItemStack gun) {
+        Utils.spawnParticles(mob.level(), ParticleTypes.ANGRY_VILLAGER, mob.getX(), mob.getY() + 2, mob.getZ(), 25, 0, 0, 0, 0, true);
+        if (GunItem.isReloading(gun)) {
+            ReloadState.remove(gun);
+        }
+        if (mob.isUsingItem()) {
+            mob.stopUsingItem();
+        }
+        mob.startUsingItem(InteractionHand.MAIN_HAND);
+        phase = ShootPhase.CHARGING_BAYONET;
+        chargeTicksRemaining = chargeMaxTicks;
+    }
+
+    private void endBayonetCharge() {
+        if (mob.isUsingItem()) {
+            mob.stopUsingItem();
+        }
+        phase = ShootPhase.IDLE;
+        chargeTicksRemaining = 0;
+        bayonetCooldown = chargeCooldownTicks;
+    }
+
+    private boolean canStartBayonetCharge(ItemStack gun, double distSqr) {
+        return bayonetCooldown <= 0
+                && distSqr < bands.bayonetSqr()
+                && gun.has(DataComponents.KINETIC_WEAPON);
+    }
+
+    private boolean shouldEndBayonetCharge(double distSqr) {
+        if (!target.isAlive()) {
+            return true;
+        }
+        if (--chargeTicksRemaining <= 0) {
+            return true;
+        }
+        float chaseRange = bands.bayonetRange() * (float) CHARGE_CHASE_MULTIPLIER;
+        if (distSqr > chaseRange * chaseRange) {
+            return true;
+        }
+        return mob.stabbedEntities(e -> e == target) > 0;
     }
 
     private void endVolley() {
@@ -206,11 +291,6 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         shotsRemaining = 0;
         volleyCooldown = randomBetween(volleyIntervalMin, volleyIntervalMax);
         runHook(IGunslingerMob::onVolleyEnd);
-    }
-
-    private void holdPlant() {
-        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
-        mob.setYRot(mob.yHeadRot);
     }
 
     private boolean canStartVolley(ItemStack gun, double distSqr) {
