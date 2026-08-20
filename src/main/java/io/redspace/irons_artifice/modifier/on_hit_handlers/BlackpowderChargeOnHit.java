@@ -75,7 +75,9 @@ public class BlackpowderChargeOnHit implements OnHitEffect {
                 if (damage <= 0) {
                     return;
                 }
-                BlockDamageManager.applyDamage(level, pos.immutable(), state, damage, bullet);
+                if (BlockDamageManager.applyDamage(level, pos.immutable(), state, damage, bullet)) {
+                    bullet.setBrokeBlocksThisTick();
+                }
             });
         }
 

@@ -309,9 +309,17 @@ public class Bullet extends Projectile {
         return Utils.directionWithinCone(new Vec3(xd, yd, zd), uncertainty, this.random).scale(pow);
     }
 
+    protected boolean brokeBlocksThisTick;
+
+    public void setBrokeBlocksThisTick() {
+        brokeBlocksThisTick = true;
+    }
+
     @Override
     protected void onHit(@NonNull HitResult hitResult) {
-        hitState = HitState.DISCARD; // setup default hit state
+        // setup default hit state
+        hitState = HitState.DISCARD;
+        brokeBlocksThisTick = false;
         super.onHit(hitResult);
         if (level() instanceof ServerLevel serverLevel) {
             HitEntityAccumulator accumulator = new HitEntityAccumulator();
@@ -329,8 +337,15 @@ public class Bullet extends Projectile {
             }
             profile.get(ShotComponents.IMPACT_SOUND).playImpactSound(serverLevel, hitResult.getLocation(), hitResult.getType() == HitResult.Type.ENTITY);
         }
-        if (hitState != HitState.CONTINUE && hitResult instanceof BlockHitResult blockHitResult) {
-            // normally this would be handled in block hit, but we want to wait until bullet onhit effects have run before mutating entity direction
+        if (brokeBlocksThisTick) {
+            if (piercingRemaining > 0) {
+                piercingRemaining--;
+            } else {
+                // allow the bullet to continue without piercing, but do not allow additional block damage thereafter
+                profile.remove(ShotComponents.BREAKS_BLOCKS);
+            }
+        } else if (hitState != HitState.CONTINUE && hitResult instanceof BlockHitResult blockHitResult) {
+            // normally this would be handled in block hit, but we want to wait until modifier on-hit effects have run before mutating entity direction
             // on solid block impact, attempt to ricochet
             int ricochet = this.entityData.get(DATA_RICOCHET);
             if (ricochet > 0) {
@@ -404,12 +419,7 @@ public class Bullet extends Projectile {
         if (brokeThroughBlock) {
             // if we break through block, continue forward, and maybe pierce for additional buffs
             hitState = HitState.CONTINUE;
-            if (piercingRemaining > 0) {
-                piercingRemaining--;
-            } else {
-                // allow the bullet to continue without piercing, but do not allow additional block damage thereafter
-                profile.remove(ShotComponents.BREAKS_BLOCKS);
-            }
+            setBrokeBlocksThisTick();
         }
     }
 
