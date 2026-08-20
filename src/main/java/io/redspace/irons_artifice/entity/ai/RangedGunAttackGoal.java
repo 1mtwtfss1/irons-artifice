@@ -245,7 +245,6 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
     }
 
     private void beginBayonetCharge(ItemStack gun) {
-        Utils.spawnParticles(mob.level(), ParticleTypes.ANGRY_VILLAGER, mob.getX(), mob.getY() + 2, mob.getZ(), 25, 0, 0, 0, 0, true);
         if (GunItem.isReloading(gun)) {
             ReloadState.remove(gun);
         }
