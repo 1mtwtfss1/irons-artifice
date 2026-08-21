@@ -1,12 +1,14 @@
 ### Additions
-- Added "Attachment" Modifiers
-  - The difference between Attachments Modifiers and Modifier Modifiers is that attachments render on the gun, and generally create a right-click use
-  - Added Scope Attachment Modifier
-    - Grants spyglass-style zoom on use, and -1 Spread
-  - Added Bayonet Attachment Modifier
-    - Grants Spear Charging on use
-    - Stats similar to Iron Spear
-- Added Underwater Drag
+- Added Scope Attachment Modifier
+  - Grants spyglass-style zoom on use, and -1 Spread
+- Added Bayonet Attachment Modifier
+  - Grants Spear Charging on use
+  - Stats similar to Iron Spear
+- Added Underwater Drag to Bullets
+- Added `irons_artifice:always_break` and `irons_artifice:never_break` block tags for Bullet terrain damage
+  - Glass, Glass Panes, and Decorated Pots always break
+  - Targets never break (no longer hardcoded)
+- Added normal block-break particles on top of existing effects when a bullet breaks a block
 
 ### Changes
 - Nerfed Frozen Shrapnel count from +5 to +3
