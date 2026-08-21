@@ -6,7 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -71,11 +72,6 @@ public class BlockDamageManager {
             return false;
         }
         float blockMaxHealth = (destroySpeed + state.getBlock().getExplosionResistance()) * 8;
-        // todo: block specific multipliers, config, blacklist, etc
-        if (state.is(Blocks.TARGET)) {
-            return false;
-        }
-
         float blockCurrentHealth;
         var manager = INSTANCE.resolveManager(level);
         int id;
@@ -98,6 +94,7 @@ public class BlockDamageManager {
             // todo: checks and stuff? events? drop modifiers?
             level.destroyBlockProgress(id, pos, -1);
             level.destroyBlock(pos, false);
+            level.levelEvent(null, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
             manager.remove(pos);
             return true;
         } else {

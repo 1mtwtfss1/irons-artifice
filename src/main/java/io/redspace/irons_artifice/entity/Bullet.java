@@ -14,6 +14,7 @@ import io.redspace.irons_artifice.modifier.OnHitEffect;
 import io.redspace.irons_artifice.modifier.PostHitEffect;
 import io.redspace.irons_artifice.network.packets.ClientboundBulletImpactPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundBulletTrailPacket;
+import io.redspace.irons_artifice.utils.IronsArtificeTags;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -430,7 +431,11 @@ public class Bullet extends Projectile {
      * @return whether the block was completed destroyed
      */
     protected boolean attemptApplyBlockDamage(BlockHitResult hitResult) {
-        if (!(level() instanceof ServerLevel serverLevel) || !profile.get(ShotComponents.BREAKS_BLOCKS)) {
+        var pos = hitResult.getBlockPos();
+        var state = level().getBlockState(pos);
+        if (!(level() instanceof ServerLevel serverLevel)
+                || state.is(IronsArtificeTags.NEVER_BREAK)
+                || !profile.get(ShotComponents.BREAKS_BLOCKS) && !state.is(IronsArtificeTags.ALWAYS_BREAK)) {
             return false;
         }
 
@@ -438,8 +443,7 @@ public class Bullet extends Projectile {
                 && !serverLevel.getGameRules().get(GameRules.MOB_GRIEFING)) {
             return false;
         }
-        var pos = hitResult.getBlockPos();
-        var state = level().getBlockState(pos);
+
         if (state.isAir()) {
             return false;
         }
