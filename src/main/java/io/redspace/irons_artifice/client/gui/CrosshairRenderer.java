@@ -62,6 +62,9 @@ public final class CrosshairRenderer {
             poseStack.translate(-0.5f, -0.5f);
         }
         drawCross(graphics, gap);
+        if (GunItem.isScoping(player)) {
+            drawScopeCrosshair(graphics, gap);
+        }
         poseStack.popMatrix();
 
         return true;
@@ -142,6 +145,22 @@ public final class CrosshairRenderer {
         crosshairGapCursorO = crosshairGapCursor;
         updateCrosshairCursor();
         updateReloadProgress();
+    }
+
+    private static void drawScopeCrosshair(GuiGraphicsExtractor graphics, float gap) {
+        Matrix3x2fStack poseStack = graphics.pose();
+        poseStack.pushMatrix();
+        poseStack.translate(-gap, 0.25f);
+        poseStack.scale(0.5f);
+        poseStack.scale((gap) * 4 + 2, 1f);
+        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, 1, THICKNESS, COLOR);
+        poseStack.popMatrix();
+        poseStack.pushMatrix();
+        poseStack.translate(0.25f, -gap);
+        poseStack.scale(0.5f);
+        poseStack.scale(1f,(gap) * 4 + 2);
+        graphics.fill(RenderPipelines.GUI_INVERT, 0, 0, THICKNESS, 1, COLOR);
+        poseStack.popMatrix();
     }
 
     private static void drawCross(GuiGraphicsExtractor graphics, float gap) {

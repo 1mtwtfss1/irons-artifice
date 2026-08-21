@@ -25,7 +25,7 @@ public class BayonetAnimations {
             BayonetAnimations.UseParams params = BayonetAnimations.UseParams.fromKineticWeapon(kineticWeapon, timeHeld);
             int invert = arm == HumanoidArm.RIGHT ? 1 : -1;
             Vec3 mainPose = new Vec3(-0.5, -0.075, -0.75);
-            double mainPoseInterpolation = Ease.inOutBack((params.raiseProgress() - params.swayProgress() * 0.5f)) * (1 - params.lowerProgress());
+            double mainPoseInterpolation = Ease.inOutBack((params.raiseProgress() - params.swayProgress() * 0.5f)) /** (1 - params.lowerProgress())*/;
             poseStack.translate(
                     invert
                             * (
@@ -42,7 +42,6 @@ public class BayonetAnimations {
                             .rotationDegrees(
 //                        -65.0F * Ease.inOutBack(params.raiseProgress())
                                     -25.0F * params.lowerProgress()
-                                            + 25 * params.raiseBackProgress()
                                             + -0.5F * params.swayScaleFast()
                             ),
                     0.0F,
@@ -53,7 +52,7 @@ public class BayonetAnimations {
             poseStack.rotateAround(
                     Axis.ZN
                             .rotationDegrees(
-                                    invert * (-angle * Ease.inOutBack(params.raiseProgress()) + angle * params.swayProgress() + 2.0F * params.swayScaleSlow())
+                                    invert * (-angle * Ease.inOutBack(params.raiseProgress()) + angle * params.swayProgress() * 0.25f + 2.0F * params.swayScaleSlow())
                             ),
                     0,
                     0.0F,
@@ -89,7 +88,7 @@ public class BayonetAnimations {
             float swayProgress = BayonetAnimations.progress(time, (float) startSwayingTick, (float) finishSwayingTick);
             float lowerProgress = Ease.outCubic(Ease.inOutElastic(BayonetAnimations.progress(time - 20.0F, (float) startLoweringTick, (float) finishLoweringTick)));
             float raiseBackProgress = BayonetAnimations.progress(time, (float) (finishRaisingBackTick - 5), (float) finishRaisingBackTick);
-            float swayIntensity = 2.0F * Ease.outCirc(swayProgress) - 2.0F * Ease.inCirc(raiseBackProgress);
+            float swayIntensity = 2.0F * Ease.outCirc(swayProgress);
             float swayScaleSlow = Mth.sin(time * 19.0F * (float) (Math.PI / 180.0)) * swayIntensity;
             float swayScaleFast = Mth.sin(time * 30.0F * (float) (Math.PI / 180.0)) * swayIntensity;
             return new BayonetAnimations.UseParams(
