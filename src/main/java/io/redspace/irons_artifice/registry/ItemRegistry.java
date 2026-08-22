@@ -26,6 +26,7 @@ import io.redspace.irons_artifice.modifier.modifiers.OverchargedPowderModifier;
 import io.redspace.irons_artifice.modifier.modifiers.ScattershotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SeekingModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SingularityChargeModifier;
+import io.redspace.irons_artifice.modifier.modifiers.SpiralTipModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SpyglassAttachmentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SteelCoreModifier;
 import io.redspace.irons_artifice.modifier.modifiers.TrickshotModifier;
@@ -76,6 +77,8 @@ public final class ItemRegistry {
             "voltaic_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainLightningModifier()));
     public static final DeferredItem<ModifierItem> FROZEN_JACKET = ITEMS.registerItem(
             "frozen_jacket_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FrozenJacketModifier()));
+    public static final DeferredItem<ModifierItem> SPIRAL_TIP_MODIFIER = ITEMS.registerItem(
+            "spiral_tip_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SpiralTipModifier()));
     public static final DeferredItem<ModifierItem> BLACKPOWDER_CHARGE = ITEMS.registerItem(
             "blackpowder_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BlackpowderChargeModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_SHOT = ITEMS.registerItem(
@@ -86,14 +89,14 @@ public final class ItemRegistry {
             "scattershot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ScattershotModifier()));
     public static final DeferredItem<ModifierItem> BREACHING_SHELL = ITEMS.registerItem(
             "breaching_shell_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BreachModifier()));
+    public static final DeferredItem<ModifierItem> WIND_CHAMBER = ITEMS.registerItem(
+            "wind_chamber_modifier", properties -> new ModifierItem(properties.stacksTo(1), new WindChamberModifier()));
     public static final DeferredItem<ModifierItem> OVERCHARGED_POWDER = ITEMS.registerItem(
             "overcharged_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new OverchargedPowderModifier()));
     public static final DeferredItem<ModifierItem> ANTIGRAVITY_MODIFIER = ITEMS.registerItem(
             "antigravity_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new AntigravityModifier()));
     public static final DeferredItem<ModifierItem> SEEKING_POWDER = ITEMS.registerItem(
             "seeking_powder_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SeekingModifier()));
-    public static final DeferredItem<ModifierItem> WIND_CHAMBER = ITEMS.registerItem(
-            "wind_chamber_modifier", properties -> new ModifierItem(properties.stacksTo(1), new WindChamberModifier()));
     public static final DeferredItem<ModifierItem> SINGULARITY_CHARGE_MODIFIER = ITEMS.registerItem(
             "singularity_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SingularityChargeModifier()));
     public static final DeferredItem<ModifierItem> ENCHANTED_BULLET_MODIFIER = ITEMS.registerItem(

@@ -417,12 +417,22 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('*', ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS)
                 .unlockedBy("has_precursor", this.has(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS))
                 .save(this.output);
+        // Bayonet
         ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.BAYONET_ATTACHMENT_MODIFIER.get())
                 .pattern("*")
                 .pattern("#")
                 .define('#', Items.IRON_SPEAR)
                 .define('*', ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS)
                 .unlockedBy("has_precursor", this.has(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS))
+                .save(this.output);
+        // Spiral Tip
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.SPIRAL_TIP_MODIFIER.get())
+                .pattern(" * ")
+                .pattern("#B#")
+                .define('B', ItemRegistry.BLACKPOWDER)
+                .define('*', Items.NAUTILUS_SHELL)
+                .define('#', commonTag("ingots/iron"))
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
                 .save(this.output);
     }
 

@@ -237,7 +237,7 @@ public class Bullet extends Projectile {
     @Override
     public void tick() {
         super.tick();
-        if (isUnderWater()) {
+        if (isUnderWater() && getUnderwaterDrag() < 1) {
             if (!appliedWaterSlowdown) {
                 appliedWaterSlowdown = true;
                 this.setDeltaMovement(getDeltaMovement().scale(Math.pow(getUnderwaterDrag(), 40)));
