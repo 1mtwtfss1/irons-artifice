@@ -14,6 +14,11 @@
       "irons_artifice:ricochet_4_pcon"
     ]
   },
+  "entity.drowned_pirate.ambush": {
+    "sounds": [
+      "irons_artifice:pirate_ambush"
+    ]
+  },
   "entity.bullet.echo.generic": {
     "sounds": [
       "irons_artifice:gunshot_far_echo"

@@ -16,6 +16,7 @@ public final class DataGenerators {
         event.createProvider(RecipeDataGenerator.Runner::new);
         event.createProvider(ItemTagDataGenerator::new);
         event.createProvider(BlockTagDataGenerator::new);
+//        event.createProvider(LootTableTagGenerator::new);
         event.createProvider(EntityTypeTagDataGenerator::new);
         event.createProvider(LootTableDataGenerator::new);
     }
@@ -24,6 +25,7 @@ public final class DataGenerators {
     public static void gatherServerData(GatherDataEvent.Server event) {
         event.createProvider(BlockTagDataGenerator::new);
         event.createProvider(EntityTypeTagDataGenerator::new);
+//        event.createProvider(LootTableTagGenerator::new);
         event.createProvider(LootTableDataGenerator::new);
     }
 }

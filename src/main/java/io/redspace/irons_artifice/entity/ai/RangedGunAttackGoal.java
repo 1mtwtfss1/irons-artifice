@@ -176,7 +176,6 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
 
         switch (phase) {
             case IDLE -> {
-                IronsArtifice.LOGGER.debug("bayonet cooldown: {}", bayonetCooldown);
                 if (volleyCooldown > 0) {
                     volleyCooldown--;
                 }
