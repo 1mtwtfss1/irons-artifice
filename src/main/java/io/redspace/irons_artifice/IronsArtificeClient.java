@@ -4,7 +4,7 @@ import io.redspace.irons_artifice.client.ClientHelper;
 import io.redspace.irons_artifice.client.Keybinds;
 import io.redspace.irons_artifice.client.entity.ChainEntityRenderer;
 import io.redspace.irons_artifice.client.entity.GunslingerRenderer;
-import io.redspace.irons_artifice.client.entity.IllificerRenderer;
+import io.redspace.irons_artifice.client.entity.illificer.IllificerRenderer;
 import io.redspace.irons_artifice.client.gui.GunPreviewRenderState;
 import io.redspace.irons_artifice.client.gui.GunPreviewRenderer;
 import io.redspace.irons_artifice.client.gun.AttachmentGeoRenderer;

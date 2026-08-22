@@ -1,4 +1,4 @@
-package io.redspace.irons_artifice.client.entity;
+package io.redspace.irons_artifice.client.entity.illificer;
 
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.gun.GunArmPoses;

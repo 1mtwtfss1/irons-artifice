@@ -1,15 +1,14 @@
 package io.redspace.irons_artifice.entity.ai;
 
-import io.redspace.irons_artifice.entity.IGunslingerMob;
+import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.data.FireMode;
+import io.redspace.irons_artifice.entity.IGunslingerMob;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.FireDelayState;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
 import io.redspace.irons_artifice.item.ReloadState;
-import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -19,43 +18,46 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.NonNull;
 
 import java.util.EnumSet;
 import java.util.function.Consumer;
 
 public class RangedGunAttackGoal<T extends Mob> extends Goal {
-    private enum ShootPhase {
+    protected enum ShootPhase {
         IDLE,
         TELEGRAPHING_VOLLEY,
         VOLLEY,
         CHARGING_BAYONET
     }
 
-    private static final double CHARGE_CHASE_MULTIPLIER = 1.5;
+    protected static final double CHARGE_CHASE_MULTIPLIER = 1.5;
 
-    private final T mob;
+    protected final T mob;
     // todo: factor gun spread into effective range
-    private AiGunRange bands;
-    private final GunCombatMoveControl mover = new GunCombatMoveControl();
-    private final float engageRangeSqr;
-    private final int telegraphMin;
-    private final int telegraphMax;
-    private final int volleyIntervalMin;
-    private final int volleyIntervalMax;
-    private final double chargeSpeed;
-    private final int chargeMaxTicks;
-    private final int chargeCooldownTicks;
+    protected AiGunRange bands;
+    protected final GunCombatMoveControl mover = createMoveControl();
 
-    private LivingEntity target;
-    private boolean hasLos;
-    private int seeTime;
-    private int noSeeTime;
-    private ShootPhase phase = ShootPhase.IDLE;
-    private int telegraphRemaining;
-    private int shotsRemaining;
-    private int volleyCooldown;
-    private int bayonetCooldown;
-    private int chargeTicksRemaining;
+
+    protected final float engageRangeSqr;
+    protected final int telegraphMin;
+    protected final int telegraphMax;
+    protected final int volleyIntervalMin;
+    protected final int volleyIntervalMax;
+    protected final double chargeSpeed;
+    protected final int chargeMaxTicks;
+    protected final int chargeCooldownTicks;
+
+    protected LivingEntity target;
+    protected boolean hasLos;
+    protected int seeTime;
+    protected int noSeeTime;
+    protected ShootPhase phase = ShootPhase.IDLE;
+    protected int telegraphRemaining;
+    protected int shotsRemaining;
+    protected int volleyCooldown;
+    protected int bayonetCooldown;
+    protected int chargeTicksRemaining;
 
     public RangedGunAttackGoal(T mob) {
         this(mob, 24, 15, 45, 40, 80);
@@ -67,7 +69,7 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
 
     public RangedGunAttackGoal(T mob, float range, int telegraphMinTicks, int telegraphMaxTicks,
                                int volleyIntervalMin, int volleyIntervalMax) {
-        this(mob, range, telegraphMinTicks, telegraphMaxTicks, volleyIntervalMin, volleyIntervalMax, 1.25, 40, 60);
+        this(mob, range, telegraphMinTicks, telegraphMaxTicks, volleyIntervalMin, volleyIntervalMax, 1.25, 40, 200);
     }
 
     public RangedGunAttackGoal(T mob, float range, int telegraphMinTicks, int telegraphMaxTicks,
@@ -97,6 +99,9 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
 
     @Override
     public boolean canUse() {
+        if (!isHoldingGun()) {
+            return false;
+        }
         LivingEntity next = mob.getTarget();
         if (next == null) {
             next = this.target;
@@ -108,7 +113,6 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
             return false;
         }
         return next != null && next.isAlive() && mob.canAttack(next)
-                && isHoldingGun()
                 && mob.distanceToSqr(next) <= engageRangeSqr;
     }
 
@@ -128,7 +132,6 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
             mob.stopUsingItem();
         }
         mob.setAggressive(false);
-        mob.setTarget(null);
         target = null;
         seeTime = 0;
         noSeeTime = 0;
@@ -173,6 +176,7 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
 
         switch (phase) {
             case IDLE -> {
+                IronsArtifice.LOGGER.debug("bayonet cooldown: {}", bayonetCooldown);
                 if (volleyCooldown > 0) {
                     volleyCooldown--;
                 }
@@ -244,7 +248,7 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         mover.tick(mob, target, bands, mode, chargeSpeed);
     }
 
-    private void beginBayonetCharge(ItemStack gun) {
+    protected void beginBayonetCharge(ItemStack gun) {
         if (GunItem.isReloading(gun)) {
             ReloadState.remove(gun);
         }
@@ -256,7 +260,7 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         chargeTicksRemaining = chargeMaxTicks;
     }
 
-    private void endBayonetCharge() {
+    protected void endBayonetCharge() {
         if (mob.isUsingItem()) {
             mob.stopUsingItem();
         }
@@ -265,13 +269,13 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         bayonetCooldown = chargeCooldownTicks;
     }
 
-    private boolean canStartBayonetCharge(ItemStack gun, double distSqr) {
+    protected boolean canStartBayonetCharge(ItemStack gun, double distSqr) {
         return bayonetCooldown <= 0
                 && distSqr < bands.bayonetSqr()
                 && gun.has(DataComponents.KINETIC_WEAPON);
     }
 
-    private boolean shouldEndBayonetCharge(double distSqr) {
+    protected boolean shouldEndBayonetCharge(double distSqr) {
         if (!target.isAlive()) {
             return true;
         }
@@ -285,14 +289,14 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         return mob.stabbedEntities(e -> e == target) > 0;
     }
 
-    private void endVolley() {
+    protected void endVolley() {
         phase = ShootPhase.IDLE;
         shotsRemaining = 0;
         volleyCooldown = randomBetween(volleyIntervalMin, volleyIntervalMax);
         runHook(IGunslingerMob::onVolleyEnd);
     }
 
-    private boolean canStartVolley(ItemStack gun, double distSqr) {
+    protected boolean canStartVolley(ItemStack gun, double distSqr) {
         return volleyCooldown <= 0
                 && hasLos
                 && seeTime >= 20
@@ -302,11 +306,11 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
                 && !GunItem.getMagazine(gun).isEmpty();
     }
 
-    private boolean shouldCancelVolley(double distSqr) {
+    protected boolean shouldCancelVolley(double distSqr) {
         return !target.isAlive() || distSqr < bands.panicSqr() || noSeeTime > 40;
     }
 
-    private int rollVolleyShots(ItemStack gun, GunItem gunItem, ShotProfile profile, RandomSource random) {
+    protected int rollVolleyShots(ItemStack gun, GunItem gunItem, ShotProfile profile, RandomSource random) {
         int mag = GunItem.getMagazine(gun).count();
         int capacity = Math.max(1, gunItem.magazineCapacity());
         float minFrac = 0.20f;
@@ -320,11 +324,15 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
         return Math.min(mag, fromPercent);
     }
 
-    private int randomBetween(int min, int max) {
+    protected int randomBetween(int min, int max) {
         return Mth.randomBetweenInclusive(mob.getRandom(), min, max);
     }
 
-    private boolean isHoldingGun() {
+    protected boolean isHoldingGun() {
         return mob.getMainHandItem().getItem() instanceof GunItem;
+    }
+
+    protected @NonNull GunCombatMoveControl createMoveControl() {
+        return new GunCombatMoveControl();
     }
 }

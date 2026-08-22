@@ -1,11 +1,11 @@
 package io.redspace.irons_artifice.entity;
 
+import io.redspace.irons_artifice.datagen.LoadoutLootProvider;
 import io.redspace.irons_artifice.entity.ai.RangedGunAttackGoal;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.registry.ItemRegistry;
-import io.redspace.irons_artifice.registry.LootTableRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -139,7 +139,7 @@ public class Illificer extends AbstractIllager implements IGunslingerMob {
     }
 
     public static List<ItemStack> rollLoadout(ServerLevel level) {
-        LootTable table = level.getServer().reloadableRegistries().getLootTable(LootTableRegistry.ILLIFICER_LOADOUT);
+        LootTable table = level.getServer().reloadableRegistries().getLootTable(LoadoutLootProvider.ILLIFICER_LOADOUT);
         LootParams params = new LootParams.Builder(level).create(LootContextParamSets.EMPTY);
         return table.getRandomItems(params);
     }

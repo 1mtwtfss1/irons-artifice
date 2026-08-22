@@ -6,8 +6,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
 
-public final class GunCombatMoveControl {
-    private static final UniformInt PATH_DELAY = TimeUtil.rangeOfSeconds(1, 2);
+public class GunCombatMoveControl {
+    protected static final UniformInt PATH_DELAY = TimeUtil.rangeOfSeconds(1, 2);
 
     public enum PositionMode {
         FLEE,
@@ -18,10 +18,10 @@ public final class GunCombatMoveControl {
         PLANT
     }
 
-    private int pathDelay;
-    private int strafingTime = -1;
-    private boolean strafingClockwise;
-    private boolean strafingBackwards;
+    protected int pathDelay;
+    protected int strafingTime = -1;
+    protected boolean strafingClockwise;
+    protected boolean strafingBackwards;
 
     public PositionMode selectKiting(double distSqr, boolean hasLos, AiGunRange bands) {
         if (!hasLos || distSqr > bands.idealMaxSqr()) {
@@ -53,7 +53,7 @@ public final class GunCombatMoveControl {
         strafingTime = -1;
     }
 
-    private void flee(Mob mob, LivingEntity target, AiGunRange bands) {
+    protected void flee(Mob mob, LivingEntity target, AiGunRange bands) {
         pathDelay--;
         if (pathDelay <= 0) {
             Vec3 away = mob.position().subtract(target.position());
@@ -70,19 +70,15 @@ public final class GunCombatMoveControl {
         mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
     }
 
-    private void backpedal(Mob mob, LivingEntity target, double distSqr, AiGunRange bands) {
+    protected void backpedal(Mob mob, LivingEntity target, double distSqr, AiGunRange bands) {
         mob.getNavigation().stop();
         updateStrafeDirection(mob);
         float lateral = strafingClockwise ? 0.5F : -0.5F;
         mob.getMoveControl().strafe(-0.7F, lateral);
         mob.lookAt(target, 30.0F, 30.0F);
-        // leave panic band via flee instead if somehow still closing
-        if (distSqr < bands.panicSqr()) {
-            flee(mob, target, bands);
-        }
     }
 
-    private void orbit(Mob mob, LivingEntity target, double distSqr, AiGunRange bands) {
+    protected void orbit(Mob mob, LivingEntity target, double distSqr, AiGunRange bands) {
         mob.getNavigation().stop();
         updateStrafeDirection(mob);
 
@@ -101,7 +97,7 @@ public final class GunCombatMoveControl {
         mob.lookAt(target, 30.0F, 30.0F);
     }
 
-    private void closeGap(Mob mob, LivingEntity target) {
+    protected void closeGap(Mob mob, LivingEntity target) {
         pathDelay--;
         if (pathDelay <= 0) {
             mob.getNavigation().moveTo(target, 1.0);
@@ -111,7 +107,7 @@ public final class GunCombatMoveControl {
         strafingTime = -1;
     }
 
-    private void charge(Mob mob, LivingEntity target, double chargeSpeed) {
+    protected void charge(Mob mob, LivingEntity target, double chargeSpeed) {
         mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
         mob.setYRot(mob.yHeadRot);
         mob.getNavigation().stop();
@@ -119,14 +115,14 @@ public final class GunCombatMoveControl {
         strafingTime = -1;
     }
 
-    private void plant(Mob mob, LivingEntity target) {
+    protected void plant(Mob mob, LivingEntity target) {
         mob.getNavigation().stop();
         mob.getMoveControl().strafe(0, 0);
         mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
         mob.setYRot(mob.yHeadRot);
     }
 
-    private void updateStrafeDirection(Mob mob) {
+    protected void updateStrafeDirection(Mob mob) {
         if (strafingTime < 0) {
             strafingTime = 0;
         }

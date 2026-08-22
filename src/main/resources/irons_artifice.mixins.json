@@ -3,6 +3,7 @@
   "minVersion": "0.8.5",
   "package": "io.redspace.irons_artifice.mixin",
   "client": [
+    "DrownedModelMixin",
     "GuiCrosshairMixin",
     "ItemInHandRendererMixin",
     "MinecraftMixin",
@@ -13,6 +14,7 @@
   },
   "mixins": [
     "AbstractSkeletonMixin",
+    "DrownedMixin",
     "IllagerPatrolMixin"
   ]
 }
