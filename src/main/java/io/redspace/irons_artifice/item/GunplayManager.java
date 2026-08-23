@@ -229,8 +229,8 @@ public final class GunplayManager {
 
     public static float getSpreadForEntity(ShotProfile shotProfile, Entity entity) {
         float crouchingMultiplier = 0.667f;
-        float penaltyPerMovement = 12f;
-        float maxMovementPenalty = 25f;
+        float penaltyPerMovement = 7.5f;
+        float maxMovementPenalty = 20f;
         Vec3 reconstructedDeltaMovement = new Vec3(entity.getX(), entity.getY(), entity.getZ()).subtract(entity.xOld, entity.yOld, entity.zOld);
         float spread = (float) shotProfile.value(ShotComponents.SPREAD);
         if (GunItem.isChargingBayonet(entity)) {
@@ -240,6 +240,7 @@ public final class GunplayManager {
             spread *= crouchingMultiplier;
         }
         if (!entity.onGround()) {
+            // fixme: technically doesn't work if spread is zero
             spread *= (float) shotProfile.value(ShotComponents.IN_AIR_PENALTY);
         }
 
