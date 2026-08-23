@@ -31,6 +31,6 @@ public abstract class DrownedMixin extends Monster implements IGunslingerMob {
     public void customizeMobShot(@NotNull Mob mob, @NotNull ShotProfile shotProfile) {
         IGunslingerMob.super.customizeMobShot(mob, shotProfile);
         // tricorne's +25% destroying plebs since '26
-        shotProfile.get(ShotComponents.DAMAGE).addModifier(new ValueModifier(-0.25, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
+        shotProfile.get(ShotComponents.DAMAGE).addModifier(new ValueModifier(-0.50, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
     }
 }
