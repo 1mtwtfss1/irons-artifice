@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.events;
 
 import com.geckolib.animatable.GeoItem;
+import io.redspace.irons_artifice.config.ServerConfig;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.entity.DrownedPirateHelper;
@@ -144,8 +145,7 @@ public class ServerEvents {
         if (!isCursed) {
             return;
         }
-        // todo: config
-        if (level.getRandom().nextFloat() > 0.25) {
+        if (level.getRandom().nextFloat() > ServerConfig.DROWNED_PIRATE_CURSE_CHANCE.get()) {
             return;
         }
         DrownedPirateHelper.trySpawnPirates(level, event.getEntity(), event.getPos().getCenter());
