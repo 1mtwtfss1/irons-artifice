@@ -5,12 +5,15 @@ import io.redspace.irons_artifice.entity.Bullet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
@@ -91,10 +94,11 @@ public class BlockDamageManager {
         IronsArtifice.LOGGER.debug("Dealing {} damage ({}/{}) to {} at {}", damage, blockCurrentHealth, blockMaxHealth, state.getBlock(), pos);
         float destroyProgress = 1 - blockCurrentHealth / blockMaxHealth;
         if (destroyProgress >= 1) {
-            // todo: checks and stuff? events? drop modifiers?
+            if (!(bullet.getOwner() instanceof Player player) || !NeoForge.EVENT_BUS.post(new BreakBlockEvent(level, pos, state, player)).isCanceled()) {
+                level.destroyBlock(pos, false);
+                level.levelEvent(null, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+            }
             level.destroyBlockProgress(id, pos, -1);
-            level.destroyBlock(pos, false);
-            level.levelEvent(null, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
             manager.remove(pos);
             return true;
         } else {

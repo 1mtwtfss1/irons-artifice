@@ -144,6 +144,7 @@ public class ServerEvents {
         if (!isCursed) {
             return;
         }
+        // todo: config
         if (level.getRandom().nextFloat() > 0.25) {
             return;
         }
