@@ -159,7 +159,7 @@ publishing {
 publishMods {
     def loader = "neoforge"
     def projectCurseforge = "1650193"
-//    def projectModrinth = "l7Ddlxg5"
+    def projectModrinth = "yOy4oSzi"
     def slug = "irons-artifice"
     def latestChangesContent = project.file("LATEST_CHANGES.MD").text
 
@@ -180,12 +180,16 @@ ${latestChangesContent}
         client = true
         server = true
     }
-//    modrinth {
-//        accessToken = System.getenv("MODRINTH_PUBLISH")
-//        projectId = projectModrinth
-//        minecraftVersions.add(minecraft_version)
-//        environment = CLIENT_AND_SERVER
-//    }
+    modrinth {
+        accessToken = System.getenv("MODRINTH_PUBLISH")
+        projectId = projectModrinth
+        minecraftVersions.add(minecraft_version)
+        environment = CLIENT_AND_SERVER
+        requires {
+            id = "8BmcQJ2H"
+            slug = "geckolib"
+        }
+    }
 
 }
 
