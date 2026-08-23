@@ -46,7 +46,7 @@ public final class GunScopeOverlay {
         if (!GunItem.isScoping(event.getPlayer())) {
             return;
         }
-        event.setNewFovModifier((float) Mth.lerp(minecraft.options.fovEffectScale().get(), 1.0F, FOV_MODIFIER));
+        event.setNewFovModifier(event.getFovModifier() * FOV_MODIFIER);
     }
 
     @SubscribeEvent
