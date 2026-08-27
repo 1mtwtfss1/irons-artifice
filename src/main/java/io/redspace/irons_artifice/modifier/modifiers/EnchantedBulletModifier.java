@@ -1,10 +1,17 @@
 package io.redspace.irons_artifice.modifier.modifiers;
 
-import io.redspace.irons_artifice.api.ConsumeAmmoEvent;
+import io.redspace.irons_artifice.api.AmmoEvent;
+import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.ValueModifier;
+import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.modifier.ValueStackModifier;
+import io.redspace.irons_artifice.registry.SoundRegistry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -28,7 +35,25 @@ public final class EnchantedBulletModifier extends ValueStackModifier {
     }
 
     @SubscribeEvent
-    public static void preventAmmoConsumption(ConsumeAmmoEvent event){
+    public static void preventAmmoConsumption(AmmoEvent.Consume event) {
+        if (event.getAmmoToConsume() <= 0) {
+            return;
+        }
+        var shooter = event.getEntity();
+        if (!shouldConsumeAmmoForEnchantedBullet(shooter, event.getShotProfile())) {
+            event.setCanceled(true);
+            PlayableSound.of(SoundRegistry.INFINITY_BULLET, 1, 0.9f, 1.1f).play(shooter.level(), shooter.position(), SoundSource.NEUTRAL);
+            if (shooter instanceof Player player) {
+                player.sendOverlayMessage(Component.translatable("irons_artifice.tooltip.refunded_ammo", 1).withStyle(ChatFormatting.LIGHT_PURPLE));
+            }
+        }
+    }
 
+    private static boolean shouldConsumeAmmoForEnchantedBullet(LivingEntity shooter, ShotProfile profile) {
+        double consumeChance = profile.value(ShotComponents.AMMO_CONSUME_CHANCE);
+        if (consumeChance >= 1) {
+            return true;
+        }
+        return shooter.getRandom().nextDouble() <= consumeChance;
     }
 }
