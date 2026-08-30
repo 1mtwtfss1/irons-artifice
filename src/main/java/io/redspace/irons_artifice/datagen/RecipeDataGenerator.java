@@ -41,6 +41,7 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .requires(Items.REDSTONE)
                 .unlockedBy("has_redstone", this.has(Items.REDSTONE))
                 .save(this.output, recipeId("blackpowder"));
+
         /* **********************************
          * Bullets
          ********************************** */
