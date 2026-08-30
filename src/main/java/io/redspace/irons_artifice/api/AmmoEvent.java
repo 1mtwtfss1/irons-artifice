@@ -14,6 +14,9 @@ public abstract class AmmoEvent extends LivingEvent {
         this.shotProfile = shotProfile;
     }
 
+    /**
+     * Server-only event called to consume ammo from the shooter's inventory. Can only be canceled, not mutated.
+     */
     public static class Consume extends AmmoEvent implements ICancellableEvent {
         private final int ammoToConsume;
 
@@ -28,7 +31,7 @@ public abstract class AmmoEvent extends LivingEvent {
     }
 
     /**
-     * Server-only event called to calculate the ammo to be deducted for shooting.
+     * Common event called to calculate the ammo amount required for shooting, and that will be consumed later via {@link AmmoEvent.Consume}.
      */
     public static class Amount extends AmmoEvent {
         private int ammoToConsume;
