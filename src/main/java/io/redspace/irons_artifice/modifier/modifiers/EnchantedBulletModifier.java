@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 @EventBusSubscriber
 public final class EnchantedBulletModifier extends ValueStackModifier {
-    public static final double INFINITY_CHANCE = 0.1;
+    public static final double INFINITY_CHANCE = 0.125;
 
     public EnchantedBulletModifier() {
         super(Map.of(
@@ -31,7 +31,6 @@ public final class EnchantedBulletModifier extends ValueStackModifier {
     @Override
     public void getDescriptionText(Consumer<Component> builder) {
         super.getDescriptionText(builder);
-//        builder.accept(Component.translatable("irons_artifice.modifier.infinity", (int) (INFINITY_CHANCE * 100)).withStyle(ChatFormatting.GREEN));
     }
 
     @SubscribeEvent
