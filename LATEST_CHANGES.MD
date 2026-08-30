@@ -5,7 +5,8 @@
   - Drowneds spawn with guns, pirate hats, and can ride zombie nautilus
   - Have extra loot, and can drop their equipment
 - Added Japanese Localization, thanks to Vivi Love
-- Added Ukrainian and Russian Localization, thanks to Starman
+- Added Ukrainian, thanks to Starman
+- Added Russian Localization, thanks to Starman and nestter
 - Added Tartar localization, thanks to Kerpichikken
 
 ### Changes
