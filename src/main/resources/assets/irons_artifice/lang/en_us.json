@@ -129,6 +129,8 @@
   "death.attack.irons_artifice.bullet.bullet": "%1$s was shot by %2$s. With a bullet.",
   "death.attack.irons_artifice.bullet.bullet.item": "%1$s was shot by %2$s. With a bullet. From %3$s.",
 
+  "advancements.irons_artifice.root.title": "Iron's Arms 'n Artifice",
+  "advancements.irons_artifice.root.description": "First we arm, then we artifice.",
   "advancements.irons_artifice.blackpowder_heart.title": "Blackpowder Heart",
   "advancements.irons_artifice.blackpowder_heart.description": "Obtain Blackpowder",
   "advancements.irons_artifice.arms.title": "Arms.",

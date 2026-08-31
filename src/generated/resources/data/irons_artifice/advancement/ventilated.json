@@ -1,5 +1,5 @@
 {
-  "parent": "irons_artifice:arms",
+  "parent": "irons_artifice:fully_loaded",
   "criteria": {
     "ventilated": {
       "conditions": {
@@ -17,7 +17,7 @@
     },
     "frame": "challenge",
     "icon": {
-      "id": "irons_artifice:blunderbuss"
+      "id": "irons_artifice:scattershot_modifier"
     },
     "title": {
       "translate": "advancements.irons_artifice.ventilated.title"

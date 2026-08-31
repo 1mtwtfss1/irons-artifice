@@ -32,12 +32,12 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
         AdvancementHolder root = Advancement.Builder.advancement()
                 .display(
                         ItemRegistry.BLACKPOWDER.get(),
-                        title("blackpowder_heart"),
+                        title("root"),
                         description("blackpowder_heart"),
-                        Identifier.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
+                        Identifier.withDefaultNamespace("block/stripped_dark_oak_log"),
                         AdvancementType.TASK,
-                        false,
-                        false,
+                        true,
+                        true,
                         false
                 )
                 .addCriterion("blackpowder", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.BLACKPOWDER.get()))
@@ -45,29 +45,27 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
 
         AdvancementHolder arms = child(writer, root, "arms", ItemRegistry.FLINTLOCK_PISTOL.get(), AdvancementType.TASK, false,
                 ShotGunTrigger.TriggerInstance.shotGun());
-        AdvancementHolder artifice = child(writer, arms, "artifice", ItemRegistry.HAIR_TRIGGER.get(), AdvancementType.TASK, false,
+        AdvancementHolder artifice = child(writer, root, "artifice", ItemRegistry.INCENDIARY_TIP_MODIFIER.get(), AdvancementType.TASK, false,
                 GunModifiedTrigger.TriggerInstance.anyModifier());
-        child(writer, artifice, "fully_loaded", ItemRegistry.ARQUEBUS.get(), AdvancementType.GOAL, false,
+        AdvancementHolder fullyLoaded = child(writer, artifice, "fully_loaded", ItemRegistry.BULLET.get(), AdvancementType.GOAL, false,
                 GunModifiedTrigger.TriggerInstance.allSlotsFilled());
 
-        AdvancementHolder simpleMachines = child(writer, root, "simple_machines", ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS.get(), AdvancementType.TASK, false,
-                InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS.get()));
+
+
         AdvancementHolder magFed = Advancement.Builder.advancement()
-                .parent(simpleMachines)
+                .parent(arms)
                 .display(ItemRegistry.SIX_SHOOTER.get(), title("mag_fed"), description("mag_fed"), null, AdvancementType.TASK, true, true, false)
                 .requirements(AdvancementRequirements.Strategy.OR)
                 .addCriterion("six_shooter", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.SIX_SHOOTER.get()))
                 .addCriterion("revolver", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.BLACKPOWDER_REVOLVER.get()))
                 .save(writer, id("mag_fed"));
-        child(writer, magFed, "seven_sockets", ItemRegistry.ARQUEBUS.get(), AdvancementType.TASK, false,
+        AdvancementHolder arquebus = child(writer, magFed, "seven_sockets", ItemRegistry.ARQUEBUS.get(), AdvancementType.TASK, false,
                 InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.ARQUEBUS.get()));
-        AdvancementHolder tickTock = child(writer, magFed, "tick_tock", ItemRegistry.CLOCKWORK_RIFLE.get(), AdvancementType.TASK, false,
+        AdvancementHolder tickTock = child(writer, arquebus, "tick_tock", ItemRegistry.CLOCKWORK_RIFLE.get(), AdvancementType.TASK, false,
                 InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.CLOCKWORK_RIFLE.get()));
-        child(writer, tickTock, "fan_the_hammer", ItemRegistry.HAIR_TRIGGER.get(), AdvancementType.CHALLENGE, false,
-                ShotGunTrigger.TriggerInstance.shotsInLastSecond(15));
 
         Advancement.Builder.advancement()
-                .parent(simpleMachines)
+                .parent(tickTock)
                 .display(ItemRegistry.CLOCKWORK_RIFLE.get(), title("the_whole_arsenal"), description("the_whole_arsenal"), null, AdvancementType.GOAL, true, true, false)
                 .addCriterion("guns", InventoryChangeTrigger.TriggerInstance.hasItems(
                         ItemRegistry.FLINTLOCK_PISTOL.get(),
@@ -80,27 +78,30 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
                 ))
                 .save(writer, id("the_whole_arsenal"));
 
-        child(writer, arms, "peer_review", ItemRegistry.ILLIFICER_SPAWN_EGG.get(), AdvancementType.TASK, false,
+        AdvancementHolder fanTheHammer = child(writer, tickTock, "fan_the_hammer", ItemRegistry.HAIR_TRIGGER.get(), AdvancementType.CHALLENGE, false,
+                ShotGunTrigger.TriggerInstance.shotsInLastSecond(15));
+
+        child(writer, arms, "peer_review", ItemRegistry.ILLIFICER_SPAWN_EGG.get(), AdvancementType.TASK, true,
                 KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity()
                         .of(registries.lookupOrThrow(Registries.ENTITY_TYPE), EntityRegistry.ILLIFICER.get())));
 
-        child(writer, arms, "professionals_have_standards", ItemRegistry.MUSKET.get(), AdvancementType.CHALLENGE, false,
+        child(writer, fullyLoaded, "professionals_have_standards", ItemRegistry.SCOPE_ATTACHMENT_MODIFIER.get(), AdvancementType.CHALLENGE, false,
                 GunCombatTrigger.TriggerInstance.impact(MinMaxBounds.Doubles.atLeast(20), MinMaxBounds.Doubles.atLeast(100)));
-        child(writer, arms, "ventilated", ItemRegistry.BLUNDERBUSS.get(), AdvancementType.CHALLENGE, false,
+        child(writer, fullyLoaded, "ventilated", ItemRegistry.SCATTERSHOT.get(), AdvancementType.CHALLENGE, false,
                 GunCombatTrigger.TriggerInstance.pelletsOnTarget(12));
-        child(writer, arms, "bank_shot", ItemRegistry.TRICK_BULLET_MODIFIER.get(), AdvancementType.CHALLENGE, true,
+        child(writer, fullyLoaded, "bank_shot", ItemRegistry.TRICK_BULLET_MODIFIER.get(), AdvancementType.CHALLENGE, true,
                 GunCombatTrigger.TriggerInstance.ricochetKill());
-        child(writer, arms, "through_and_through", ItemRegistry.STEEL_CORE.get(), AdvancementType.CHALLENGE, true,
+        child(writer, fullyLoaded, "through_and_through", ItemRegistry.STEEL_CORE.get(), AdvancementType.CHALLENGE, true,
                 GunCombatTrigger.TriggerInstance.lineageKills(5));
-        child(writer, arms, "dont_bring_a_gun_to_a_knife_fight", ItemRegistry.BAYONET_ATTACHMENT_MODIFIER.get(), AdvancementType.CHALLENGE, false,
+        child(writer, fullyLoaded, "dont_bring_a_gun_to_a_knife_fight", ItemRegistry.BAYONET_ATTACHMENT_MODIFIER.get(), AdvancementType.CHALLENGE, false,
                 GunCombatTrigger.TriggerInstance.bayonetKill());
-        child(writer, arms, "davy_joness_locker", ItemRegistry.SPIRAL_TIP_MODIFIER.get(), AdvancementType.CHALLENGE, false,
+        child(writer, fullyLoaded, "davy_joness_locker", ItemRegistry.SPIRAL_TIP_MODIFIER.get(), AdvancementType.CHALLENGE, true,
                 GunCombatTrigger.TriggerInstance.submergedKill());
-        child(writer, arms, "pistols_at_dawn", ItemRegistry.TRICORNE_HAT.get(), AdvancementType.CHALLENGE, true,
+        child(writer, root, "pistols_at_dawn", ItemRegistry.TRICORNE_HAT.get(), AdvancementType.CHALLENGE, true,
                 GunCombatTrigger.TriggerInstance.fullMagazineKill(EntityPredicate.wrap(
                         EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
                                 .head(ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), ItemRegistry.TRICORNE_HAT.get()))))));
-        child(writer, arms, "fistful_of_lead", ItemRegistry.COWBOY_HAT.get(), AdvancementType.CHALLENGE, true,
+        child(writer, root, "fistful_of_lead", ItemRegistry.COWBOY_HAT.get(), AdvancementType.CHALLENGE, true,
                 GunCombatTrigger.TriggerInstance.instaReloadKill());
     }
 

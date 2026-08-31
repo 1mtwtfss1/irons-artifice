@@ -1,5 +1,5 @@
 {
-  "parent": "irons_artifice:simple_machines",
+  "parent": "irons_artifice:arms",
   "criteria": {
     "revolver": {
       "conditions": {

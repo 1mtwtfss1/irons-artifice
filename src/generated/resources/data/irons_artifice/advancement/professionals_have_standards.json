@@ -1,5 +1,5 @@
 {
-  "parent": "irons_artifice:arms",
+  "parent": "irons_artifice:fully_loaded",
   "criteria": {
     "professionals_have_standards": {
       "conditions": {
@@ -20,7 +20,7 @@
     },
     "frame": "challenge",
     "icon": {
-      "id": "irons_artifice:musket"
+      "id": "irons_artifice:scope_attachment_modifier"
     },
     "title": {
       "translate": "advancements.irons_artifice.professionals_have_standards.title"

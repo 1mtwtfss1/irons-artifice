@@ -4,7 +4,7 @@
     "fan_the_hammer": {
       "conditions": {
         "shots_in_last_second": {
-          "min": 20
+          "min": 15
         }
       },
       "trigger": "irons_artifice:shot_gun"

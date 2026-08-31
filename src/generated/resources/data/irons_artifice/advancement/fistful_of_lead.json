@@ -1,5 +1,5 @@
 {
-  "parent": "irons_artifice:arms",
+  "parent": "irons_artifice:blackpowder_heart",
   "criteria": {
     "fistful_of_lead": {
       "conditions": {

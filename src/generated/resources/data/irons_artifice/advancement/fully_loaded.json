@@ -14,7 +14,7 @@
     },
     "frame": "goal",
     "icon": {
-      "id": "irons_artifice:arquebus"
+      "id": "irons_artifice:bullet"
     },
     "title": {
       "translate": "advancements.irons_artifice.fully_loaded.title"

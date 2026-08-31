@@ -1,5 +1,5 @@
 {
-  "parent": "irons_artifice:arms",
+  "parent": "irons_artifice:fully_loaded",
   "criteria": {
     "bank_shot": {
       "conditions": {

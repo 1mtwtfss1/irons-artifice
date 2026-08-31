@@ -1,5 +1,5 @@
 {
-  "parent": "irons_artifice:arms",
+  "parent": "irons_artifice:blackpowder_heart",
   "criteria": {
     "artifice": {
       "conditions": {
@@ -15,7 +15,7 @@
       "translate": "advancements.irons_artifice.artifice.description"
     },
     "icon": {
-      "id": "irons_artifice:hair_trigger_modifier"
+      "id": "irons_artifice:incendiary_tip_modifier"
     },
     "title": {
       "translate": "advancements.irons_artifice.artifice.title"
