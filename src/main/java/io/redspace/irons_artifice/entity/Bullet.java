@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.entity;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.advancement.ShotRecord;
 import io.redspace.irons_artifice.damage.DamageSources;
 import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.ShotComponentMap;
@@ -76,6 +77,7 @@ public class Bullet extends Projectile {
     private int piercingRemaining = 0;
     private HitState hitState = HitState.CONTINUE;
     private boolean appliedWaterSlowdown;
+    private @Nullable ShotRecord shotRecord;
 
     public Bullet(EntityType<? extends Bullet> type, Level level) {
         super(type, level);
@@ -99,6 +101,14 @@ public class Bullet extends Projectile {
 
     public ShotProfile getProfile() {
         return profile;
+    }
+
+    public @Nullable ShotRecord getShotRecord() {
+        return shotRecord;
+    }
+
+    public void setShotRecord(ShotRecord shotRecord) {
+        this.shotRecord = shotRecord;
     }
 
     public void markPierced(Entity entity) {
@@ -466,6 +476,9 @@ public class Bullet extends Projectile {
     private void reflectMotion(Direction face) {
         setDeltaMovement(Utils.reflect(getDeltaMovement(), face.getUnitVec3()));
         this.piercedEntities.clear();
+        if (shotRecord != null) {
+            shotRecord.markRicocheted();
+        }
     }
 
     @Override

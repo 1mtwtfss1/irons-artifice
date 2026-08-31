@@ -59,6 +59,9 @@ public class FrozenShrapnelOnHit implements OnHitEffect {
             Bullet child = new Bullet(EntityRegistry.BULLET.get(), level);
             child.setOwner(bullet.getOwner());
             child.applyProfile(childProfile);
+            if (bullet.getShotRecord() != null) {
+                child.setShotRecord(bullet.getShotRecord().child(hitResult instanceof BlockHitResult));
+            }
             child.setPos(origin);
             if (hitEntity != null) {
                 child.markPierced(hitEntity);

@@ -19,6 +19,7 @@ public final class DataGenerators {
 //        event.createProvider(LootTableTagGenerator::new);
         event.createProvider(EntityTypeTagDataGenerator::new);
         event.createProvider(LootTableDataGenerator::new);
+        event.createProvider(AdvancementDataGenerator::new);
     }
 
     @SubscribeEvent

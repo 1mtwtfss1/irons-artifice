@@ -4,6 +4,7 @@ import com.geckolib.animatable.client.GeoRenderProvider;
 import com.geckolib.renderer.GeoArmorRenderer;
 import com.google.common.base.Suppliers;
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.advancement.GunCriteria;
 import io.redspace.irons_artifice.client.armor.GenericArmorModel;
 import io.redspace.irons_artifice.damage.DamageSources;
 import io.redspace.irons_artifice.registry.ItemRegistry;
@@ -11,6 +12,7 @@ import io.redspace.irons_artifice.registry.SoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
@@ -21,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddAttributeTooltipsEvent;
@@ -64,7 +67,7 @@ public class CowboyHatItem extends BaseGeoItem {
     }
 
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void onBulletKill(LivingDeathEvent event) {
         if (!event.getSource().is(DamageSources.BULLET_DAMAGE_TYPE) || !(event.getSource().getEntity() instanceof LivingEntity livingAttacker)) {
             return;
@@ -95,6 +98,9 @@ public class CowboyHatItem extends BaseGeoItem {
         if (livingAttacker instanceof Player player) {
             player.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
             player.sendOverlayMessage(Component.translatable("item.irons_artifice.cowboy_hat.ability.gain_ammo", missing).withStyle(ChatFormatting.LIGHT_PURPLE));
+            if (player instanceof ServerPlayer serverPlayer) {
+                GunCriteria.markInstaReload(serverPlayer);
+            }
         }
     }
 }

@@ -1,0 +1,32 @@
+{
+  "parent": "irons_artifice:arms",
+  "criteria": {
+    "bank_shot": {
+      "conditions": {
+        "killed": true,
+        "ricocheted": true,
+        "source": "bullet"
+      },
+      "trigger": "irons_artifice:gun_combat"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.irons_artifice.bank_shot.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "irons_artifice:trick_bullet_modifier"
+    },
+    "title": {
+      "translate": "advancements.irons_artifice.bank_shot.title"
+    }
+  },
+  "requirements": [
+    [
+      "bank_shot"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

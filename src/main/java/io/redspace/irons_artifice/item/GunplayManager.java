@@ -5,6 +5,7 @@ import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.api.AmmoEvent;
 import io.redspace.irons_artifice.api.GunAboutToShootEvent;
 import io.redspace.irons_artifice.api.GunShootEvent;
+import io.redspace.irons_artifice.advancement.ShotRecord;
 import io.redspace.irons_artifice.client.ClientHelper;
 import io.redspace.irons_artifice.data.MuzzleFlashSettings;
 import io.redspace.irons_artifice.data.MuzzleFlashType;
@@ -44,6 +45,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
+
+import java.util.UUID;
 
 public final class GunplayManager {
 
@@ -185,6 +188,8 @@ public final class GunplayManager {
         var event = NeoForge.EVENT_BUS.post(new GunShootEvent.Pre(shooter, profile, origin, direction));
         origin = event.getOrigin();
         direction = event.getDirection();
+        UUID fireId = UUID.randomUUID();
+        boolean fullMagazine = profile.magazineContents().count() == profile.gun().magazineCapacity();
         int projectileCount = Math.max(1, (int) Math.round(profile.value(ShotComponents.PROJECTILE_COUNT)));
         float speed = (float) profile.value(ShotComponents.BULLET_SPEED);
         float spread = getSpreadForEntity(profile, shooter);
@@ -192,6 +197,7 @@ public final class GunplayManager {
             Bullet bullet = new Bullet(EntityRegistry.BULLET.get(), level);
             bullet.setOwner(shooter);
             bullet.applyProfile(profile.copy());
+            bullet.setShotRecord(ShotRecord.rootPellet(fireId, fullMagazine));
             bullet.setPos(origin);
             bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);

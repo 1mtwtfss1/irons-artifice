@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.registry;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.advancement.ShotCombatTracker;
 import io.redspace.irons_artifice.data.LastHitTarget;
 import io.redspace.irons_artifice.data.RecentShots;
 import io.redspace.irons_artifice.data.RecoilState;
@@ -26,6 +27,10 @@ public final class DataAttachmentRegistry {
     public static final Supplier<AttachmentType<RecentShots>> RECENT_SHOTS =
             ATTACHMENT_TYPES.register("recent_shots",
                     () -> AttachmentType.builder(() -> RecentShots.NONE).build());
+
+    public static final Supplier<AttachmentType<ShotCombatTracker>> SHOT_COMBAT =
+            ATTACHMENT_TYPES.register("shot_combat",
+                    () -> AttachmentType.builder(ShotCombatTracker::new).build());
 
     public static void register(IEventBus modEventBus) {
         ATTACHMENT_TYPES.register(modEventBus);

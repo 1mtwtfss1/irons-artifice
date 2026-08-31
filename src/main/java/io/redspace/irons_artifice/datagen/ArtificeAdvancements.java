@@ -1,0 +1,134 @@
+package io.redspace.irons_artifice.datagen;
+
+import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.advancement.GunCombatTrigger;
+import io.redspace.irons_artifice.advancement.GunModifiedTrigger;
+import io.redspace.irons_artifice.advancement.ShotGunTrigger;
+import io.redspace.irons_artifice.registry.EntityRegistry;
+import io.redspace.irons_artifice.registry.ItemRegistry;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.criterion.EntityEquipmentPredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.KilledTrigger;
+import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.advancements.AdvancementSubProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.ItemLike;
+
+import java.util.function.Consumer;
+
+public class ArtificeAdvancements implements AdvancementSubProvider {
+    @Override
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> writer) {
+        AdvancementHolder root = Advancement.Builder.advancement()
+                .display(
+                        ItemRegistry.BLACKPOWDER.get(),
+                        title("blackpowder_heart"),
+                        description("blackpowder_heart"),
+                        Identifier.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
+                        AdvancementType.TASK,
+                        false,
+                        false,
+                        false
+                )
+                .addCriterion("blackpowder", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.BLACKPOWDER.get()))
+                .save(writer, id("blackpowder_heart"));
+
+        AdvancementHolder arms = child(writer, root, "arms", ItemRegistry.FLINTLOCK_PISTOL.get(), AdvancementType.TASK, false,
+                ShotGunTrigger.TriggerInstance.shotGun());
+        AdvancementHolder artifice = child(writer, arms, "artifice", ItemRegistry.HAIR_TRIGGER.get(), AdvancementType.TASK, false,
+                GunModifiedTrigger.TriggerInstance.anyModifier());
+        child(writer, artifice, "fully_loaded", ItemRegistry.ARQUEBUS.get(), AdvancementType.GOAL, false,
+                GunModifiedTrigger.TriggerInstance.allSlotsFilled());
+
+        AdvancementHolder simpleMachines = child(writer, root, "simple_machines", ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS.get(), AdvancementType.TASK, false,
+                InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.SIMPLE_MECHANICAL_COMPONENTS.get()));
+        AdvancementHolder magFed = Advancement.Builder.advancement()
+                .parent(simpleMachines)
+                .display(ItemRegistry.SIX_SHOOTER.get(), title("mag_fed"), description("mag_fed"), null, AdvancementType.TASK, true, true, false)
+                .requirements(AdvancementRequirements.Strategy.OR)
+                .addCriterion("six_shooter", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.SIX_SHOOTER.get()))
+                .addCriterion("revolver", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.BLACKPOWDER_REVOLVER.get()))
+                .save(writer, id("mag_fed"));
+        child(writer, magFed, "seven_sockets", ItemRegistry.ARQUEBUS.get(), AdvancementType.TASK, false,
+                InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.ARQUEBUS.get()));
+        AdvancementHolder tickTock = child(writer, magFed, "tick_tock", ItemRegistry.CLOCKWORK_RIFLE.get(), AdvancementType.TASK, false,
+                InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.CLOCKWORK_RIFLE.get()));
+        child(writer, tickTock, "fan_the_hammer", ItemRegistry.HAIR_TRIGGER.get(), AdvancementType.CHALLENGE, false,
+                ShotGunTrigger.TriggerInstance.shotsInLastSecond(15));
+
+        Advancement.Builder.advancement()
+                .parent(simpleMachines)
+                .display(ItemRegistry.CLOCKWORK_RIFLE.get(), title("the_whole_arsenal"), description("the_whole_arsenal"), null, AdvancementType.GOAL, true, true, false)
+                .addCriterion("guns", InventoryChangeTrigger.TriggerInstance.hasItems(
+                        ItemRegistry.FLINTLOCK_PISTOL.get(),
+                        ItemRegistry.MUSKET.get(),
+                        ItemRegistry.BLUNDERBUSS.get(),
+                        ItemRegistry.BLACKPOWDER_REVOLVER.get(),
+                        ItemRegistry.SIX_SHOOTER.get(),
+                        ItemRegistry.ARQUEBUS.get(),
+                        ItemRegistry.CLOCKWORK_RIFLE.get()
+                ))
+                .save(writer, id("the_whole_arsenal"));
+
+        child(writer, arms, "peer_review", ItemRegistry.ILLIFICER_SPAWN_EGG.get(), AdvancementType.TASK, false,
+                KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity()
+                        .of(registries.lookupOrThrow(Registries.ENTITY_TYPE), EntityRegistry.ILLIFICER.get())));
+
+        child(writer, arms, "professionals_have_standards", ItemRegistry.MUSKET.get(), AdvancementType.CHALLENGE, false,
+                GunCombatTrigger.TriggerInstance.impact(MinMaxBounds.Doubles.atLeast(20), MinMaxBounds.Doubles.atLeast(100)));
+        child(writer, arms, "ventilated", ItemRegistry.BLUNDERBUSS.get(), AdvancementType.CHALLENGE, false,
+                GunCombatTrigger.TriggerInstance.pelletsOnTarget(12));
+        child(writer, arms, "bank_shot", ItemRegistry.TRICK_BULLET_MODIFIER.get(), AdvancementType.CHALLENGE, true,
+                GunCombatTrigger.TriggerInstance.ricochetKill());
+        child(writer, arms, "through_and_through", ItemRegistry.STEEL_CORE.get(), AdvancementType.CHALLENGE, true,
+                GunCombatTrigger.TriggerInstance.lineageKills(5));
+        child(writer, arms, "dont_bring_a_gun_to_a_knife_fight", ItemRegistry.BAYONET_ATTACHMENT_MODIFIER.get(), AdvancementType.CHALLENGE, false,
+                GunCombatTrigger.TriggerInstance.bayonetKill());
+        child(writer, arms, "davy_joness_locker", ItemRegistry.SPIRAL_TIP_MODIFIER.get(), AdvancementType.CHALLENGE, false,
+                GunCombatTrigger.TriggerInstance.submergedKill());
+        child(writer, arms, "pistols_at_dawn", ItemRegistry.TRICORNE_HAT.get(), AdvancementType.CHALLENGE, true,
+                GunCombatTrigger.TriggerInstance.fullMagazineKill(EntityPredicate.wrap(
+                        EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
+                                .head(ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), ItemRegistry.TRICORNE_HAT.get()))))));
+        child(writer, arms, "fistful_of_lead", ItemRegistry.COWBOY_HAT.get(), AdvancementType.CHALLENGE, true,
+                GunCombatTrigger.TriggerInstance.instaReloadKill());
+    }
+
+    private static AdvancementHolder child(
+            Consumer<AdvancementHolder> writer,
+            AdvancementHolder parent,
+            String path,
+            ItemLike icon,
+            AdvancementType type,
+            boolean hidden,
+            Criterion<?> criterion
+    ) {
+        return Advancement.Builder.advancement()
+                .parent(parent)
+                .display(icon, title(path), description(path), null, type, true, true, hidden)
+                .addCriterion(path, criterion)
+                .save(writer, id(path));
+    }
+
+    private static Component title(String path) {
+        return Component.translatable("advancements.irons_artifice." + path + ".title");
+    }
+
+    private static Component description(String path) {
+        return Component.translatable("advancements.irons_artifice." + path + ".description");
+    }
+
+    private static String id(String path) {
+        return IronsArtifice.id(path).toString();
+    }
+}

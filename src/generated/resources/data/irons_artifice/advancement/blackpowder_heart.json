@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "blackpowder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "irons_artifice:blackpowder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancements.irons_artifice.blackpowder_heart.description"
+    },
+    "icon": {
+      "id": "irons_artifice:blackpowder"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.irons_artifice.blackpowder_heart.title"
+    }
+  },
+  "requirements": [
+    [
+      "blackpowder"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

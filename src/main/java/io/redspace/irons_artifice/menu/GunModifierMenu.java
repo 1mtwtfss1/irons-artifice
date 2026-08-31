@@ -1,6 +1,8 @@
 package io.redspace.irons_artifice.menu;
 
+import io.redspace.irons_artifice.advancement.GunCriteria;
 import io.redspace.irons_artifice.registry.MenuRegistry;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +18,7 @@ public class GunModifierMenu extends AbstractContainerMenu {
     private final Container gunInventory;
     private final int size;
     public final ItemStack gunstack;
+    private final Player player;
 
     public List<Slot> getModifierSlots() {
         return modifierSlots;
@@ -30,6 +33,7 @@ public class GunModifierMenu extends AbstractContainerMenu {
     public GunModifierMenu(int containerId, Inventory playerInventory, Container gunInventory) {
         super(MenuRegistry.GUN_MENU.get(), containerId);
         this.gunInventory = gunInventory;
+        this.player = playerInventory.player;
         this.modifierSlots = new ArrayList<>();
         gunInventory.startOpen(playerInventory.player);
         this.size = gunInventory.getContainerSize();
@@ -57,10 +61,36 @@ public class GunModifierMenu extends AbstractContainerMenu {
                 public boolean mayPlace(ItemStack stack) {
                     return gunInventory.canPlaceItem(this.index, stack);
                 }
+
+                @Override
+                public void setChanged() {
+                    super.setChanged();
+                    notifyGunModified();
+                }
             }));
         }
 
         this.addStandardInventorySlots(playerInventory, 8, 101);
+    }
+
+    private void notifyGunModified() {
+        if (this.player instanceof ServerPlayer serverPlayer) {
+            int occupied = 0;
+            for (int i = 0; i < this.size; i++) {
+                if (!this.gunInventory.getItem(i).isEmpty()) {
+                    occupied++;
+                }
+            }
+            GunCriteria.triggerModified(serverPlayer, this.gunstack, occupied, this.size);
+        }
+    }
+
+    @Override
+    public void slotsChanged(Container container) {
+        super.slotsChanged(container);
+        if (container == this.gunInventory) {
+            notifyGunModified();
+        }
     }
 
     @Override

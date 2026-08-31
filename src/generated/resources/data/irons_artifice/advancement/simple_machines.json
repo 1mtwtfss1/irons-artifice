@@ -1,0 +1,32 @@
+{
+  "parent": "irons_artifice:blackpowder_heart",
+  "criteria": {
+    "simple_machines": {
+      "conditions": {
+        "items": [
+          {
+            "items": "irons_artifice:simple_mechanical_components"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.irons_artifice.simple_machines.description"
+    },
+    "icon": {
+      "id": "irons_artifice:simple_mechanical_components"
+    },
+    "title": {
+      "translate": "advancements.irons_artifice.simple_machines.title"
+    }
+  },
+  "requirements": [
+    [
+      "simple_machines"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
