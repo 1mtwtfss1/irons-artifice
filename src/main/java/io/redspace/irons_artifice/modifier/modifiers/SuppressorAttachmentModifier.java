@@ -1,13 +1,23 @@
 package io.redspace.irons_artifice.modifier.modifiers;
 
+import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
 import io.redspace.irons_artifice.data.GunShotSoundStack;
+import io.redspace.irons_artifice.data.MuzzleFlashSettings;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
+import io.redspace.irons_artifice.item.AttachmentMap;
 import io.redspace.irons_artifice.modifier.GunModifier;
+import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.component.AttackRange;
+import net.minecraft.world.item.component.UseEffects;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class SuppressorAttachmentModifier implements GunModifier {
@@ -25,12 +35,23 @@ public class SuppressorAttachmentModifier implements GunModifier {
                 gunShotSoundStack.getEchoSound().soundEvent(),
                 echoSettings.minPitch(), echoSettings.maxPitch(), baseSettings.start(), 0, baseSettings.end()
         ));
-        components.getOrCreate(ShotComponents.MUZZLE_FLASH).types().clear();
-
+        MuzzleFlashSettings muzzleFlashSettings = components.getOrCreate(ShotComponents.MUZZLE_FLASH);
+        muzzleFlashSettings = new MuzzleFlashSettings(muzzleFlashSettings.types(), muzzleFlashSettings.muzzleDistanceScalar() + 0.75f, muzzleFlashSettings.tints());
+        muzzleFlashSettings.types().clear();
+        components.set(ShotComponents.MUZZLE_FLASH, muzzleFlashSettings);
     }
 
     @Override
     public void getDescriptionText(Consumer<Component> builder) {
         builder.accept(Component.translatable("irons_artifice.modifier.bayonet").withStyle(ChatFormatting.AQUA));
+    }
+
+    @Override
+    public Optional<DataComponentPatch> getPatch() {
+        DataComponentPatch.Builder builder = DataComponentPatch.builder();
+        builder.set(DataComponentRegistry.ATTACHMENT.get(), new AttachmentMap(Map.of(
+                "attachment_muzzle", IronsArtifice.id("suppressor")
+        )));
+        return Optional.of(builder.build());
     }
 }

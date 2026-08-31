@@ -86,6 +86,11 @@
 					]
 				},
 				{
+					"name": "attachment_muzzle",
+					"parent": "gun",
+					"pivot": [0, 3, -27]
+				},
+				{
 					"name": "right_arm",
 					"parent": "root",
 					"pivot": [0, 0, 0]

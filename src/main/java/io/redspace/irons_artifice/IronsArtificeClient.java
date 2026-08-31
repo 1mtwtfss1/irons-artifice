@@ -113,6 +113,13 @@ public class IronsArtificeClient {
                         "model/iron_bayonet",
                         "empty"))
         );
+        AttachmentRenderableRegistry.register(
+                IronsArtifice.id("suppressor"),
+                new AttachmentGeoRenderer(new SimpleItemGeoModel<>(IronsArtifice.MODID,
+                        "suppressor",
+                        "model/spyglass_scope",
+                        "empty"))
+        );
     }
 
     @SubscribeEvent

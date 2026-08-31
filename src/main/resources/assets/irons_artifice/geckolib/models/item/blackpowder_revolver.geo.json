@@ -221,6 +221,11 @@
 					]
 				},
 				{
+					"name": "attachment_muzzle",
+					"parent": "break_action",
+					"pivot": [0, 4.5, -14.75]
+				},
+				{
 					"name": "attachment_bayonet",
 					"parent": "break_action",
 					"pivot": [0, 3.5, -11]
