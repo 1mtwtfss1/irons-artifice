@@ -62,12 +62,10 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
                 .save(writer, id("mag_fed"));
         AdvancementHolder arquebus = child(writer, magFed, "seven_sockets", ItemRegistry.ARQUEBUS.get(), AdvancementType.TASK, false,
                 InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.ARQUEBUS.get()));
-        AdvancementHolder tickTock = child(writer, arquebus, "tick_tock", ItemRegistry.CLOCKWORK_RIFLE.get(), AdvancementType.TASK, false,
-                InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.CLOCKWORK_RIFLE.get()));
 
         AdvancementHolder wholeArsenal = Advancement.Builder.advancement()
-                .parent(tickTock)
-                .display(ItemRegistry.CLOCKWORK_COMPONENTS.get(), title("the_whole_arsenal"), description("the_whole_arsenal"), null, AdvancementType.GOAL, true, true, false)
+                .parent(arquebus)
+                .display(ItemRegistry.CLOCKWORK_RIFLE.get(), title("the_whole_arsenal"), description("the_whole_arsenal"), null, AdvancementType.GOAL, true, true, false)
                 .addCriterion("guns", InventoryChangeTrigger.TriggerInstance.hasItems(
                         ItemRegistry.FLINTLOCK_PISTOL.get(),
                         ItemRegistry.MUSKET.get(),
@@ -79,7 +77,7 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
                 ))
                 .save(writer, id("the_whole_arsenal"));
 
-        AdvancementHolder fanTheHammer = child(writer, tickTock, "fan_the_hammer", ItemRegistry.HAIR_TRIGGER.get(), AdvancementType.CHALLENGE, false,
+        AdvancementHolder fanTheHammer = child(writer, magFed, "fan_the_hammer", ItemRegistry.HAIR_TRIGGER.get(), AdvancementType.CHALLENGE, false,
                 ShotGunTrigger.TriggerInstance.shotsInLastSecond(15));
 
         child(writer, arms, "peer_review", ItemRegistry.ILLIFICER_SPAWN_EGG.get(), AdvancementType.TASK, true,
