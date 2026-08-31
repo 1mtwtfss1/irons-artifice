@@ -22,11 +22,13 @@ import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.network.packets.ClientboundCancelGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundMuzzleFlashPacket;
+import io.redspace.irons_artifice.network.packets.MuzzleFlashVisuals;
 import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ItemRegistry;
 import io.redspace.irons_artifice.registry.SoundRegistry;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,6 +46,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 public final class GunplayManager {
 
@@ -202,10 +207,14 @@ public final class GunplayManager {
 
     private static void spawnMuzzleFlash(ServerLevel level, LivingEntity shooter, Vec3 direction, ShotProfile profile) {
         MuzzleFlashSettings settings = profile.get(ShotComponents.MUZZLE_FLASH);
-        if (settings.types().isEmpty()) {
+        if (!settings.hasVisuals()) {
             return;
         }
-        MuzzleFlashType type = settings.pick(level.getRandom());
+        Optional<ParticleOptions> flash = Optional.empty();
+        if (!settings.types().isEmpty()) {
+            MuzzleFlashType type = settings.pick(level.getRandom());
+            flash = Optional.of(type.particle(settings.pickTint(level.getRandom())));
+        }
         Vec3 position = shooter.getEyePosition();
         Vec3 offset = direction.normalize();
         double length = settings.muzzleDistanceScalar();
@@ -214,7 +223,7 @@ public final class GunplayManager {
         offset = offset.add(shooter.getForward().cross(new Vec3(0, 1, 0))
                 .scale(0.5 * offsetDirection));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(shooter, new ClientboundMuzzleFlashPacket(
-                type.particle(settings.pickTint(level.getRandom())),
+                new MuzzleFlashVisuals(flash, List.copyOf(settings.airBursts()), List.copyOf(settings.underwaterBursts())),
                 shooter.getId(),
                 shooter.getDeltaMovement(),
                 position,

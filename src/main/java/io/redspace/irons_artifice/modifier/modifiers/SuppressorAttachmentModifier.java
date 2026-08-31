@@ -36,7 +36,13 @@ public class SuppressorAttachmentModifier implements GunModifier {
                 echoSettings.minPitch(), echoSettings.maxPitch(), baseSettings.start(), 0, baseSettings.end()
         ));
         MuzzleFlashSettings muzzleFlashSettings = components.getOrCreate(ShotComponents.MUZZLE_FLASH);
-        muzzleFlashSettings = new MuzzleFlashSettings(muzzleFlashSettings.types(), muzzleFlashSettings.muzzleDistanceScalar() + 0.75f, muzzleFlashSettings.tints());
+        muzzleFlashSettings = new MuzzleFlashSettings(
+                muzzleFlashSettings.types(),
+                muzzleFlashSettings.muzzleDistanceScalar() + 0.75f,
+                muzzleFlashSettings.tints(),
+                muzzleFlashSettings.airBursts(),
+                muzzleFlashSettings.underwaterBursts()
+        );
         muzzleFlashSettings.types().clear();
         components.set(ShotComponents.MUZZLE_FLASH, muzzleFlashSettings);
     }

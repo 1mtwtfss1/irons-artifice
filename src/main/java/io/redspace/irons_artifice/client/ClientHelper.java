@@ -9,6 +9,7 @@ import io.redspace.irons_artifice.client.sounds.EquipSoundInstance;
 import io.redspace.irons_artifice.client.sounds.GunShotSoundInstance;
 import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
 import io.redspace.irons_artifice.data.HandOccupancy;
+import io.redspace.irons_artifice.data.ParticleBurst;
 import io.redspace.irons_artifice.data.ParticleStack;
 import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.entity.Bullet;
@@ -21,6 +22,7 @@ import io.redspace.irons_artifice.network.packets.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundGunshotSoundPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundLocalSoundPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundMuzzleFlashPacket;
+import io.redspace.irons_artifice.network.packets.MuzzleFlashVisuals;
 import io.redspace.irons_artifice.registry.ParticleRegistry;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -31,7 +33,6 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -134,18 +135,33 @@ public final class ClientHelper {
         if (level == null || player == null) {
             return;
         }
-        Vec3 offset = msg.offset();
-        Vec3 pos = msg.position().add(offset);
-        Vec3 random = new Vec3(level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5).scale(2).scale(0.02);
-        Vec3 motion = msg.entityMotion().scale(0.5).add(random);
-        if (level.isFluidAtPosition(BlockPos.containing(pos), s -> s.is(FluidTags.WATER))) {
-            //bubbles
-            for (int i = 0; i < 40; i++) {
-                random = new Vec3(level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5).scale(2).scale(1.75);
-                level.addAlwaysVisibleParticle(ParticleTypes.BUBBLE, false, pos.x, pos.y, pos.z, random.x, random.y, random.z);
+        Vec3 pos = msg.position().add(msg.offset());
+        MuzzleFlashVisuals visuals = msg.visuals();
+        if (level.isFluidAtPosition(BlockPos.containing(pos), s -> s.is(FluidTags.WATER))
+                && !visuals.underwaterBursts().isEmpty()) {
+            for (ParticleBurst burst : visuals.underwaterBursts()) {
+                spawnBurst(level, burst, pos);
             }
-        } else {
-            level.addAlwaysVisibleParticle(msg.particle(), true, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+            return;
+        }
+        visuals.flash().ifPresent(flash -> {
+            Vec3 random = new Vec3(level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5, level.getRandom().nextDouble() - 0.5).scale(2).scale(0.02);
+            Vec3 motion = msg.entityMotion().scale(0.5).add(random);
+            level.addAlwaysVisibleParticle(flash, true, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        });
+        for (ParticleBurst burst : visuals.airBursts()) {
+            spawnBurst(level, burst, pos);
+        }
+    }
+
+    private static void spawnBurst(ClientLevel level, ParticleBurst burst, Vec3 pos) {
+        for (int i = 0; i < burst.count(); i++) {
+            Vec3 motion = new Vec3(
+                    level.getRandom().nextDouble() - 0.5,
+                    level.getRandom().nextDouble() - 0.5,
+                    level.getRandom().nextDouble() - 0.5
+            ).scale(2).scale(burst.velocityScale());
+            level.addAlwaysVisibleParticle(burst.particle(), burst.force(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         }
     }
 
