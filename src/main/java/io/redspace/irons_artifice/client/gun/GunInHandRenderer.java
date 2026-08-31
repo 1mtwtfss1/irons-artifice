@@ -12,6 +12,7 @@ import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.client.MuzzleFlashEmitter;
 import io.redspace.irons_artifice.data.HandOccupancy;
 import io.redspace.irons_artifice.item.AnimationAdjuster;
 import io.redspace.irons_artifice.item.AttachmentMap;
@@ -49,6 +50,7 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
     public void preRenderPass(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull SubmitNodeCollector renderTasks) {
         super.preRenderPass(renderPassInfo, renderTasks);
         handleAttachmentRendering(renderPassInfo, renderTasks);
+        handleMuzzleFlashEmission(renderPassInfo);
         handleFirstPersonHandRendering(renderPassInfo, renderTasks);
     }
 
@@ -70,6 +72,21 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
                     renderer.get().performRenderPass(opticPass, opticTasks)
             );
         }
+    }
+
+    private void handleMuzzleFlashEmission(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo) {
+        if (!isHandPerspective(renderPassInfo.renderState())) {
+            return;
+        }
+        Integer ownerId = renderPassInfo.getGeckolibData(GunItem.ITEM_OWNER_ID_TICKET);
+        if (ownerId == null) {
+            return;
+        }
+        renderPassInfo.model().getBone("attachment_muzzle").ifPresent(bone ->
+                renderPassInfo.addPerBoneRender(bone, (pass, muzzleBone, tasks) ->
+                        MuzzleFlashEmitter.tryEmit(ownerId, pass.poseStack())
+                )
+        );
     }
 
     private void handleFirstPersonHandRendering(@NonNull RenderPassInfo<GeoRenderState> renderPassInfo, @NonNull SubmitNodeCollector renderTasks) {
@@ -120,9 +137,13 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
         renderState.addGeckolibData(
                 GunItem.ATTACHMENTS,
                 renderData.itemStack().getOrDefault(DataComponentRegistry.ATTACHMENT, AttachmentMap.EMPTY)
-        );LivingEntity owner = renderData.itemOwner() instanceof LivingEntity living
+        );
+        LivingEntity owner = renderData.itemOwner() instanceof LivingEntity living
                 ? living
                 : Minecraft.getInstance().player;
+        if (owner != null) {
+            renderState.addGeckolibData(GunItem.ITEM_OWNER_ID_TICKET, owner.getId());
+        }
         HandOccupancy occupancy = owner != null
                 ? GunItem.currentOccupancy(owner, renderData.itemStack())
                 : GunItem.currentOccupancy(renderData.itemStack());
@@ -276,6 +297,14 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
                 OverlayTexture.NO_OVERLAY,
                 null
         );
+    }
+
+    private boolean isHandPerspective(GeoRenderState renderState) {
+        var perspective = renderState.getGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE);
+        return perspective == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND
+                || perspective == ItemDisplayContext.FIRST_PERSON_LEFT_HAND
+                || perspective == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND
+                || perspective == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
     }
 
     private boolean isFirstPersonPerspective(GeoRenderState renderState) {

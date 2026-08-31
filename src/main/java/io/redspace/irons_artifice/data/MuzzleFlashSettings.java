@@ -19,7 +19,7 @@ public record MuzzleFlashSettings(
 ) implements Copyable<MuzzleFlashSettings> {
     public static final Vector3f WHITE = new Vector3f(1f, 1f, 1f);
     public static final Vector3f UNTINTED = new Vector3f(-1f, -1f, -1f);
-    public static final Supplier<MuzzleFlashSettings> DEFAULT = () -> of(1.5f, MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR);
+    public static final Supplier<MuzzleFlashSettings> DEFAULT = () -> of(0f, MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR);
 
     public static MuzzleFlashSettings of(float muzzleDistanceScalar, MuzzleFlashType... types) {
         if (types.length == 0) {
@@ -29,7 +29,7 @@ public record MuzzleFlashSettings(
                 EnumSet.copyOf(List.of(types)),
                 muzzleDistanceScalar,
                 new ArrayList<>(),
-                new ArrayList<>(List.of(ParticleBurst.SMOKE)),
+                new ArrayList<>(),
                 new ArrayList<>(List.of(ParticleBurst.BUBBLES))
         );
     }

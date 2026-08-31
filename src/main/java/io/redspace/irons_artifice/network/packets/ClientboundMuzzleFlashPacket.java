@@ -14,8 +14,7 @@ public record ClientboundMuzzleFlashPacket(
         MuzzleFlashVisuals visuals,
         int entityId,
         Vec3 entityMotion,
-        Vec3 position,
-        Vec3 offset
+        float extraForwardOffset
 ) implements CustomPacketPayload {
 
     public static final Type<ClientboundMuzzleFlashPacket> TYPE =
@@ -29,10 +28,8 @@ public record ClientboundMuzzleFlashPacket(
                     ClientboundMuzzleFlashPacket::entityId,
                     Vec3.STREAM_CODEC,
                     ClientboundMuzzleFlashPacket::entityMotion,
-                    Vec3.STREAM_CODEC,
-                    ClientboundMuzzleFlashPacket::position,
-                    Vec3.STREAM_CODEC,
-                    ClientboundMuzzleFlashPacket::offset,
+                    ByteBufCodecs.FLOAT,
+                    ClientboundMuzzleFlashPacket::extraForwardOffset,
                     ClientboundMuzzleFlashPacket::new
             );
 
