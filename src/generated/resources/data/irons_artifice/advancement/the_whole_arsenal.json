@@ -36,7 +36,7 @@
     },
     "frame": "goal",
     "icon": {
-      "id": "irons_artifice:clockwork_rifle"
+      "id": "irons_artifice:clockwork_components"
     },
     "title": {
       "translate": "advancements.irons_artifice.the_whole_arsenal.title"

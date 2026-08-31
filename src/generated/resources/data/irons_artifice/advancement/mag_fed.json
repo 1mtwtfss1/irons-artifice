@@ -1,6 +1,16 @@
 {
   "parent": "irons_artifice:arms",
   "criteria": {
+    "clockwork_rifle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "irons_artifice:clockwork_rifle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "revolver": {
       "conditions": {
         "items": [
@@ -36,7 +46,8 @@
   "requirements": [
     [
       "six_shooter",
-      "revolver"
+      "revolver",
+      "clockwork_rifle"
     ]
   ],
   "sends_telemetry_event": true

@@ -58,15 +58,16 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
                 .requirements(AdvancementRequirements.Strategy.OR)
                 .addCriterion("six_shooter", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.SIX_SHOOTER.get()))
                 .addCriterion("revolver", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.BLACKPOWDER_REVOLVER.get()))
+                .addCriterion("clockwork_rifle", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.CLOCKWORK_RIFLE.get()))
                 .save(writer, id("mag_fed"));
         AdvancementHolder arquebus = child(writer, magFed, "seven_sockets", ItemRegistry.ARQUEBUS.get(), AdvancementType.TASK, false,
                 InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.ARQUEBUS.get()));
         AdvancementHolder tickTock = child(writer, arquebus, "tick_tock", ItemRegistry.CLOCKWORK_RIFLE.get(), AdvancementType.TASK, false,
                 InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.CLOCKWORK_RIFLE.get()));
 
-        Advancement.Builder.advancement()
+        AdvancementHolder wholeArsenal = Advancement.Builder.advancement()
                 .parent(tickTock)
-                .display(ItemRegistry.CLOCKWORK_RIFLE.get(), title("the_whole_arsenal"), description("the_whole_arsenal"), null, AdvancementType.GOAL, true, true, false)
+                .display(ItemRegistry.CLOCKWORK_COMPONENTS.get(), title("the_whole_arsenal"), description("the_whole_arsenal"), null, AdvancementType.GOAL, true, true, false)
                 .addCriterion("guns", InventoryChangeTrigger.TriggerInstance.hasItems(
                         ItemRegistry.FLINTLOCK_PISTOL.get(),
                         ItemRegistry.MUSKET.get(),
@@ -89,8 +90,6 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
                 GunCombatTrigger.TriggerInstance.impact(MinMaxBounds.Doubles.atLeast(20), MinMaxBounds.Doubles.atLeast(100)));
         child(writer, fullyLoaded, "ventilated", ItemRegistry.SCATTERSHOT.get(), AdvancementType.CHALLENGE, false,
                 GunCombatTrigger.TriggerInstance.pelletsOnTarget(12));
-        child(writer, fullyLoaded, "bank_shot", ItemRegistry.TRICK_BULLET_MODIFIER.get(), AdvancementType.CHALLENGE, true,
-                GunCombatTrigger.TriggerInstance.ricochetKill());
         child(writer, fullyLoaded, "through_and_through", ItemRegistry.STEEL_CORE.get(), AdvancementType.CHALLENGE, true,
                 GunCombatTrigger.TriggerInstance.lineageKills(5));
         child(writer, fullyLoaded, "dont_bring_a_gun_to_a_knife_fight", ItemRegistry.BAYONET_ATTACHMENT_MODIFIER.get(), AdvancementType.CHALLENGE, false,
@@ -103,6 +102,10 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
                                 .head(ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), ItemRegistry.TRICORNE_HAT.get()))))));
         child(writer, root, "fistful_of_lead", ItemRegistry.COWBOY_HAT.get(), AdvancementType.CHALLENGE, true,
                 GunCombatTrigger.TriggerInstance.instaReloadKill());
+        AdvancementHolder overOverOverkill = child(writer, wholeArsenal, "over_over_overkill", ItemRegistry.SINGULARITY_CHARGE_MODIFIER.get(), AdvancementType.CHALLENGE, true,
+                GunCombatTrigger.TriggerInstance.impact(MinMaxBounds.Doubles.atLeast(100), MinMaxBounds.Doubles.atLeast(0)));
+        child(writer, overOverOverkill, "ultrakill", ItemRegistry.SINGULARITY_CHARGE_MODIFIER.get(), AdvancementType.CHALLENGE, true,
+                GunCombatTrigger.TriggerInstance.impact(MinMaxBounds.Doubles.atLeast(1000), MinMaxBounds.Doubles.atLeast(0)));
     }
 
     private static AdvancementHolder child(
