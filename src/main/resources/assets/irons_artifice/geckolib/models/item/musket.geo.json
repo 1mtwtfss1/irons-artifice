@@ -193,6 +193,11 @@
 					"name": "attachment_bayonet",
 					"parent": "gun",
 					"pivot": [0, 0.5, -28.75]
+				},
+				{
+					"name": "attachment_muzzle",
+					"parent": "gun",
+					"pivot": [0, 1.75, -31.65]
 				}
 			]
 		}

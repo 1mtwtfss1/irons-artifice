@@ -32,6 +32,7 @@ import io.redspace.irons_artifice.modifier.modifiers.SingularityChargeModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SpiralTipModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SpyglassAttachmentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SteelCoreModifier;
+import io.redspace.irons_artifice.modifier.modifiers.SuppressorAttachmentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.TrickshotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.VenomCapsuleModifier;
 import io.redspace.irons_artifice.modifier.modifiers.WindChamberModifier;
@@ -132,6 +133,8 @@ public final class ItemRegistry {
             "heavy_bolt_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyBoltModifier()));
     public static final DeferredItem<ModifierItem> HARPOON_MODIFIER = ITEMS.registerItem(
             "harpoon_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HarpoonTestModifier()));
+    public static final DeferredItem<ModifierItem> SUPRESSOR_ATTACHMENT_MODIFIER = ITEMS.registerItem(
+            "supressor_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SuppressorAttachmentModifier()));
 
     //    public static final DeferredItem<ModifierItem> FAIRY_DUST = ITEMS.registerItem(
     //            "fairy_dust_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FairyDustModifier()));

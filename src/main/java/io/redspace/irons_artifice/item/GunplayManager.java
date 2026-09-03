@@ -1,15 +1,14 @@
 package io.redspace.irons_artifice.item;
 
 import com.geckolib.animatable.GeoItem;
-import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.api.AmmoEvent;
+import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.api.GunAboutToShootEvent;
 import io.redspace.irons_artifice.api.GunShootEvent;
 import io.redspace.irons_artifice.advancement.ShotRecord;
 import io.redspace.irons_artifice.client.ClientHelper;
 import io.redspace.irons_artifice.data.MuzzleFlashSettings;
 import io.redspace.irons_artifice.data.MuzzleFlashType;
-import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.data.RecoilState;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponentMap;
@@ -23,19 +22,16 @@ import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.network.packets.ClientboundCancelGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundMuzzleFlashPacket;
+import io.redspace.irons_artifice.network.packets.MuzzleFlashVisuals;
 import io.redspace.irons_artifice.registry.EntityRegistry;
 import io.redspace.irons_artifice.registry.ItemRegistry;
-import io.redspace.irons_artifice.registry.SoundRegistry;
 import io.redspace.irons_artifice.utils.Utils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -47,6 +43,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.Optional;
 
 public final class GunplayManager {
 
@@ -202,29 +200,25 @@ public final class GunplayManager {
             bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);
         }
-        spawnMuzzleFlash(level, shooter, direction, profile);
+        spawnMuzzleFlash(level, shooter, profile);
         NeoForge.EVENT_BUS.post(new GunShootEvent.Post(shooter, profile));
     }
 
-    private static void spawnMuzzleFlash(ServerLevel level, LivingEntity shooter, Vec3 direction, ShotProfile profile) {
+    private static void spawnMuzzleFlash(ServerLevel level, LivingEntity shooter, ShotProfile profile) {
         MuzzleFlashSettings settings = profile.get(ShotComponents.MUZZLE_FLASH);
-        if (settings.types().isEmpty()) {
+        if (!settings.hasVisuals()) {
             return;
         }
-        MuzzleFlashType type = settings.pick(level.getRandom());
-        Vec3 position = shooter.getEyePosition();
-        Vec3 offset = direction.normalize();
-        double length = settings.muzzleDistanceScalar();
-        float offsetDirection = shooter.getMainArm() == HumanoidArm.LEFT ? -1.0F : 1.0F;
-        offset = offset.scale(Math.max(1.25, 0.75 * length));
-        offset = offset.add(shooter.getForward().cross(new Vec3(0, 1, 0))
-                .scale(0.5 * offsetDirection));
+        Optional<ParticleOptions> flash = Optional.empty();
+        if (!settings.types().isEmpty()) {
+            MuzzleFlashType type = settings.pick(level.getRandom());
+            flash = Optional.of(type.particle(settings.pickTint(level.getRandom())));
+        }
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(shooter, new ClientboundMuzzleFlashPacket(
-                type.particle(settings.pickTint(level.getRandom())),
+                new MuzzleFlashVisuals(flash, List.copyOf(settings.airBursts()), List.copyOf(settings.underwaterBursts())),
                 shooter.getId(),
                 shooter.getDeltaMovement(),
-                position,
-                offset
+                settings.muzzleDistanceScalar()
         ));
     }
 

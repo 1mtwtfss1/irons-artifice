@@ -50,6 +50,7 @@ public class GunItem extends BaseGeoItem {
     public static final DataTicket<AttachmentMap> ATTACHMENTS = DataTicket.create(IronsArtifice.id("attachments").toString(), AttachmentMap.class);
     public static final DataTicket<Double> RELOAD_PROGRESS_SECONDS_TICKET = DataTicket.create(IronsArtifice.id("reload_progress_seconds").toString(), Double.class);
     public static final DataTicket<HandOccupancy> HAND_OCCUPANCY_TICKET = DataTicket.create(IronsArtifice.id("hand_occupancy").toString(), HandOccupancy.class);
+    public static final DataTicket<Integer> ITEM_OWNER_ID_TICKET = DataTicket.create(IronsArtifice.id("item_owner_id").toString(), Integer.class);
     public static final String TRIGGERED_ANIMATION_CONTROLLER = "Actions";
     public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
 
