@@ -1,6 +1,5 @@
 package io.redspace.irons_artifice.modifier.on_hit_handlers;
 
-import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.data.LastHitTarget;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.entity.ChainEntity;
@@ -9,13 +8,11 @@ import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public class ChainShotOnHit implements PostHitEffect {
     @Override
     public void postHit(ServerLevel level, Bullet bullet, HitResult hitResult, Entity entity) {
-        IronsArtifice.LOGGER.debug("PostHit current: {}", entity);
         if (!(entity instanceof LivingEntity livingVictim)) {
             return;
         }
@@ -26,7 +23,6 @@ public class ChainShotOnHit implements PostHitEffect {
         LastHitTarget lastHit = LastHitTarget.get(livingOwner);
         if (lastHit.uuid() != null) {
             Entity previous = level.getEntity(lastHit.uuid());
-            IronsArtifice.LOGGER.debug("PostHit last: {}", previous);
             if (previous instanceof LivingEntity last
                     && !last.isRemoved()
                     && last != livingVictim

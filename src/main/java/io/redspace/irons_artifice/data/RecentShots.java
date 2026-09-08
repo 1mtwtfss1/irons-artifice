@@ -58,6 +58,5 @@ public record RecentShots(List<Long> ticks) {
                 ? entity.getData(DataAttachmentRegistry.RECENT_SHOTS)
                 : NONE;
         entity.setData(DataAttachmentRegistry.RECENT_SHOTS, current.withShot(entity.level().getGameTime()));
-        IronsArtifice.LOGGER.debug("{}", entity.getData(DataAttachmentRegistry.RECENT_SHOTS).size());
     }
 }
