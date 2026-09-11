@@ -62,22 +62,18 @@ public final class GunCriteria {
             if (record == null) {
                 return;
             }
-            int pellets = 0;
-            if (record.root()) {
-                ShotCombatTracker state = tracker(player);
-                pellets = state.recordRootHit(record.fireId(), victim.getId());
-                player.setData(DataAttachmentRegistry.SHOT_COMBAT, state);
-            }
+            ShotCombatTracker state = tracker(player);
+            int pellets = state.recordPelletHit(record.fireId(), victim.getId());
             boolean killed = false;
-            int lineageKills = 0;
+            int totalKills = 0;
             // event fires after damage is applied, so this comparison is accurate
             if (victim.getHealth() <= 0) {
                 killed = true;
-                ShotCombatTracker state = tracker(player);
-                player.setData(DataAttachmentRegistry.SHOT_COMBAT, state);
-                lineageKills = state.recordKill(record.lineageId(), victim.getUUID());
+                totalKills = state.recordKill(record.fireId(), victim.getUUID());
             }
-            triggerCombat(player, killed, event.getInflictedDamage(), player.distanceTo(victim), pellets, lineageKills, record, bullet.getProfile().itemStack(), victim, GunCombatSource.BULLET);
+            float damage = state.recordDamage(record.fireId(), event.getInflictedDamage());
+            player.setData(DataAttachmentRegistry.SHOT_COMBAT, state);
+            triggerCombat(player, killed, damage, player.distanceTo(victim), pellets, totalKills, record, bullet.getProfile().itemStack(), victim, GunCombatSource.BULLET);
         } else if (player.getWeaponItem().getItem() instanceof GunItem && player.getWeaponItem().has(DataComponents.KINETIC_WEAPON)) {
             boolean killed = victim.getHealth() <= 0;
             triggerCombat(player, killed, event.getInflictedDamage(), player.distanceTo(victim), 0, killed ? 1 : 0, null, player.getWeaponItem(), victim, GunCombatSource.BAYONET);
