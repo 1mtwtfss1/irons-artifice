@@ -1,23 +1,21 @@
 package io.redspace.irons_artifice.advancement;
 
 import io.redspace.irons_artifice.api.GunShootEvent;
+import io.redspace.irons_artifice.damage.DamageSources;
 import io.redspace.irons_artifice.data.RecentShots;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.registry.CriterionRegistry;
 import io.redspace.irons_artifice.registry.DataAttachmentRegistry;
-import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber
@@ -50,50 +48,41 @@ public final class GunCriteria {
 
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent.Post event) {
-        if (!(event.getSource().getEntity() instanceof ServerPlayer player)) {
-            return;
-        }
-        Bullet bullet = bulletFrom(event.getSource());
-        if (bullet == null) {
-            return;
-        }
-        ShotRecord record = bullet.getShotRecord();
-        if (record == null) {
-            return;
-        }
+        DamageSource damageSource = event.getSource();
         LivingEntity victim = event.getEntity();
-        int pellets = 0;
-        if (record.root()) {
-            ShotCombatTracker state = tracker(player);
-            pellets = state.recordRootHit(record.fireId(), victim.getId());
-            player.setData(DataAttachmentRegistry.SHOT_COMBAT, state);
-        }
-        triggerCombat(player, false, event.getInflictedDamage(), player.distanceTo(victim), pellets, 0, record, bullet.getProfile().itemStack(), victim, GunCombatSource.BULLET);
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void onDeath(LivingDeathEvent event) {
-        if (!(event.getSource().getEntity() instanceof ServerPlayer player)) {
+        if (!(damageSource.getEntity() instanceof ServerPlayer player)) {
             return;
         }
-        LivingEntity victim = event.getEntity();
-        Bullet bullet = bulletFrom(event.getSource());
-        if (bullet != null) {
+        if (damageSource.is(DamageSources.BULLET_DAMAGE_TYPE)) {
+            Bullet bullet = bulletFrom(damageSource);
+            if (bullet == null) {
+                return;
+            }
             ShotRecord record = bullet.getShotRecord();
             if (record == null) {
                 return;
             }
-            ShotCombatTracker state = tracker(player);
-            int lineageKills = state.recordKill(record.lineageId(), victim.getUUID());
-            player.setData(DataAttachmentRegistry.SHOT_COMBAT, state);
-            triggerCombat(player, true, victim.getMaxHealth(), player.distanceTo(victim), 0, lineageKills, record, bullet.getProfile().itemStack(), victim, GunCombatSource.BULLET);
-            return;
+            int pellets = 0;
+            if (record.root()) {
+                ShotCombatTracker state = tracker(player);
+                pellets = state.recordRootHit(record.fireId(), victim.getId());
+                player.setData(DataAttachmentRegistry.SHOT_COMBAT, state);
+            }
+            boolean killed = false;
+            int lineageKills = 0;
+            // event fires after damage is applied, so this comparison is accurate
+            if (victim.getHealth() <= 0) {
+                killed = true;
+                ShotCombatTracker state = tracker(player);
+                player.setData(DataAttachmentRegistry.SHOT_COMBAT, state);
+                lineageKills = state.recordKill(record.lineageId(), victim.getUUID());
+            }
+            triggerCombat(player, killed, event.getInflictedDamage(), player.distanceTo(victim), pellets, lineageKills, record, bullet.getProfile().itemStack(), victim, GunCombatSource.BULLET);
+        } else if (player.getWeaponItem().getItem() instanceof GunItem && player.getWeaponItem().has(DataComponents.KINETIC_WEAPON)) {
+            boolean killed = victim.getHealth() <= 0;
+            triggerCombat(player, killed, event.getInflictedDamage(), player.distanceTo(victim), 0, killed ? 1 : 0, null, player.getWeaponItem(), victim, GunCombatSource.BAYONET);
         }
-        ItemStack gun = player.getMainHandItem();
-        if (gun.getItem() instanceof GunItem && gun.has(DataComponents.KINETIC_WEAPON)
-                && (gun.has(DataComponentRegistry.ATTACHMENT.get()) || gun.has(DataComponents.KINETIC_WEAPON))) {
-            triggerCombat(player, true, victim.getMaxHealth(), player.distanceTo(victim), 0, 1, null, gun, victim, GunCombatSource.BAYONET);
-        }
+
     }
 
     private static void triggerCombat(
