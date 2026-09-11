@@ -19,7 +19,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jspecify.annotations.Nullable;
 
+import java.text.DecimalFormat;
+
 public class Utils {
+    public static final DecimalFormat DECIMAL_FORMAT = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT;
 
     public static Vec3 reflect(Vec3 direction, Vec3 normal) {
         return direction.subtract(normal.scale(2 * normal.dot(direction)));

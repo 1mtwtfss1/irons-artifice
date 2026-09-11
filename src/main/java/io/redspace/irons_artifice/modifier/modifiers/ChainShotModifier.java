@@ -6,6 +6,7 @@ import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.ChainEntity;
 import io.redspace.irons_artifice.modifier.GunModifier;
 import io.redspace.irons_artifice.modifier.on_hit_handlers.ChainShotOnHit;
+import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -26,6 +27,6 @@ public final class ChainShotModifier implements GunModifier {
     @Override
     public void getDescriptionText(Consumer<Component> builder) {
         builder.accept(Component.translatable("irons_artifice.modifier.chain_shot").withStyle(ChatFormatting.AQUA));
-        builder.accept(Component.translatable("irons_artifice.tooltip.max_range", ChainEntity.SPAWN_RANGE).withStyle(ChatFormatting.AQUA));
+        builder.accept(Component.translatable("irons_artifice.tooltip.max_range", Utils.DECIMAL_FORMAT.format(ChainEntity.SPAWN_RANGE)).withStyle(ChatFormatting.AQUA));
     }
 }
