@@ -11,17 +11,20 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.criterion.DamageSourcePredicate;
 import net.minecraft.advancements.criterion.EntityEquipmentPredicate;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.KilledTrigger;
 import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.criterion.TagPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Consumer;
@@ -37,7 +40,7 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
                         Identifier.withDefaultNamespace("block/stripped_dark_oak_log"),
                         AdvancementType.TASK,
                         true,
-                        true,
+                        false,
                         false
                 )
                 .addCriterion("blackpowder", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.BLACKPOWDER.get()))
@@ -49,7 +52,6 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
                 GunModifiedTrigger.TriggerInstance.anyModifier());
         AdvancementHolder fullyLoaded = child(writer, artifice, "fully_loaded", ItemRegistry.BULLET.get(), AdvancementType.GOAL, false,
                 GunModifiedTrigger.TriggerInstance.allSlotsFilled());
-
 
 
         AdvancementHolder magFed = Advancement.Builder.advancement()
@@ -82,13 +84,15 @@ public class ArtificeAdvancements implements AdvancementSubProvider {
 
         child(writer, arms, "peer_review", ItemRegistry.ILLIFICER_SPAWN_EGG.get(), AdvancementType.TASK, true,
                 KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity()
-                        .of(registries.lookupOrThrow(Registries.ENTITY_TYPE), EntityRegistry.ILLIFICER.get())));
+                                .of(registries.lookupOrThrow(Registries.ENTITY_TYPE), EntityRegistry.ILLIFICER.get()),
+                        DamageSourcePredicate.Builder.damageType()
+                                .tag(TagPredicate.is(TagKey.create(Registries.DAMAGE_TYPE, IronsArtifice.id("bullet"))))));
 
         child(writer, fullyLoaded, "professionals_have_standards", ItemRegistry.SCOPE_ATTACHMENT_MODIFIER.get(), AdvancementType.CHALLENGE, false,
                 GunCombatTrigger.TriggerInstance.impact(MinMaxBounds.Doubles.atLeast(20), MinMaxBounds.Doubles.atLeast(100)));
         child(writer, fullyLoaded, "ventilated", ItemRegistry.SCATTERSHOT.get(), AdvancementType.CHALLENGE, false,
                 GunCombatTrigger.TriggerInstance.pelletsOnTarget(12));
-        child(writer, fullyLoaded, "through_and_through", ItemRegistry.STEEL_CORE.get(), AdvancementType.CHALLENGE, true,
+        child(writer, fullyLoaded, "through_and_through", ItemRegistry.STEEL_CORE.get(), AdvancementType.CHALLENGE, false,
                 GunCombatTrigger.TriggerInstance.lineageKills(5));
         child(writer, fullyLoaded, "dont_bring_a_gun_to_a_knife_fight", ItemRegistry.BAYONET_ATTACHMENT_MODIFIER.get(), AdvancementType.CHALLENGE, false,
                 GunCombatTrigger.TriggerInstance.bayonetKill());
