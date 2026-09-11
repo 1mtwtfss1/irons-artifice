@@ -19,7 +19,6 @@ public final class ShotComponents {
     public static final ComponentType<Value> FIRE_RATE = new ComponentType<>(IronsArtifice.id("fire_rate"), () -> Value.of(1));
     public static final ComponentType<Value> AMMO_CONSUME_CHANCE = new ComponentType<>(IronsArtifice.id("ammo_consume_chance"), () -> Value.of(1));
     public static final ComponentType<Boolean> FORCE_AUTO_FIRE = new ComponentType<>(IronsArtifice.id("force_auto_fire"), () -> false);
-    public static final ComponentType<Boolean> LEECH = new ComponentType<>(IronsArtifice.id("leech"), () -> false);
     public static final ComponentType<Value> ACCELERATING = new ComponentType<>(IronsArtifice.id("accelerating"), () -> Value.of(0));
 
     // Attributes
@@ -39,8 +38,9 @@ public final class ShotComponents {
     public static final ComponentType<PostHitEffects> POST_HIT_EFFECTS = new ComponentType<>(IronsArtifice.id("post_hit_effects"), PostHitEffects::new);
     public static final ComponentType<Boolean> BREAKS_BLOCKS = new ComponentType<>(IronsArtifice.id("breaks_blocks"), () -> false);
     public static final ComponentType<Value> SEEKING = new ComponentType<>(IronsArtifice.id("seeking"), () -> Value.of(0));
+    public static final ComponentType<Boolean> LEECH = new ComponentType<>(IronsArtifice.id("leech"), () -> false);
 
-    // Effects
+    // UX/VFX
     public static final ComponentType<RecoilProfile> CAMERA_RECOIL = new ComponentType<>(IronsArtifice.id("camera_recoil"), () -> RecoilProfile.simple(10, 0));
     public static final ComponentType<Value> CAMERA_RECOIL_MULTIPLIER = new ComponentType<>(IronsArtifice.id("camera_recoil_multiplier"), () -> Value.of(1));
     public static final ComponentType<Value> CHARACTER_BLOWBACK = new ComponentType<>(IronsArtifice.id("character_blowback"), () -> Value.of(0));
