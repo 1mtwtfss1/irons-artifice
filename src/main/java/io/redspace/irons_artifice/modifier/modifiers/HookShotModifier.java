@@ -20,7 +20,7 @@ import net.minecraft.world.phys.HitResult;
 
 import java.util.function.Consumer;
 
-public final class HarpoonTestModifier implements GunModifier {
+public final class HookShotModifier implements GunModifier {
     public static final float MAX_RANGE = 32;
 
     @Override
@@ -45,6 +45,7 @@ public final class HarpoonTestModifier implements GunModifier {
 
     @Override
     public void getDescriptionText(Consumer<Component> builder) {
+        builder.accept(Component.translatable("irons_artifice.modifier.hook_shoot").withStyle(ChatFormatting.AQUA));
         builder.accept(Component.translatable("irons_artifice.tooltip.max_range", Utils.DECIMAL_FORMAT.format(MAX_RANGE)).withStyle(ChatFormatting.AQUA));
     }
 }

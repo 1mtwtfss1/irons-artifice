@@ -48,7 +48,7 @@ public class ChainEntityRenderer extends EntityRenderer<ChainEntity, ChainEntity
             state.valid = false;
             return;
         }
-        if (first.isRemoved() || first.isDeadOrDying() || second.isRemoved() || second.isDeadOrDying()) {
+        if (first.isRemoved() || second.isRemoved()) {
             state.valid = false;
             return;
         }

@@ -52,6 +52,7 @@
   "item.irons_artifice.heavy_bolt_modifier": "Heavy Bolt Modifier",
   "item.irons_artifice.bayonet_attachment_modifier": "Bayonet Attachment Modifier",
   "item.irons_artifice.suppressor_attachment_modifier": "Suppressor Attachment Modifier",
+  "item.irons_artifice.hook_shot_modifier": "Hook Shot Modifier",
 
   "container.irons_artifice.gun": "Gun",
   "key.irons_artifice.open_modifier_menu": "Open Gun Modifiers",
@@ -99,6 +100,7 @@
   "irons_artifice.modifier.leech": "When empty, spend %s Heart to fire",
   "irons_artifice.modifier.suppressor": "Reduces Gunshot Sound Range",
   "irons_artifice.modifier.flash_hider": "Hides Muzzle Flash",
+  "irons_artifice.modifier.hook_shoot": "Reels hit creatures towards you",
 
   "irons_artifice.value_modifier.plus": "+%s %s",
   "irons_artifice.value_modifier.minus": "-%s %s",

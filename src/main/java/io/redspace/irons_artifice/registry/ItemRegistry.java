@@ -18,7 +18,7 @@ import io.redspace.irons_artifice.modifier.modifiers.FrozenJacketModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GunOilModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
-import io.redspace.irons_artifice.modifier.modifiers.HarpoonTestModifier;
+import io.redspace.irons_artifice.modifier.modifiers.HookShotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyBoltModifier;
 import io.redspace.irons_artifice.modifier.modifiers.IncendiaryTipModifier;
@@ -131,8 +131,8 @@ public final class ItemRegistry {
             "leech_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LeechModifier()));
     public static final DeferredItem<ModifierItem> HEAVY_BOLT_MODIFIER = ITEMS.registerItem(
             "heavy_bolt_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyBoltModifier()));
-    public static final DeferredItem<ModifierItem> HARPOON_MODIFIER = ITEMS.registerItem(
-            "harpoon_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HarpoonTestModifier()));
+    public static final DeferredItem<ModifierItem> HOOK_SHOT_MODIFIER = ITEMS.registerItem(
+            "hook_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HookShotModifier()));
     public static final DeferredItem<ModifierItem> SUPRESSOR_ATTACHMENT_MODIFIER = ITEMS.registerItem(
             "suppressor_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SuppressorAttachmentModifier()));
 
