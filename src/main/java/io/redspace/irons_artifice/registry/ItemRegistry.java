@@ -87,6 +87,8 @@ public final class ItemRegistry {
             "blackpowder_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BlackpowderChargeModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_SHOT = ITEMS.registerItem(
             "chain_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainShotModifier()));
+    public static final DeferredItem<ModifierItem> HOOK_SHOT_MODIFIER = ITEMS.registerItem(
+            "hook_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HookShotModifier()));
     public static final DeferredItem<ModifierItem> VENOM_CAPSULE = ITEMS.registerItem(
             "venom_capsule_modifier", properties -> new ModifierItem(properties.stacksTo(1), new VenomCapsuleModifier()));
     public static final DeferredItem<ModifierItem> SCATTERSHOT = ITEMS.registerItem(
@@ -127,14 +129,12 @@ public final class ItemRegistry {
             "scope_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SpyglassAttachmentModifier()));
     public static final DeferredItem<ModifierItem> BAYONET_ATTACHMENT_MODIFIER = ITEMS.registerItem(
             "bayonet_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BayonetAttachmentModifier()));
+    public static final DeferredItem<ModifierItem> SUPRESSOR_ATTACHMENT_MODIFIER = ITEMS.registerItem(
+            "suppressor_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SuppressorAttachmentModifier()));
     public static final DeferredItem<ModifierItem> LEECH_MODIFIER = ITEMS.registerItem(
             "leech_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LeechModifier()));
     public static final DeferredItem<ModifierItem> HEAVY_BOLT_MODIFIER = ITEMS.registerItem(
             "heavy_bolt_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyBoltModifier()));
-    public static final DeferredItem<ModifierItem> HOOK_SHOT_MODIFIER = ITEMS.registerItem(
-            "hook_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HookShotModifier()));
-    public static final DeferredItem<ModifierItem> SUPRESSOR_ATTACHMENT_MODIFIER = ITEMS.registerItem(
-            "suppressor_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SuppressorAttachmentModifier()));
 
     //    public static final DeferredItem<ModifierItem> FAIRY_DUST = ITEMS.registerItem(
     //            "fairy_dust_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FairyDustModifier()));

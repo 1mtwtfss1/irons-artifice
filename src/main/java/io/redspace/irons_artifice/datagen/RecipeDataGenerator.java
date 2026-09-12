@@ -447,6 +447,16 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('*', commonTag("ingots/gold"))
                 .unlockedBy("has_precursor", this.has(ItemRegistry.CLOCKWORK_COMPONENTS))
                 .save(this.output);
+        // Hook Shot
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.HOOK_SHOT_MODIFIER.get())
+                .pattern("**B")
+                .pattern(" C*")
+                .pattern("C *")
+                .define('B', ItemRegistry.BULLET)
+                .define('C', Items.IRON_CHAIN)
+                .define('*', commonTag("ingots/iron"))
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BULLET))
+                .save(this.output);
 
     }
 
