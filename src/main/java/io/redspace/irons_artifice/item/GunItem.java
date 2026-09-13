@@ -123,25 +123,22 @@ public class GunItem extends BaseGeoItem {
         return gunProfile.magazineCapacity();
     }
 
-    public static @Nullable HandOccupancy currentOccupancy(ItemStack stack) {
-        if (!(stack.getItem() instanceof GunItem gun)) {
-            return null;
-        }
-        if (isReloading(stack)) {
-            return gun.getGun().occupancyFor("reload");
-        }
-        if (FireDelayState.isActive(stack)) {
-            return gun.getGun().occupancyFor("fire");
-        }
-        return gun.getGun().defaultOccupancy();
-    }
-
     public static @Nullable HandOccupancy currentOccupancy(LivingEntity entity, InteractionHand hand) {
         return currentOccupancy(entity, entity.getItemInHand(hand));
     }
 
     public static @Nullable HandOccupancy currentOccupancy(LivingEntity entity, ItemStack stack) {
-        HandOccupancy occupancy = currentOccupancy(stack);
+        if (!(stack.getItem() instanceof GunItem gun)) {
+            return null;
+        }
+        HandOccupancy occupancy;
+        if (isReloading(stack)) {
+            occupancy = gun.getGun().occupancyFor("reload");
+        } else if (FireDelayState.isActive(entity, stack)) {
+            occupancy = gun.getGun().occupancyFor("fire");
+        } else {
+            occupancy = gun.getGun().defaultOccupancy();
+        }
         if (occupancy == HandOccupancy.BOTH && stack == entity.getOffhandItem() && !entity.getMainHandItem().isEmpty()) {
             return HandOccupancy.MAINHAND;
         }

@@ -45,17 +45,22 @@ import java.util.UUID;
 
 public final class GunplayManager {
 
-    public static boolean tryFire(LivingEntity shooter, Vec3 direction) {
+    public static final int EARLY_SHOT_TOLERANCE_TICKS = 1;
+
+    public static FireOutcome tryFire(LivingEntity shooter, Vec3 direction) {
         if (!shooter.isAlive() || shooter.isSpectator()) {
-            return false;
+            return FireOutcome.INVALID_SHOOTER;
         }
         InteractionHand hand = InteractionHand.MAIN_HAND;
         ItemStack stack = shooter.getItemInHand(hand);
         if (!(stack.getItem() instanceof GunItem gunItem)) {
-            return false;
+            return FireOutcome.NO_GUN;
         }
-        if (FireDelayState.isActive(stack) || GunItem.isReloading(stack)) {
-            return false;
+        if (FireDelayState.isActive(shooter, stack)) {
+            return FireOutcome.FIRE_DELAY_ACTIVE;
+        }
+        if (GunItem.isReloading(stack)) {
+            return FireOutcome.RELOADING;
         }
         MagazineContents magazine = GunItem.getMagazine(stack);
         GunProfile gunProfile = gunItem.getGun();
@@ -66,14 +71,14 @@ public final class GunplayManager {
             if (shooter instanceof Player player && player.level().isClientSide()) {
                 ClientHelper.handleLocalDryFire(player, profile.get(ShotComponents.GUNSHOT_SOUND).getDryFireSound());
             }
-            return false;
+            return FireOutcome.EMPTY_MAGAZINE;
         }
         if (NeoForge.EVENT_BUS.post(new GunAboutToShootEvent(shooter, profile)).isCanceled()) {
-            return false;
+            return FireOutcome.EVENT_CANCELLED;
         }
         beginFireDelay(shooter, stack, (int) Math.round(profile.fireDelayTicks()), pitchMultiplierForFire(profile));
         if (!(shooter.level() instanceof ServerLevel level)) {
-            return true;
+            return FireOutcome.FIRED;
         }
 
         long now = level.getGameTime();
@@ -96,7 +101,36 @@ public final class GunplayManager {
         if (hand == InteractionHand.MAIN_HAND && shooter.isUsingItem() && shooter.getUseItem() != stack && GunItem.isOffhandItemUseBlocked(shooter)) {
             shooter.stopUsingItem();
         }
+        return FireOutcome.FIRED;
+    }
+
+    /**
+     * Holds a shot that missed the gate by no more than {@link #EARLY_SHOT_TOLERANCE_TICKS}.
+     *
+     * @return whether the shot was held rather than discarded
+     */
+    public static boolean queueEarlyShot(LivingEntity shooter, Vec3 direction) {
+        int remaining = FireDelayState.remaining(shooter);
+        if (remaining <= 0 || remaining > EARLY_SHOT_TOLERANCE_TICKS) {
+            return false;
+        }
+        PendingShot.set(shooter, new PendingShot(direction, shooter.level().getGameTime()));
         return true;
+    }
+
+    /**
+     * Fires a held shot, if there is a valid one
+     */
+    public static void flushPendingShot(LivingEntity shooter) {
+        PendingShot pending = PendingShot.get(shooter);
+        if (pending.isEmpty()) {
+            return;
+        }
+        PendingShot.clear(shooter);
+        if (pending.hasExpired(shooter.level().getGameTime())) {
+            return;
+        }
+        tryFire(shooter, pending.direction());
     }
 
     private static void depleteMagazine(LivingEntity shooter, ShotProfile profile, ItemStack stack, MagazineContents magazine, int ammoToConsume) {
@@ -104,7 +138,7 @@ public final class GunplayManager {
             return;
         }
         var event = new AmmoEvent.Consume(shooter, profile, ammoToConsume);
-        if (!NeoForge.EVENT_BUS.post(event).isCanceled()){
+        if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
             GunItem.setMagazine(stack, magazine.deplete(event.getAmmoToConsume()));
         }
     }
@@ -129,9 +163,7 @@ public final class GunplayManager {
     }
 
     private static void beginFireDelay(LivingEntity shooter, ItemStack stack, int ticks, float pitchMultiplier) {
-        if (ticks > 0) {
-            FireDelayState.start(stack, ticks, pitchMultiplier);
-        }
+        FireDelayState.start(shooter, stack, ticks, pitchMultiplier);
     }
 
     private static void applyCharacterBlowback(LivingEntity living, ShotProfile profile) {
