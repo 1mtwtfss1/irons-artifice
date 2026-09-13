@@ -129,25 +129,22 @@ public class GunItem extends BaseGeoItem {
         return gunProfile.magazineCapacity();
     }
 
-    public static @Nullable HandOccupancy currentOccupancy(ItemStack stack) {
-        if (!(stack.getItem() instanceof GunItem gun)) {
-            return null;
-        }
-        if (isReloading(stack)) {
-            return gun.getGun().occupancyFor("reload");
-        }
-        if (FireDelayState.isActive(stack)) {
-            return gun.getGun().occupancyFor("fire");
-        }
-        return gun.getGun().defaultOccupancy();
-    }
-
     public static @Nullable HandOccupancy currentOccupancy(LivingEntity entity, InteractionHand hand) {
         return currentOccupancy(entity, entity.getItemInHand(hand));
     }
 
     public static @Nullable HandOccupancy currentOccupancy(LivingEntity entity, ItemStack stack) {
-        HandOccupancy occupancy = currentOccupancy(stack);
+        if (!(stack.getItem() instanceof GunItem gun)) {
+            return null;
+        }
+        HandOccupancy occupancy;
+        if (isReloading(stack)) {
+            occupancy = gun.getGun().occupancyFor("reload");
+        } else if (FireDelayState.isActive(entity, stack)) {
+            occupancy = gun.getGun().occupancyFor("fire");
+        } else {
+            occupancy = gun.getGun().defaultOccupancy();
+        }
         if (occupancy == HandOccupancy.BOTH && stack == entity.getOffhandItem() && !entity.getMainHandItem().isEmpty()) {
             return HandOccupancy.MAINHAND;
         }
@@ -181,7 +178,7 @@ public class GunItem extends BaseGeoItem {
         String damage = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(shotProfile.value(ShotComponents.DAMAGE));
         int bulletCount = (int) shotProfile.value(ShotComponents.PROJECTILE_COUNT);
         int bulletSpeedPercent = (int) (100 * shotProfile.value(ShotComponents.BULLET_SPEED) / Bullet.BASE_SPEED);
-        String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20 / shotProfile.fireDelayTicks());
+        String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20.0 / shotProfile.fireDelayTicks());
         String reloadTime = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(gunProfile.reloadTimeTicks() / 20f / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (bulletCount > 1) {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage_per_bullet", highlightText.apply(damage), Component.literal(String.valueOf(bulletCount)).withStyle(ChatFormatting.YELLOW)));

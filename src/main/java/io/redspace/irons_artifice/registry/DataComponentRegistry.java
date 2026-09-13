@@ -2,7 +2,6 @@ package io.redspace.irons_artifice.registry;
 
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.item.AttachmentMap;
-import io.redspace.irons_artifice.item.FireDelayState;
 import io.redspace.irons_artifice.item.MagazineContents;
 import io.redspace.irons_artifice.item.ReloadState;
 import net.minecraft.core.component.DataComponentPatch;
@@ -25,10 +24,6 @@ public final class DataComponentRegistry {
             COMPONENTS.registerComponentType("reload_state", builder -> builder
                     .persistent(ReloadState.CODEC)
                     .networkSynchronized(ReloadState.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FireDelayState>> FIRE_DELAY_STATE =
-            COMPONENTS.registerComponentType("fire_delay_state", builder -> builder
-                    .persistent(FireDelayState.CODEC)
-                    .networkSynchronized(FireDelayState.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DataComponentPatch>> MODIFIER_PATCH =
             COMPONENTS.registerComponentType("modifier_patch", builder -> builder
                     .persistent(DataComponentPatch.CODEC)

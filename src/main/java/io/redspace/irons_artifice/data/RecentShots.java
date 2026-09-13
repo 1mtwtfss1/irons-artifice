@@ -1,6 +1,5 @@
 package io.redspace.irons_artifice.data;
 
-import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.registry.DataAttachmentRegistry;
 import net.minecraft.world.entity.LivingEntity;
 

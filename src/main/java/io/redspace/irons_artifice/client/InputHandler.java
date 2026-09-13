@@ -3,8 +3,8 @@ package io.redspace.irons_artifice.client;
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.GunItem;
-import io.redspace.irons_artifice.item.GunplayManager;
 import io.redspace.irons_artifice.network.packets.ServerboundFireGunPacket;
+import io.redspace.irons_artifice.item.GunplayManager;
 import io.redspace.irons_artifice.network.packets.ServerboundOpenModifierMenuPacket;
 import io.redspace.irons_artifice.network.packets.ServerboundReloadGunPacket;
 import net.minecraft.client.Minecraft;
@@ -85,7 +85,7 @@ public final class InputHandler {
     }
 
     private static void tryFire(ShotProfile profile, LocalPlayer player) {
-        if (GunplayManager.tryFire(player, player.getLookAngle())) {
+        if (GunplayManager.tryFire(player, player.getLookAngle()).fired()) {
             ClientPacketDistributor.sendToServer(new ServerboundFireGunPacket(player.getLookAngle()));
             RecoilManager.applyRecoil(profile);
         }

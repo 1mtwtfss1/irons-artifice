@@ -147,16 +147,11 @@ public class GunInHandRenderer extends GeoItemRenderer<GunItem> {
                 GunItem.ATTACHMENTS,
                 renderData.itemStack().getOrDefault(DataComponentRegistry.ATTACHMENT, AttachmentMap.EMPTY)
         );
-        LivingEntity owner = renderData.itemOwner() instanceof LivingEntity living
-                ? living
-                : Minecraft.getInstance().player;
-        if (owner != null) {
-            renderState.addGeckolibData(GunItem.ITEM_OWNER_ID_TICKET, owner.getId());
+        if (renderData.itemOwner() instanceof LivingEntity living) {
+            HandOccupancy occupancy = GunItem.currentOccupancy(living, renderData.itemStack());
+            renderState.addGeckolibData(GunItem.HAND_OCCUPANCY_TICKET, occupancy);
+            renderState.addGeckolibData(GunItem.ITEM_OWNER_ID_TICKET, living.getId());
         }
-        HandOccupancy occupancy = owner != null
-                ? GunItem.currentOccupancy(owner, renderData.itemStack())
-                : GunItem.currentOccupancy(renderData.itemStack());
-        renderState.addGeckolibData(GunItem.HAND_OCCUPANCY_TICKET, occupancy);
     }
 
     @Override

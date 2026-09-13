@@ -8,6 +8,7 @@ import io.redspace.irons_artifice.entity.DrownedPirateHelper;
 import io.redspace.irons_artifice.item.FireDelayState;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.item.GunplayManager;
+import io.redspace.irons_artifice.item.PendingShot;
 import io.redspace.irons_artifice.item.ReloadState;
 import io.redspace.irons_artifice.network.packets.ClientboundEquipSoundPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundGunAnimationPacket;
@@ -63,8 +64,11 @@ public class ServerEvents {
             return;
         }
         var level = living.level();
-        if (FireDelayState.isActive(itemStack)) {
-            FireDelayState.tick(itemStack, gunItem, level, living);
+        if (FireDelayState.get(living).duration() > 0) {
+            boolean finished = FireDelayState.tick(living, gunItem, level);
+            if (finished && !level.isClientSide()) {
+                GunplayManager.flushPendingShot(living);
+            }
         }
         // let reload ticking (and sfx handling) be server authoritative
         if (GunItem.isReloading(itemStack)) {
@@ -101,6 +105,9 @@ public class ServerEvents {
     @SubscribeEvent
     public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
         var entity = event.getEntity();
+        if (event.getSlot().equals(EquipmentSlot.MAINHAND)) {
+            PendingShot.clear(entity);
+        }
         var equippedStack = event.getTo();
         var fromStack = event.getFrom();
         if (entity.level() instanceof ServerLevel serverLevel &&

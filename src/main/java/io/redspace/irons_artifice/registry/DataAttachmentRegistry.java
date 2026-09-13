@@ -5,6 +5,8 @@ import io.redspace.irons_artifice.advancement.ShotCombatTracker;
 import io.redspace.irons_artifice.data.LastHitTarget;
 import io.redspace.irons_artifice.data.RecentShots;
 import io.redspace.irons_artifice.data.RecoilState;
+import io.redspace.irons_artifice.item.FireDelayState;
+import io.redspace.irons_artifice.item.PendingShot;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -15,6 +17,14 @@ import java.util.function.Supplier;
 public final class DataAttachmentRegistry {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =
             DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, IronsArtifice.MODID);
+
+    public static final Supplier<AttachmentType<FireDelayState>> FIRE_DELAY =
+            ATTACHMENT_TYPES.register("fire_delay",
+                    () -> AttachmentType.builder(() -> FireDelayState.NONE).build());
+
+    public static final Supplier<AttachmentType<PendingShot>> PENDING_SHOT =
+            ATTACHMENT_TYPES.register("pending_shot",
+                    () -> AttachmentType.builder(() -> PendingShot.NONE).build());
 
     public static final Supplier<AttachmentType<RecoilState>> RECOIL =
             ATTACHMENT_TYPES.register("recoil",
