@@ -31,8 +31,8 @@ public record ShotProfile(ItemStack itemStack, GunProfile gun, MagazineContents 
         return new ShotProfile(itemStack, gun, magazineContents, components.deepCopy());
     }
 
-    public double fireDelayTicks() {
-        return value(ShotComponents.FIRE_DELAY) / Math.max(1e-6, value(ShotComponents.FIRE_RATE));
+    public int fireDelayTicks() {
+        return (int) Math.round(value(ShotComponents.FIRE_DELAY) / Math.max(1e-6, value(ShotComponents.FIRE_RATE)));
     }
 
     public FireMode fireMode() {

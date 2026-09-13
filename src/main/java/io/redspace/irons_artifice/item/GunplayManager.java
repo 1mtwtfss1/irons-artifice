@@ -76,7 +76,7 @@ public final class GunplayManager {
         if (NeoForge.EVENT_BUS.post(new GunAboutToShootEvent(shooter, profile)).isCanceled()) {
             return FireOutcome.EVENT_CANCELLED;
         }
-        beginFireDelay(shooter, stack, (int) Math.round(profile.fireDelayTicks()), pitchMultiplierForFire(profile));
+        beginFireDelay(shooter, stack, profile.fireDelayTicks(), pitchMultiplierForFire(profile));
         if (!(shooter.level() instanceof ServerLevel level)) {
             return FireOutcome.FIRED;
         }
