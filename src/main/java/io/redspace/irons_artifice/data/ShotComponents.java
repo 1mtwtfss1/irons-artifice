@@ -38,7 +38,7 @@ public final class ShotComponents {
     public static final ComponentType<PostHitEffects> POST_HIT_EFFECTS = new ComponentType<>(IronsArtifice.id("post_hit_effects"), PostHitEffects::new);
     public static final ComponentType<Boolean> BREAKS_BLOCKS = new ComponentType<>(IronsArtifice.id("breaks_blocks"), () -> false);
     public static final ComponentType<Value> SEEKING = new ComponentType<>(IronsArtifice.id("seeking"), () -> Value.of(0));
-    public static final ComponentType<Boolean> LEECH = new ComponentType<>(IronsArtifice.id("leech"), () -> false);
+    public static final ComponentType<Value> LEECH = new ComponentType<>(IronsArtifice.id("leech"), () -> Value.of(0));
 
     // UX/VFX
     public static final ComponentType<RecoilProfile> CAMERA_RECOIL = new ComponentType<>(IronsArtifice.id("camera_recoil"), () -> RecoilProfile.simple(10, 0));
