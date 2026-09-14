@@ -246,7 +246,7 @@ public final class Guns {
                 map.set(ShotComponents.CHARACTER_BLOWBACK, Value.of(0.05));
                 map.set(ShotComponents.FIRE_DELAY, Value.of(4));
                 map.set(ShotComponents.SPREAD, Value.of(2));
-                map.set(ShotComponents.DAMAGE, Value.of(6));
+                map.set(ShotComponents.DAMAGE, Value.of(7));
                 map.set(ShotComponents.MUZZLE_FLASH, MuzzleFlashSettings.of( MuzzleFlashType.TRIANGLE, MuzzleFlashType.SMALL_STAR));
                 map.set(ShotComponents.GUNSHOT_SOUND, new GunShotSoundStack(
                         GunShotSoundSettings.standardShot(SoundRegistry.CLOCKWORK_RIFLE_SHOOT, 1f),
