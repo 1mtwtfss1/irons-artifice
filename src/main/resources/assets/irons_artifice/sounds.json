@@ -204,5 +204,12 @@
       "irons_artifice:lightning_shoot_accent_2",
       "irons_artifice:lightning_shoot_accent_3"
     ]
+  },
+  "modifier.frozen_jacket.shoot": {
+    "sounds": [
+      "irons_artifice:icefreeze_01",
+      "irons_artifice:icefreeze_02",
+      "irons_artifice:icefreeze_03"
+    ]
   }
 }

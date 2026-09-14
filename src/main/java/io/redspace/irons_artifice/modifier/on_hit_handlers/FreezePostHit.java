@@ -10,7 +10,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class FreezePostHit implements PostHitEffect {
-    public static final int FREEZE_TICKS = 140;
+    public static final int FREEZE_TICKS = 80;
 
     @Override
     public void postHit(ServerLevel level, Bullet bullet, HitResult hitResult, Entity entity) {

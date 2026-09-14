@@ -21,13 +21,13 @@ public final class FrozenJacketModifier implements GunModifier {
         components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(ColorTransitionParticleOption.bulletTrail(
                 FrozenShrapnelOnHit.TRAIL_COLOR_FROM, FrozenShrapnelOnHit.TRAIL_COLOR_TO
         ));
-
         components.getOrCreate(ShotComponents.MUZZLE_FLASH).addTint(MUZZLE_TINT);
+//        components.getOrCreate(ShotComponents.GUNSHOT_SOUND).addAccent(PlayableSound.of(SoundRegistry.FROZEN_JACKET_ACCENT_SHOOT, 3f, 0.9f, 1.1f));
     }
 
     @Override
     public void getDescriptionText(Consumer<Component> builder) {
-        builder.accept(Component.translatable("irons_artifice.component_type.freeze_on_hit").withStyle(ChatFormatting.AQUA));
+        builder.accept(Component.translatable("irons_artifice.component_type.freeze_on_hit", FreezePostHit.FREEZE_TICKS / 20).withStyle(ChatFormatting.AQUA));
         builder.accept(Component.translatable("irons_artifice.modifier.frozen_jacket",
                 FrozenShrapnelOnHit.SHRAPNEL_COUNT,
                 (int) (FrozenShrapnelOnHit.DAMAGE_FRACTION * 100)).withStyle(ChatFormatting.AQUA));

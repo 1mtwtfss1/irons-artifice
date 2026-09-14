@@ -23,6 +23,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> COCK_HAMMER = registerSoundEvent("item.generic.cock_hammer");
     public static DeferredHolder<SoundEvent, SoundEvent> LIGHTNING_ACCENT_SHOOT = registerSoundEvent("modifier.chain_lightning.shoot");
     public static DeferredHolder<SoundEvent, SoundEvent> LIGHTNING_ACCENT_IMPACT = registerSoundEvent("modifier.chain_lightning.impact");
+    public static DeferredHolder<SoundEvent, SoundEvent> FROZEN_JACKET_ACCENT_SHOOT = registerSoundEvent("modifier.frozen_jacket.shoot");
     public static DeferredHolder<SoundEvent, SoundEvent> LEATHER_ACCENT = registerSoundEvent("item.generic.leather_accent");
     public static DeferredHolder<SoundEvent, SoundEvent> INSTANT_RELOAD = registerSoundEvent("item.cowboy_hat.instant_reload");
     public static DeferredHolder<SoundEvent, SoundEvent> INFINITY_BULLET = registerSoundEvent("modifier.enchanted_bullet.proc");
