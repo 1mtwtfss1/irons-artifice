@@ -9,6 +9,9 @@
 - Fire Rate is now displayed in the tooltip at the effective firerate instead of the raw numerical rate
 - Clockwork Rifle damage 6 -> 7
 
+### Fixes
+- Fixed Bullets not firing projectile impact event
+
 ### API
 #### Addon support
 - All `GunItems`s, including addons, are now automatically registered with a Gun renderers and arm pose

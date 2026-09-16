@@ -46,6 +46,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -334,6 +335,11 @@ public class Bullet extends Projectile {
         // setup default hit state
         hitState = HitState.DISCARD;
         brokeBlocksThisTick = false;
+        if (EventHooks.onProjectileImpact(this, hitResult)) {
+            // event contract states projectile continues flying if the event is cancelled
+            hitState = HitState.CONTINUE;
+            return;
+        }
         super.onHit(hitResult);
         if (level() instanceof ServerLevel serverLevel) {
             HitEntityAccumulator accumulator = new HitEntityAccumulator();
