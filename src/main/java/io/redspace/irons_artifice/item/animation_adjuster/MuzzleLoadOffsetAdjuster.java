@@ -4,6 +4,7 @@ import com.geckolib.animation.state.BoneSnapshot;
 import com.geckolib.renderer.base.BoneSnapshots;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
+import io.redspace.irons_artifice.api.GunBones;
 import io.redspace.irons_artifice.item.GunItem;
 import net.minecraft.util.Mth;
 
@@ -20,8 +21,8 @@ public final class MuzzleLoadOffsetAdjuster implements AnimationAdjuster {
         if (muzzleOffset == 0f || reloadPercent == 0f) {
             return;
         }
-        Optional<BoneSnapshot> gunOpt = snapshots.get("gun");
-        Optional<BoneSnapshot> ramrodOpt = snapshots.get("ramrod");
+        Optional<BoneSnapshot> gunOpt = snapshots.get(GunBones.GUN);
+        Optional<BoneSnapshot> ramrodOpt = snapshots.get(GunBones.RAMROD);
         float weight = envelope(reloadPercent);
         if (weight == 0f) {
             return;

@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.modifier.modifiers;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.api.GunBones;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.ValueModifier;
 import io.redspace.irons_artifice.item.AttachmentMap;
@@ -33,7 +34,7 @@ public class SpyglassAttachmentModifier extends ValueStackModifier {
         return Optional.of(DataComponentPatch.builder()
                 .set(DataComponentRegistry.GUN_SPYGLASS.get(), Unit.INSTANCE)
                 .set(DataComponentRegistry.ATTACHMENT.get(), new AttachmentMap(Map.of(
-                        "attachment_optic", IronsArtifice.id("spyglass_scope")
+                        GunBones.SOCKET_OPTIC, IronsArtifice.id("spyglass_scope")
                 )))
                 .build());
     }

@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.modifier.modifiers;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.api.GunBones;
 import io.redspace.irons_artifice.client.sounds.GunShotSoundSettings;
 import io.redspace.irons_artifice.data.GunShotSoundStack;
 import io.redspace.irons_artifice.data.MuzzleFlashSettings;
@@ -50,7 +51,7 @@ public class SuppressorAttachmentModifier implements GunModifier {
     public Optional<DataComponentPatch> getPatch() {
         DataComponentPatch.Builder builder = DataComponentPatch.builder();
         builder.set(DataComponentRegistry.ATTACHMENT.get(), new AttachmentMap(Map.of(
-                "attachment_muzzle", IronsArtifice.id("suppressor")
+                GunBones.SOCKET_MUZZLE, IronsArtifice.id("suppressor")
         )));
         return Optional.of(builder.build());
     }

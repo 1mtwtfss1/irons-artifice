@@ -12,6 +12,9 @@ public final class IronsArtificeTags {
     public static final TagKey<Block> NEVER_BREAK = block("never_break");
     public static final TagKey<LootTable> CURSED_BY_PIRATES = lootTable("cursed_by_pirates");
 
+    public static final TagKey<Item> AMMO = item("ammo");
+    public static final TagKey<Item> GUNS = item("guns");
+
     private static TagKey<Block> block(String path) {
         return TagKey.create(Registries.BLOCK, IronsArtifice.id(path));
     }

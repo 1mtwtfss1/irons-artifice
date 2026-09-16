@@ -10,11 +10,13 @@ import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.base.GeoRenderState;
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.api.GunAnimations;
 import io.redspace.irons_artifice.data.HandOccupancy;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.GunProfile;
+import io.redspace.irons_artifice.gun.GunState;
 import io.redspace.irons_artifice.gun.ShotProfile;
 import io.redspace.irons_artifice.item.animation_adjuster.AnimationAdjuster;
 import io.redspace.irons_artifice.menu.GunContainer;
@@ -56,8 +58,8 @@ public class GunItem extends BaseGeoItem {
     public static final DataTicket<Float> MUZZLE_OFFSET_TICKET = DataTicket.create(IronsArtifice.id("muzzle_offset").toString(), Float.class);
     public static final DataTicket<HandOccupancy> HAND_OCCUPANCY_TICKET = DataTicket.create(IronsArtifice.id("hand_occupancy").toString(), HandOccupancy.class);
     public static final DataTicket<Integer> ITEM_OWNER_ID_TICKET = DataTicket.create(IronsArtifice.id("item_owner_id").toString(), Integer.class);
-    public static final String TRIGGERED_ANIMATION_CONTROLLER = "Actions";
-    public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
+    public static final String TRIGGERED_ANIMATION_CONTROLLER = GunAnimations.CONTROLLER_ACTIONS;
+    public static final String IDLE_ANIMATION_CONTROLLER = GunAnimations.CONTROLLER_IDLE;
 
     private final GunProfile gunProfile;
 
@@ -139,9 +141,9 @@ public class GunItem extends BaseGeoItem {
         }
         HandOccupancy occupancy;
         if (isReloading(stack)) {
-            occupancy = gun.getGun().occupancyFor("reload");
+            occupancy = gun.getGun().occupancyFor(GunState.RELOAD);
         } else if (FireDelayState.isActive(entity, stack)) {
-            occupancy = gun.getGun().occupancyFor("fire");
+            occupancy = gun.getGun().occupancyFor(GunState.FIRE);
         } else {
             occupancy = gun.getGun().defaultOccupancy();
         }
@@ -186,7 +188,7 @@ public class GunItem extends BaseGeoItem {
         } else {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage", highlightText.apply(damage)));
         }
-        if (bulletSpeedPercent != 100 || Bullet.BASE_SPEED != shotProfile.get(ShotComponents.BULLET_SPEED).base()) {
+        if (bulletSpeedPercent != 100 || Bullet.BASE_SPEED != shotProfile.peek(ShotComponents.BULLET_SPEED).base()) {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.bullet_speed_percent", highlightText.apply(bulletSpeedPercent + "%")));
         }
         if (gunProfile.magazineCapacity() > 1) {
@@ -253,15 +255,15 @@ public class GunItem extends BaseGeoItem {
     public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {
         super.registerControllers(controllers);
         controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunIdleHandler));
-        controllers.add(new OffsetableAnimationController<>("Actions", test -> PlayState.STOP)
-                .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
-                .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
-                .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
+        controllers.add(new OffsetableAnimationController<>(GunAnimations.CONTROLLER_ACTIONS, test -> PlayState.STOP)
+                .triggerableAnim(GunAnimations.FIRE, RawAnimation.begin().thenPlay(GunAnimations.FIRE))
+                .triggerableAnim(GunAnimations.RELOAD, RawAnimation.begin().thenPlay(GunAnimations.RELOAD))
+                .triggerableAnim(GunAnimations.EQUIP, RawAnimation.begin().thenPlay(GunAnimations.EQUIP))
         );
     }
 
     private PlayState gunIdleHandler(AnimationTest<GunItem> animationTest) {
-        animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
+        animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold(GunAnimations.IDLE));
         return PlayState.CONTINUE;
     }
 

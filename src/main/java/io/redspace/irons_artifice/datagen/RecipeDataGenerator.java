@@ -21,7 +21,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import java.util.concurrent.CompletableFuture;
 
 public class RecipeDataGenerator extends RecipeProvider {
-    protected RecipeDataGenerator(HolderLookup.Provider registries, RecipeOutput output) {
+    public RecipeDataGenerator(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
 

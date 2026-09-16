@@ -55,7 +55,7 @@ public class BlackpowderChargeOnHit implements OnHitEffect {
         }
 
         ShotProfile profile = bullet.getProfile();
-        if (profile != null && profile.get(ShotComponents.BREAKS_BLOCKS)
+        if (profile != null && profile.peek(ShotComponents.BREAKS_BLOCKS)
                 && !(owner instanceof Mob && !level.getGameRules().get(GameRules.MOB_GRIEFING))) {
             float blockDamageMultiplier = (float) profile.value(ShotComponents.BLOCK_DAMAGE_MULTIPLIER);
             BlockPos.betweenClosed(

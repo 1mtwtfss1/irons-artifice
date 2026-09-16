@@ -4,6 +4,7 @@ import com.geckolib.animatable.GeoItem;
 import io.redspace.irons_artifice.api.AmmoEvent;
 import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.api.GunAboutToShootEvent;
+import io.redspace.irons_artifice.api.GunAnimations;
 import io.redspace.irons_artifice.api.GunShootEvent;
 import io.redspace.irons_artifice.advancement.ShotRecord;
 import io.redspace.irons_artifice.client.ClientHelper;
@@ -24,7 +25,7 @@ import io.redspace.irons_artifice.network.packets.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundMuzzleFlashPacket;
 import io.redspace.irons_artifice.network.packets.MuzzleFlashVisuals;
 import io.redspace.irons_artifice.registry.EntityRegistry;
-import io.redspace.irons_artifice.registry.ItemRegistry;
+import io.redspace.irons_artifice.utils.IronsArtificeTags;
 import io.redspace.irons_artifice.utils.Utils;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
@@ -73,7 +74,7 @@ public final class GunplayManager {
         int ammoToConsume = NeoForge.EVENT_BUS.post(new AmmoEvent.Amount(shooter, profile, 1)).getAmmoToConsume();
         if (magazine.count() < ammoToConsume) {
             if (shooter instanceof Player player && player.level().isClientSide()) {
-                ClientHelper.handleLocalDryFire(player, profile.get(ShotComponents.GUNSHOT_SOUND).getDryFireSound());
+                ClientHelper.handleLocalDryFire(player, profile.peek(ShotComponents.GUNSHOT_SOUND).getDryFireSound());
             }
             return FireOutcome.EMPTY_MAGAZINE;
         }
@@ -97,7 +98,7 @@ public final class GunplayManager {
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
         depleteMagazine(shooter, profile, stack, magazine, ammoToConsume);
-        profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, shooter.position());
+        profile.peek(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, shooter.position());
         RecoilState.addImpulse(shooter, now, profile);
         fireShot(level, shooter, shooter.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
         applyCharacterBlowback(shooter, profile);
@@ -157,7 +158,7 @@ public final class GunplayManager {
         ShotProfile profile = compose(player, gunProfile, stack);
 
         fireShot(level, player, origin, direction, profile);
-        profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
+        profile.peek(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
         playFireAnimation(player, stack, gunItem, profile);
         return true;
     }
@@ -186,9 +187,9 @@ public final class GunplayManager {
     }
 
     private static void playFireAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
-        double fireSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.fireDelayTicks();
+        double fireSpeedMultiplier = profile.peek(ShotComponents.FIRE_DELAY).base() / profile.fireDelayTicks();
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                "fire", (fireSpeedMultiplier + 1) / 2, 0);
+                GunAnimations.FIRE, (fireSpeedMultiplier + 1) / 2, 0);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
@@ -198,7 +199,7 @@ public final class GunplayManager {
             return;
         }
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                "reload", state.speed(), state.progress(), state.skipAt(), state.skipTo());
+                GunAnimations.RELOAD, state.speed(), state.progress(), state.skipAt(), state.skipTo());
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
@@ -238,7 +239,7 @@ public final class GunplayManager {
     }
 
     private static void spawnMuzzleFlash(ServerLevel level, LivingEntity shooter, Vec3 direction, ShotProfile profile) {
-        MuzzleFlashSettings settings = profile.get(ShotComponents.MUZZLE_FLASH);
+        MuzzleFlashSettings settings = profile.peek(ShotComponents.MUZZLE_FLASH);
         if (!settings.hasVisuals()) {
             return;
         }
@@ -298,7 +299,7 @@ public final class GunplayManager {
         ShotProfile profile = new ShotProfile(gunStack, gunProfile, MagazineContents.get(gunStack), components);
         if (living != null) {
             if (living instanceof Player player && GunItem.isScoping(player)) {
-                profile.components().getOrCreate(ShotComponents.CAMERA_RECOIL_MULTIPLIER).addModifier(new ValueModifier(-0.5, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.HARMFUL));
+                profile.modifyValue(ShotComponents.CAMERA_RECOIL_MULTIPLIER, new ValueModifier(-0.5, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.HARMFUL));
             }
             NeoForge.EVENT_BUS.post(new ComposeShotEvent(living, profile));
         }
@@ -374,7 +375,7 @@ public final class GunplayManager {
         int total = 0;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
-            if (stack.is(ItemRegistry.BULLET.get())) {
+            if (stack.is(IronsArtificeTags.AMMO)) {
                 total += stack.getCount();
             }
         }
@@ -386,7 +387,7 @@ public final class GunplayManager {
         int remaining = amount;
         for (int i = 0; i < inventory.getContainerSize() && remaining > 0; i++) {
             ItemStack stack = inventory.getItem(i);
-            if (stack.is(ItemRegistry.BULLET.get())) {
+            if (stack.is(IronsArtificeTags.AMMO)) {
                 int take = Math.min(remaining, stack.getCount());
                 stack.shrink(take);
                 remaining -= take;

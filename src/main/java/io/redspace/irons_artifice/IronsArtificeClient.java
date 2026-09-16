@@ -27,7 +27,6 @@ import io.redspace.irons_artifice.gun.ArmPoseKind;
 import io.redspace.irons_artifice.item.GunItem;
 import io.redspace.irons_artifice.menu.GunModifierScreen;
 import io.redspace.irons_artifice.registry.EntityRegistry;
-import io.redspace.irons_artifice.registry.ItemRegistry;
 import io.redspace.irons_artifice.registry.MenuRegistry;
 import io.redspace.irons_artifice.registry.ParticleRegistry;
 import com.geckolib.animatable.client.GeoRenderProvider;
@@ -60,7 +59,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -188,7 +186,7 @@ public class IronsArtificeClient {
         }
     }
 
-    private static IClientItemExtensions armPoseExtension(HumanoidModel.ArmPose pose) {
+    public static IClientItemExtensions armPoseExtension(HumanoidModel.ArmPose pose) {
         return new IClientItemExtensions() {
             @Override
             public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
@@ -199,8 +197,8 @@ public class IronsArtificeClient {
 
     private static List<GunItem> guns() {
         List<GunItem> guns = new ArrayList<>();
-        for (DeferredHolder<Item, ? extends Item> holder : ItemRegistry.ITEMS.getEntries()) {
-            if (holder.get() instanceof GunItem gunItem) {
+        for (Item item : BuiltInRegistries.ITEM) {
+            if (item instanceof GunItem gunItem) {
                 guns.add(gunItem);
             }
         }

@@ -340,16 +340,16 @@ public class Bullet extends Projectile {
             if (hitResult instanceof EntityHitResult entityHit) {
                 accumulator.add(entityHit.getEntity());
             }
-            for (OnHitEffect effect : profile.get(ShotComponents.ON_HIT).all()) {
+            for (OnHitEffect effect : profile.peek(ShotComponents.ON_HIT).all()) {
                 effect.onHit(serverLevel, this, hitResult, accumulator);
             }
-            var postHitEffects = profile.get(ShotComponents.POST_HIT_EFFECTS).all();
+            var postHitEffects = profile.peek(ShotComponents.POST_HIT_EFFECTS).all();
             for (Entity entity : accumulator.all()) {
                 for (PostHitEffect effect : postHitEffects) {
                     effect.postHit(serverLevel, this, hitResult, entity);
                 }
             }
-            profile.get(ShotComponents.IMPACT_SOUND).playImpactSound(serverLevel, hitResult.getLocation(), hitResult.getType() == HitResult.Type.ENTITY);
+            profile.peek(ShotComponents.IMPACT_SOUND).playImpactSound(serverLevel, hitResult.getLocation(), hitResult.getType() == HitResult.Type.ENTITY);
         }
         if (brokeBlocksThisTick) {
             if (piercingRemaining > 0) {
@@ -445,7 +445,7 @@ public class Bullet extends Projectile {
         var state = level().getBlockState(pos);
         if (!(level() instanceof ServerLevel serverLevel)
                 || state.is(IronsArtificeTags.NEVER_BREAK)
-                || !profile.get(ShotComponents.BREAKS_BLOCKS) && !state.is(IronsArtificeTags.ALWAYS_BREAK)) {
+                || !profile.peek(ShotComponents.BREAKS_BLOCKS) && !state.is(IronsArtificeTags.ALWAYS_BREAK)) {
             return false;
         }
 
@@ -495,7 +495,7 @@ public class Bullet extends Projectile {
     }
 
     private void emitTrail(ServerLevel level, Vec3 from, Vec3 to) {
-        ParticleStack particles = profile.get(ShotComponents.PARTICLE_TRAIL);
+        ParticleStack particles = profile.peek(ShotComponents.PARTICLE_TRAIL);
         if (particles == null) {
             return;
         }

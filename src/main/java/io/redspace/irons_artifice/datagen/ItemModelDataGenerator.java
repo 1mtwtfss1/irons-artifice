@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class ItemModelDataGenerator extends ModelProvider {
-    private static final Identifier GECKOLIB_GUN_DISPLAY = IronsArtifice.id("item/gun_display");
-    private static final Identifier REVOLVER_GUN_DISPLAY = IronsArtifice.id("item/pistol_display");
+    public static final Identifier GECKOLIB_GUN_DISPLAY = IronsArtifice.id("item/gun_display");
+    public static final Identifier REVOLVER_GUN_DISPLAY = IronsArtifice.id("item/pistol_display");
     private static final Identifier DEMO_GUN_MODEL = IronsArtifice.id("item/gun");
 
     public ItemModelDataGenerator(PackOutput output) {
@@ -40,10 +40,7 @@ public class ItemModelDataGenerator extends ModelProvider {
                 if (item == ItemRegistry.BLACKPOWDER_REVOLVER || item == ItemRegistry.SIX_SHOOTER) {
                     displayParent = REVOLVER_GUN_DISPLAY;
                 }
-                itemModels.itemModelOutput.accept(
-                        item.get(),
-                        ItemModelUtils.specialModel(displayParent, new GeckolibItemSpecialRenderer.Unbaked<>())
-                );
+                gunModel(itemModels, item.get(), displayParent);
             } else {
                 generateTemplatedItem(itemModels, item.get(), itemTexture(item));
             }
@@ -54,7 +51,7 @@ public class ItemModelDataGenerator extends ModelProvider {
      * Writes {@code models/item/<item>.json} from {@link ModelTemplates#FLAT_ITEM}
      * with the given layer0 texture, plus the matching {@code items/<item>.json} client item.
      */
-    private static void generateTemplatedItem(ItemModelGenerators itemModels, Item item, Identifier layer0Texture) {
+    public static void generateTemplatedItem(ItemModelGenerators itemModels, Item item, Identifier layer0Texture) {
         Identifier modelLocation = ModelLocationUtils.getModelLocation(item);
         ModelTemplates.FLAT_ITEM.create(
                 modelLocation,
@@ -62,6 +59,13 @@ public class ItemModelDataGenerator extends ModelProvider {
                 itemModels.modelOutput
         );
         itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(modelLocation));
+    }
+
+    public static void gunModel(ItemModelGenerators itemModels, Item item, Identifier displayParent) {
+        itemModels.itemModelOutput.accept(
+                item,
+                ItemModelUtils.specialModel(displayParent, new GeckolibItemSpecialRenderer.Unbaked<>())
+        );
     }
 
     private static Identifier itemTexture(DeferredHolder<?, ?> item) {

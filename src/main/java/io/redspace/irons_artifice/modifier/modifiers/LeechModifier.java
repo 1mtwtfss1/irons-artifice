@@ -3,7 +3,6 @@ package io.redspace.irons_artifice.modifier.modifiers;
 import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.api.GunShootEvent;
 import io.redspace.irons_artifice.client.particle.ColorTransitionParticleOption;
-import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.data.ValueModifier;
 import io.redspace.irons_artifice.gun.ShotProfile;
@@ -51,14 +50,13 @@ public final class LeechModifier extends ValueStackModifier {
         if (!canLeech(event.getEntity(), profile)) {
             return;
         }
-        profile.get(ShotComponents.DAMAGE).addModifier(new ValueModifier(
+        profile.modify(ShotComponents.PARTICLE_TRAIL, trail -> trail.add(ColorTransitionParticleOption.bulletTrail(TRAIL_FROM, TRAIL_TO)));
+        profile.modify(ShotComponents.MUZZLE_FLASH, flash -> flash.addTint(MUZZLE_TINT));
+        profile.modifyValue(ShotComponents.DAMAGE, new ValueModifier(
                 DAMAGE_BONUS,
                 ValueModifier.Operation.MULTIPLY_TOTAL,
                 ValueModifier.Type.BENEFICIAL
         ));
-        ShotComponentMap components = profile.components();
-        components.getOrCreate(ShotComponents.PARTICLE_TRAIL).add(ColorTransitionParticleOption.bulletTrail(TRAIL_FROM, TRAIL_TO));
-        components.getOrCreate(ShotComponents.MUZZLE_FLASH).addTint(MUZZLE_TINT);
     }
 
     @SubscribeEvent

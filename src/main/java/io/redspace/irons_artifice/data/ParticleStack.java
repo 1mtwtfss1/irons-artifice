@@ -39,6 +39,7 @@ public class ParticleStack implements Copyable<ParticleStack> {
     public ParticleStack copy() {
         ParticleStack copy = new ParticleStack();
         copy.particles.addAll(this.particles);
+        copy.accents.addAll(this.accents);
         return copy;
     }
 }

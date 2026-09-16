@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.events;
 
 import com.geckolib.animatable.GeoItem;
+import io.redspace.irons_artifice.api.GunAnimations;
 import io.redspace.irons_artifice.config.ServerConfig;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.entity.Bullet;
@@ -125,7 +126,7 @@ public class ServerEvents {
     private static void performEquipEffects(ServerLevel serverLevel, GunItem gunItem, LivingEntity entity, ItemStack equippedStack) {
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(entity.getId(), GeoItem.getOrAssignId(equippedStack, serverLevel),
                 equippedStack == entity.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                "equip", 1.0, 0);
+                GunAnimations.EQUIP, 1.0, 0);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, packet);
         if (gunItem.getGun().equipSound() != null && entity instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new ClientboundEquipSoundPacket(SoundSource.PLAYERS, gunItem));

@@ -28,7 +28,7 @@ public final class RecoilHelper {
     public static Vec2 calculateFullRecoil(ShotProfile shotProfile) {
         int index = getBulletIndex(shotProfile);
         float strengthMultiplier = (float) shotProfile.value(ShotComponents.CAMERA_RECOIL_MULTIPLIER);
-        RecoilProfile recoil = shotProfile.get(ShotComponents.CAMERA_RECOIL);
+        RecoilProfile recoil = shotProfile.peek(ShotComponents.CAMERA_RECOIL);
         float pitch = recoil.magnitude();
         float yaw = recoil.magnitude() * recoil.horizontalRatio() *
                 Mth.sin((index + recoil.seed()) * recoil.horizontalPatternFrequency());

@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.modifier.modifiers;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.api.GunBones;
 import io.redspace.irons_artifice.data.ShotComponentMap;
 import io.redspace.irons_artifice.item.AttachmentMap;
 import io.redspace.irons_artifice.modifier.GunModifier;
@@ -42,7 +43,7 @@ public class BayonetAttachmentModifier implements GunModifier {
                 ));
         builder.set(DataComponents.USE_EFFECTS, new UseEffects(true, false, 1));
         builder.set(DataComponentRegistry.ATTACHMENT.get(), new AttachmentMap(Map.of(
-                "attachment_bayonet", IronsArtifice.id("iron_bayonet")
+                GunBones.SOCKET_BAYONET, IronsArtifice.id("iron_bayonet")
         )));
         return Optional.of(builder.build());
     }
