@@ -457,6 +457,17 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('*', commonTag("ingots/iron"))
                 .unlockedBy("has_precursor", this.has(ItemRegistry.BULLET))
                 .save(this.output);
+        // Bloodletting Tip
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.BLOODLETTING_TIP_MODIFIER.get())
+                .pattern(" BB")
+                .pattern("#*B")
+                .pattern("$# ")
+                .define('#', ItemRegistry.BLACKPOWDER)
+                .define('B', Items.QUARTZ)
+                .define('*', Items.GHAST_TEAR)
+                .define('$', Items.REDSTONE)
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
 
     }
 
