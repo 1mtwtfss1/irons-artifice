@@ -27,15 +27,15 @@
 - `GunProfile` is now a final class instead of a record. Constructor is now private, and uses `GunProfile.Builder`
 - `ShotProfile#get` has been renamed to `ShotProfile#peek`. This is to clarify that returned value is not stored (so mutating it was a silent failure)
 #### Additions
-- All `GunItems`s, including addons, are now automatically registered with a Gun renderers and arm pose
+- All `GunItems`s, including those added by addons, are automatically registered with a gun renderer and arm pose extension
 - Added item tags `irons_artifice:guns` and `irons_artifice:ammo` (`IronsArtificeTags.GUNS`, `IronsArtificeTags.AMMO`)
-  - Currently, no support for delineating which stacks where chosen when loaded into a gun
+  - For ammo, there is currently no support for delineating which stacks where chosen when loaded into a gun
 - Added `api.GunBones`: named constants for every bone the client helpers look up. Use these in your own models if you weren't already.
 - Added `api.GunAnimations`: named constants for the animation names (`idle`, `fire`, `reload`, `equip`) and controller names the gunplay system triggers. Use these in your own animation files if you weren't already.
-- `GunInHandRenderer` render hooks (`handleAttachmentRendering`, `handleMuzzleFlashEmission`, `handleFirstPersonHandRendering`, `handlePerspectiveAdjustments`, `handleGunAdjustments`, `silenceAnimations`, and friends) are now `protected` so the renderer can be more easily subclassed.
+- `GunInHandRenderer` render hooks are now `protected` so the renderer can be more easily subclassed.
 - `IronsArtificeClient.armPoseExtension` is now public.
-- Datagen helpers are now reusable: `ItemModelDataGenerator.gunModel(...)` and `generateTemplatedItem(...)` are public static, `GECKOLIB_GUN_DISPLAY` / `REVOLVER_GUN_DISPLAY` are public, and `RecipeDataGenerator` has a public constructor.
+- Datagen helpers are now public and reusable: `ItemModelDataGenerator.gunModel(...)` and `generateTemplatedItem(...)`, `GECKOLIB_GUN_DISPLAY` / `REVOLVER_GUN_DISPLAY`.
 - The published artifact now includes a sources jar.
 - Added `ShotComponentTemplate`, a `Supplier<ShotComponentMap>` for building shot components (instead of the in-line supplier in the old GunProfile constructor). Build one with `ShotComponentTemplate.builder(damage, spread, characterBlowback, fireDelayTicks, cameraRecoil)`
 - Added `ShotProfile#modify(type, consumer)` to modify components in one line
-- Added `ShotProfile#modifyValue(type, ValueModifier)` and `ShotComponentMap#modifyValue(type, ValueModifier)`, a helper to `modify` components typed as values with a `ValueModifier`
+- Added `ShotProfile#modifyValue(type, ValueModifier)` and `ShotComponentMap#modifyValue(type, ValueModifier)`, helpers to `modify` components typed as values with a `ValueModifier`
