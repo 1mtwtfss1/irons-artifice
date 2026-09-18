@@ -64,7 +64,7 @@ public final class Guns {
                     ShotComponentTemplate.builder(10, 1, 0.125, 10, RecoilProfile.of(25f, .33f, 1.7f, 0))
                             .gunshotSound(
                                     GunShotSoundSettings.standardShot(SoundRegistry.BLACKPOWDER_REVOLVER_SHOOT, 1f),
-                                    GunShotSoundSettings.standardEcho(SoundRegistry.BULLET_ECHO_GENERIC, 0.8f),
+                                    GunShotSoundSettings.standardEcho(SoundRegistry.BULLET_ECHO_GENERIC_PISTOL, 0.9f),
                                     PlayableSound.holder(SoundEvents.DISPENSER_FAIL))
                             .muzzleFlash(MuzzleFlashType.LARGE)
                             .build())
@@ -84,7 +84,7 @@ public final class Guns {
                     ShotComponentTemplate.builder(8, 2.5, 0, 3, RecoilProfile.of(15f, .5f, 2.7f, 465))
                             .gunshotSound(
                                     GunShotSoundSettings.standardShot(SoundRegistry.SIX_SHOOTER_SHOOT, 1f),
-                                    GunShotSoundSettings.standardEcho(SoundRegistry.BULLET_ECHO_GENERIC, 0.8f),
+                                    GunShotSoundSettings.standardEcho(SoundRegistry.BULLET_ECHO_GENERIC_PISTOL, 1.1f),
                                     PlayableSound.holder(SoundEvents.DISPENSER_FAIL))
                             .build())
             .reloadCues(ReloadCueStack.of(

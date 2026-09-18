@@ -24,6 +24,11 @@
       "irons_artifice:gunshot_far_echo"
     ]
   },
+  "entity.bullet.echo.generic_pistol": {
+    "sounds": [
+      "irons_artifice:gunshot_echo_bassy"
+    ]
+  },
   "entity.bullet.echo.muzzleloader": {
     "sounds": [
       "irons_artifice:muzzleloader_shot_echo"

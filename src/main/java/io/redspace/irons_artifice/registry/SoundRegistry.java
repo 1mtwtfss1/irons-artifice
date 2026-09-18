@@ -18,6 +18,7 @@ public class SoundRegistry {
     public static final DeferredHolder<SoundEvent, SoundEvent> BULLET_IMPACT_GENERIC = registerSoundEvent("entity.bullet.impact.generic");
     public static final DeferredHolder<SoundEvent, SoundEvent> BULLET_IMPACT_RICOCHET = registerSoundEvent("entity.bullet.impact.ricochet");
     public static final DeferredHolder<SoundEvent, SoundEvent> BULLET_ECHO_GENERIC = registerSoundEvent("entity.bullet.echo.generic");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BULLET_ECHO_GENERIC_PISTOL = registerSoundEvent("entity.bullet.echo.generic_pistol");
     public static final DeferredHolder<SoundEvent, SoundEvent> BULLET_ECHO_MUZZLELOADER = registerSoundEvent("entity.bullet.echo.muzzleloader");
     public static final DeferredHolder<SoundEvent, SoundEvent> REVOLVER_SHOOT = registerSoundEvent("item.example_revolver.shoot");
     public static final DeferredHolder<SoundEvent, SoundEvent> COCK_HAMMER = registerSoundEvent("item.generic.cock_hammer");

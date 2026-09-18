@@ -36,7 +36,7 @@ public final class LeechModifier extends ValueStackModifier {
         super.getDescriptionText(builder);
         builder.accept(Component.translatable(
                 "irons_artifice.modifier.leech_damage",
-                (int) (DAMAGE_BONUS * 100)
+                (int) (DAMAGE_BONUS * 100 + 100)
         ).withStyle(ChatFormatting.GREEN));
         builder.accept(Component.translatable(
                 "irons_artifice.modifier.leech_cost",
