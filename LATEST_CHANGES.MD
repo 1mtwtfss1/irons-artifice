@@ -6,12 +6,13 @@
 - Added `irons_artifice:ammo` tag
 
 ### Changes
-- Reworked fire delay handling to reduce network jitter that could cause stuttering, especially on laggy connections.
-- Fire Rate is now displayed in the tooltip at the effective firerate instead of the raw numerical rate
-- Clockwork Rifle damage 6 -> 7
+- Buffed Clockwork Rifle damage 6 -> 7
+- Nerfed Frozen Jacket damage per shrapnel 50%->33%
+- Fire Rate is now displayed in the tooltip at the effective firerate instead of the raw numerical rate (rounded to ticks)
 
 ### Fixes
 - Fixed Bullets not firing projectile impact event
+- Reworked fire delay handling to reduce network jitter that could cause fire rate stuttering for automatic guns, especially on laggy connections.
 
 ### API
 #### BREAKING CHANGES
