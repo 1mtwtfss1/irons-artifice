@@ -22,7 +22,7 @@ Shot Components, held in the `ShotComponentMap` (builder via `ShotComponentTempl
 
 Default shot components types are in the `ShotComponents` class. New shot components can be created by simply creating a new key, and wiring its functionality. Keys must give a default value.
 
-Gun Items are automatically registered with a Geckolib renderer and model, and use item's registered name for resource lookups.
+Gun Items are automatically registered with a Geckolib renderer and model, and use the item's registered name for resource lookups (i.e. `<namespace>/geckolib/animations/item/<item_name>.animation.json`).
 
 ### Modifiers
 Modifiers affect the shot components of a gunshot. Modifiers have two halves: their item part, and their modifier functionality. The item can be registered from the `ModifierItem` class. Their functionality, passed into the constructor, is an implementation of the `GunModifier` interface.
@@ -33,11 +33,11 @@ Modifiers exhibit their functionality by modifying a bullet's shot components vi
 Modifiers can also affect the item components of the gun item they get installed into (See the bayonet for example).
 
 Developer's note: Modifiers are designed to be stackable without limits: no limits gun type, stack count, or interaction effects. 
-For balance, a single modifiers should affect how the gun feels. Modifiers should not be balanced expecting to be stacked -- certainly not up to 5-7. 
-When balanced correctly, modifiers tend to have diminishing returns, or too high of an opportunity cost to make stacking 5-7 of a single one viable.
+For balance, a single modifier should affect how the gun feels. That being said, modifiers should not be balanced expecting to be stacked -- certainly not up to 5-7 -- lest it be *required that they stack* in order to be effective. 
+When well-balanced, modifiers tend to have diminishing returns, or too high of an opportunity cost to make stacking 5-7 of a single one viable.
 
 ### Mobs
-The attack goal `RangedGunAttackGoal` can be applied to any `Mob`, and will enable if they are holding a gun. Modifiers in that gun work. The goal has basic navigation, shooting, and bayonet-charging funtionality: Mobs try to keep their distance, strafe, and then stand still for a volley of shots. 
+The attack goal `RangedGunAttackGoal` can be applied to any `Mob`, and will enable if they are holding a gun. Modifiers in their held gun work. The goal has basic navigation, shooting, and bayonet-charging funtionality: Mobs try to keep their distance, strafe, and then stand still for a volley of shots. 
 They automatically reload, and attack with a bayonet if equipped and their target gets too close.
 
 All hooks in `GunplayManager`, such as `attemptStartReload`, `compose`, or `tryFire` work for both players and mobs. Implement your own goals if you need!
