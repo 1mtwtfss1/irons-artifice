@@ -24,6 +24,8 @@ Default shot components types are in the `ShotComponents` class. New shot compon
 
 Gun Items are automatically registered with a Geckolib renderer and model, and use the item's registered name for resource lookups (i.e. `<namespace>/geckolib/animations/item/<item_name>.animation.json`).
 
+Standard gun animation names can be found in `GunAnimations`, standard bone names in `GunBones`, and a template geckolib model at https://github.com/iron431/irons-artifice/blob/main/src/main/resources/assets/irons_artifice/geckolib/template_gun.bbmodel
+
 ### Modifiers
 Modifiers affect the shot components of a gunshot. Modifiers have two halves: their item part, and their modifier functionality. The item can be registered from the `ModifierItem` class. Their functionality, passed into the constructor, is an implementation of the `GunModifier` interface.
 
