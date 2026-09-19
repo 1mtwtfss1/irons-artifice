@@ -17,8 +17,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAssets;
@@ -27,7 +25,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddAttributeTooltipsEvent;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @EventBusSubscriber
@@ -52,11 +49,6 @@ public class TricorneItem extends BaseGeoItem {
         });
     }
 
-    @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, context, display, builder, tooltipFlag);
-    }
-
     public static final double DAMAGE_BUFF_PERCENT = 0.25;
 
     @SubscribeEvent
@@ -70,11 +62,13 @@ public class TricorneItem extends BaseGeoItem {
 
     @SubscribeEvent
     public static void handleTricorneAbility(ComposeShotEvent event) {
-        if (event.getEntity().getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.TRICORNE_HAT)) {
-            ShotProfile shotProfile = event.getShotProfile();
-            if (shotProfile.magazineContents().count() == shotProfile.gun().magazineCapacity()) {
-                shotProfile.get(ShotComponents.DAMAGE).addModifier(new ValueModifier(DAMAGE_BUFF_PERCENT, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
-            }
+        if (!event.getEntity().getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.TRICORNE_HAT)) {
+            return;
         }
+        ShotProfile shotProfile = event.getShotProfile();
+        if (shotProfile.magazineContents().count() != shotProfile.gun().magazineCapacity()) {
+            return;
+        }
+        shotProfile.modifyValue(ShotComponents.DAMAGE, new ValueModifier(DAMAGE_BUFF_PERCENT, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.BENEFICIAL));
     }
 }

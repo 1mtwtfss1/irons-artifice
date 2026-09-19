@@ -38,8 +38,9 @@ public final class ShotComponents {
     public static final ComponentType<PostHitEffects> POST_HIT_EFFECTS = new ComponentType<>(IronsArtifice.id("post_hit_effects"), PostHitEffects::new);
     public static final ComponentType<Boolean> BREAKS_BLOCKS = new ComponentType<>(IronsArtifice.id("breaks_blocks"), () -> false);
     public static final ComponentType<Value> SEEKING = new ComponentType<>(IronsArtifice.id("seeking"), () -> Value.of(0));
+    public static final ComponentType<Value> LEECH = new ComponentType<>(IronsArtifice.id("leech"), () -> Value.of(0));
 
-    // Effects
+    // UX/VFX
     public static final ComponentType<RecoilProfile> CAMERA_RECOIL = new ComponentType<>(IronsArtifice.id("camera_recoil"), () -> RecoilProfile.simple(10, 0));
     public static final ComponentType<Value> CAMERA_RECOIL_MULTIPLIER = new ComponentType<>(IronsArtifice.id("camera_recoil_multiplier"), () -> Value.of(1));
     public static final ComponentType<Value> CHARACTER_BLOWBACK = new ComponentType<>(IronsArtifice.id("character_blowback"), () -> Value.of(0));
@@ -51,5 +52,6 @@ public final class ShotComponents {
     ));
     public static final ComponentType<ParticleStack> PARTICLE_TRAIL = new ComponentType<>(IronsArtifice.id("particle_trail"), ParticleStack::new);
     public static final ComponentType<MuzzleFlashSettings> MUZZLE_FLASH = new ComponentType<>(IronsArtifice.id("muzzle_flash"), MuzzleFlashSettings.DEFAULT);
+    public static final ComponentType<Value> MUZZLE_OFFSET = new ComponentType<>(IronsArtifice.id("muzzle_offset"), () -> Value.of(0));
 
 }

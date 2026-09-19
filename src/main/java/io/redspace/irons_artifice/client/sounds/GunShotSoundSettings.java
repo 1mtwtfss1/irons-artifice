@@ -13,7 +13,7 @@ public record GunShotSoundSettings(Holder<SoundEvent> soundEvent, float minPitch
 
     public static GunShotSoundSettings standardShot(Holder<SoundEvent> soundEvent, float basePitch) {
         return new GunShotSoundSettings(soundEvent, basePitch - 0.1f, basePitch + 0.1f,
-                -1, 0, 160f);
+                -1, 0, 128f);
     }
 
     public static GunShotSoundSettings standardEcho(Holder<SoundEvent> soundEvent, float basePitch) {

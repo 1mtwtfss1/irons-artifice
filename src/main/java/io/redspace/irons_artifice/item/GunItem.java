@@ -10,12 +10,15 @@ import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.base.GeoRenderState;
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.api.GunAnimations;
 import io.redspace.irons_artifice.data.HandOccupancy;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponents;
 import io.redspace.irons_artifice.entity.Bullet;
 import io.redspace.irons_artifice.gun.GunProfile;
+import io.redspace.irons_artifice.gun.GunState;
 import io.redspace.irons_artifice.gun.ShotProfile;
+import io.redspace.irons_artifice.item.animation_adjuster.AnimationAdjuster;
 import io.redspace.irons_artifice.menu.GunContainer;
 import io.redspace.irons_artifice.registry.DataComponentRegistry;
 import net.minecraft.ChatFormatting;
@@ -41,17 +44,22 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class GunItem extends BaseGeoItem {
     public static final DataTicket<MagazineContents> MAGAZINE_ANIMATION_TICKET = DataTicket.create(IronsArtifice.id("magazine_state").toString(), MagazineContents.class);
-    public static final DataTicket<AnimationAdjuster> ANIMATION_ADJUSTER_TICKET = DataTicket.create(IronsArtifice.id("animation_adjuster").toString(), AnimationAdjuster.class);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static final DataTicket<List<AnimationAdjuster>> ANIMATION_ADJUSTERS_TICKET = DataTicket.create(IronsArtifice.id("animation_adjusters").toString(), (Class) List.class);
     public static final DataTicket<AttachmentMap> ATTACHMENTS = DataTicket.create(IronsArtifice.id("attachments").toString(), AttachmentMap.class);
     public static final DataTicket<Double> RELOAD_PROGRESS_SECONDS_TICKET = DataTicket.create(IronsArtifice.id("reload_progress_seconds").toString(), Double.class);
+    public static final DataTicket<Float> RELOAD_PERCENT_TICKET = DataTicket.create(IronsArtifice.id("reload_percent").toString(), Float.class);
+    public static final DataTicket<Float> MUZZLE_OFFSET_TICKET = DataTicket.create(IronsArtifice.id("muzzle_offset").toString(), Float.class);
     public static final DataTicket<HandOccupancy> HAND_OCCUPANCY_TICKET = DataTicket.create(IronsArtifice.id("hand_occupancy").toString(), HandOccupancy.class);
-    public static final String TRIGGERED_ANIMATION_CONTROLLER = "Actions";
-    public static final String IDLE_ANIMATION_CONTROLLER = "gun_animation_controller";
+    public static final DataTicket<Integer> ITEM_OWNER_ID_TICKET = DataTicket.create(IronsArtifice.id("item_owner_id").toString(), Integer.class);
+    public static final String TRIGGERED_ANIMATION_CONTROLLER = GunAnimations.CONTROLLER_ACTIONS;
+    public static final String IDLE_ANIMATION_CONTROLLER = GunAnimations.CONTROLLER_IDLE;
 
     private final GunProfile gunProfile;
 
@@ -123,25 +131,22 @@ public class GunItem extends BaseGeoItem {
         return gunProfile.magazineCapacity();
     }
 
-    public static @Nullable HandOccupancy currentOccupancy(ItemStack stack) {
-        if (!(stack.getItem() instanceof GunItem gun)) {
-            return null;
-        }
-        if (isReloading(stack)) {
-            return gun.getGun().occupancyFor("reload");
-        }
-        if (FireDelayState.isActive(stack)) {
-            return gun.getGun().occupancyFor("fire");
-        }
-        return gun.getGun().defaultOccupancy();
-    }
-
     public static @Nullable HandOccupancy currentOccupancy(LivingEntity entity, InteractionHand hand) {
         return currentOccupancy(entity, entity.getItemInHand(hand));
     }
 
     public static @Nullable HandOccupancy currentOccupancy(LivingEntity entity, ItemStack stack) {
-        HandOccupancy occupancy = currentOccupancy(stack);
+        if (!(stack.getItem() instanceof GunItem gun)) {
+            return null;
+        }
+        HandOccupancy occupancy;
+        if (isReloading(stack)) {
+            occupancy = gun.getGun().occupancyFor(GunState.RELOAD);
+        } else if (FireDelayState.isActive(entity, stack)) {
+            occupancy = gun.getGun().occupancyFor(GunState.FIRE);
+        } else {
+            occupancy = gun.getGun().defaultOccupancy();
+        }
         if (occupancy == HandOccupancy.BOTH && stack == entity.getOffhandItem() && !entity.getMainHandItem().isEmpty()) {
             return HandOccupancy.MAINHAND;
         }
@@ -175,7 +180,7 @@ public class GunItem extends BaseGeoItem {
         String damage = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(shotProfile.value(ShotComponents.DAMAGE));
         int bulletCount = (int) shotProfile.value(ShotComponents.PROJECTILE_COUNT);
         int bulletSpeedPercent = (int) (100 * shotProfile.value(ShotComponents.BULLET_SPEED) / Bullet.BASE_SPEED);
-        String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20 / shotProfile.fireDelayTicks());
+        String fireRate = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(20.0 / shotProfile.fireDelayTicks());
         String reloadTime = ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(gunProfile.reloadTimeTicks() / 20f / shotProfile.value(ShotComponents.RELOAD_SPEED_MULTIPLIER));
         if (bulletCount > 1) {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage_per_bullet", highlightText.apply(damage), Component.literal(String.valueOf(bulletCount)).withStyle(ChatFormatting.YELLOW)));
@@ -183,7 +188,7 @@ public class GunItem extends BaseGeoItem {
         } else {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.damage", highlightText.apply(damage)));
         }
-        if (bulletSpeedPercent != 100 || Bullet.BASE_SPEED != shotProfile.get(ShotComponents.BULLET_SPEED).base()) {
+        if (bulletSpeedPercent != 100 || Bullet.BASE_SPEED != shotProfile.peek(ShotComponents.BULLET_SPEED).base()) {
             statBuilder.accept(Component.translatable("irons_artifice.tooltip.bullet_speed_percent", highlightText.apply(bulletSpeedPercent + "%")));
         }
         if (gunProfile.magazineCapacity() > 1) {
@@ -250,15 +255,15 @@ public class GunItem extends BaseGeoItem {
     public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {
         super.registerControllers(controllers);
         controllers.add(new AnimationController<>(IDLE_ANIMATION_CONTROLLER, this::gunIdleHandler));
-        controllers.add(new OffsetableAnimationController<>("Actions", test -> PlayState.STOP)
-                .triggerableAnim("fire", RawAnimation.begin().thenPlay("fire"))
-                .triggerableAnim("reload", RawAnimation.begin().thenPlay("reload"))
-                .triggerableAnim("equip", RawAnimation.begin().thenPlay("equip"))
+        controllers.add(new OffsetableAnimationController<>(GunAnimations.CONTROLLER_ACTIONS, test -> PlayState.STOP)
+                .triggerableAnim(GunAnimations.FIRE, RawAnimation.begin().thenPlay(GunAnimations.FIRE))
+                .triggerableAnim(GunAnimations.RELOAD, RawAnimation.begin().thenPlay(GunAnimations.RELOAD))
+                .triggerableAnim(GunAnimations.EQUIP, RawAnimation.begin().thenPlay(GunAnimations.EQUIP))
         );
     }
 
     private PlayState gunIdleHandler(AnimationTest<GunItem> animationTest) {
-        animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
+        animationTest.setAnimation(RawAnimation.begin().thenPlayAndHold(GunAnimations.IDLE));
         return PlayState.CONTINUE;
     }
 

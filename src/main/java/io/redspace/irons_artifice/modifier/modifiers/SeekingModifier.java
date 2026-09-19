@@ -40,6 +40,6 @@ public final class SeekingModifier extends ValueStackModifier {
     @Override
     public void getDescriptionText(Consumer<Component> builder) {
         super.getDescriptionText(builder);
-        builder.accept(Component.translatable("irons_artifice.value.set_base", Utils.getComponentTranslate(ShotComponents.BULLET_SPEED), BASE_SPEED).withStyle(ChatFormatting.YELLOW));
+        builder.accept(Component.translatable("irons_artifice.value.set_base", Utils.getComponentTranslate(ShotComponents.BULLET_SPEED), Utils.DECIMAL_FORMAT.format(BASE_SPEED)).withStyle(ChatFormatting.YELLOW));
     }
 }

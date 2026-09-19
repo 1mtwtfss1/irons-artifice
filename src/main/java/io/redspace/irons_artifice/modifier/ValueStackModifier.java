@@ -20,7 +20,7 @@ public class ValueStackModifier implements GunModifier {
 
     @Override
     public void apply(ShotComponentMap components) {
-        modifiers.forEach((component, modifier) -> components.getOrCreate(component).addModifier(modifier));
+        modifiers.forEach(components::modifyValue);
     }
 
     @Override

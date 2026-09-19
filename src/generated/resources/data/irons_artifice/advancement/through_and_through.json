@@ -17,7 +17,6 @@
       "translate": "advancements.irons_artifice.through_and_through.description"
     },
     "frame": "challenge",
-    "hidden": true,
     "icon": {
       "id": "irons_artifice:steel_core_modifier"
     },

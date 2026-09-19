@@ -2,8 +2,6 @@ package io.redspace.irons_artifice.network.packets;
 
 import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.client.ClientHelper;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,11 +11,11 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record ClientboundMuzzleFlashPacket(
-        ParticleOptions particle,
+        MuzzleFlashVisuals visuals,
         int entityId,
         Vec3 entityMotion,
-        Vec3 position,
-        Vec3 offset
+        float extraForwardOffset,
+        Vec3 backupPos
 ) implements CustomPacketPayload {
 
     public static final Type<ClientboundMuzzleFlashPacket> TYPE =
@@ -25,16 +23,16 @@ public record ClientboundMuzzleFlashPacket(
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundMuzzleFlashPacket> STREAM_CODEC =
             StreamCodec.composite(
-                    ParticleTypes.STREAM_CODEC,
-                    ClientboundMuzzleFlashPacket::particle,
+                    MuzzleFlashVisuals.STREAM_CODEC,
+                    ClientboundMuzzleFlashPacket::visuals,
                     ByteBufCodecs.VAR_INT,
                     ClientboundMuzzleFlashPacket::entityId,
                     Vec3.STREAM_CODEC,
                     ClientboundMuzzleFlashPacket::entityMotion,
+                    ByteBufCodecs.FLOAT,
+                    ClientboundMuzzleFlashPacket::extraForwardOffset,
                     Vec3.STREAM_CODEC,
-                    ClientboundMuzzleFlashPacket::position,
-                    Vec3.STREAM_CODEC,
-                    ClientboundMuzzleFlashPacket::offset,
+                    ClientboundMuzzleFlashPacket::backupPos,
                     ClientboundMuzzleFlashPacket::new
             );
 

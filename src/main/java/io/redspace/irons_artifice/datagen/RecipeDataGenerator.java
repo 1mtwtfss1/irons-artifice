@@ -21,7 +21,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import java.util.concurrent.CompletableFuture;
 
 public class RecipeDataGenerator extends RecipeProvider {
-    protected RecipeDataGenerator(HolderLookup.Provider registries, RecipeOutput output) {
+    public RecipeDataGenerator(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
 
@@ -439,6 +439,36 @@ public class RecipeDataGenerator extends RecipeProvider {
                 .define('#', commonTag("ingots/iron"))
                 .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
                 .save(this.output);
+        // Suppressor
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.SUPRESSOR_ATTACHMENT_MODIFIER.get())
+                .pattern("*C#")
+                .define('C', ItemRegistry.CLOCKWORK_COMPONENTS)
+                .define('#', commonTag("leathers"))
+                .define('*', commonTag("ingots/gold"))
+                .unlockedBy("has_precursor", this.has(ItemRegistry.CLOCKWORK_COMPONENTS))
+                .save(this.output);
+        // Hook Shot
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.HOOK_SHOT_MODIFIER.get())
+                .pattern("**B")
+                .pattern(" C*")
+                .pattern("C *")
+                .define('B', ItemRegistry.BULLET)
+                .define('C', Items.IRON_CHAIN)
+                .define('*', commonTag("ingots/iron"))
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BULLET))
+                .save(this.output);
+        // Bloodletting Tip
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ItemRegistry.BLOODLETTING_TIP_MODIFIER.get())
+                .pattern(" BB")
+                .pattern("#*B")
+                .pattern("$# ")
+                .define('#', ItemRegistry.BLACKPOWDER)
+                .define('B', Items.QUARTZ)
+                .define('*', Items.GHAST_TEAR)
+                .define('$', Items.REDSTONE)
+                .unlockedBy("has_precursor", this.has(ItemRegistry.BLACKPOWDER))
+                .save(this.output);
+
     }
 
     private static TagKey<Item> commonTag(String path) {

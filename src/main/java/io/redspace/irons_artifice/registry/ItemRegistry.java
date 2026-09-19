@@ -19,7 +19,9 @@ import io.redspace.irons_artifice.modifier.modifiers.GasVentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.GunOilModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HairTriggerModifier;
 import io.redspace.irons_artifice.modifier.modifiers.HeavyModifier;
+import io.redspace.irons_artifice.modifier.modifiers.HookShotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.IncendiaryTipModifier;
+import io.redspace.irons_artifice.modifier.modifiers.LeechModifier;
 import io.redspace.irons_artifice.modifier.modifiers.MechanicalAccelerator;
 import io.redspace.irons_artifice.modifier.modifiers.MechanicalRepeaterModifier;
 import io.redspace.irons_artifice.modifier.modifiers.OverchargedPowderModifier;
@@ -29,6 +31,7 @@ import io.redspace.irons_artifice.modifier.modifiers.SingularityChargeModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SpiralTipModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SpyglassAttachmentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.SteelCoreModifier;
+import io.redspace.irons_artifice.modifier.modifiers.SuppressorAttachmentModifier;
 import io.redspace.irons_artifice.modifier.modifiers.TrickshotModifier;
 import io.redspace.irons_artifice.modifier.modifiers.VenomCapsuleModifier;
 import io.redspace.irons_artifice.modifier.modifiers.WindChamberModifier;
@@ -83,6 +86,8 @@ public final class ItemRegistry {
             "blackpowder_charge_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BlackpowderChargeModifier()));
     public static final DeferredItem<ModifierItem> CHAIN_SHOT = ITEMS.registerItem(
             "chain_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new ChainShotModifier()));
+    public static final DeferredItem<ModifierItem> HOOK_SHOT_MODIFIER = ITEMS.registerItem(
+            "hook_shot_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HookShotModifier()));
     public static final DeferredItem<ModifierItem> VENOM_CAPSULE = ITEMS.registerItem(
             "venom_capsule_modifier", properties -> new ModifierItem(properties.stacksTo(1), new VenomCapsuleModifier()));
     public static final DeferredItem<ModifierItem> SCATTERSHOT = ITEMS.registerItem(
@@ -107,6 +112,8 @@ public final class ItemRegistry {
             "steel_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SteelCoreModifier()));
     public static final DeferredItem<ModifierItem> LEAD_CORE = ITEMS.registerItem(
             "lead_core_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HeavyModifier()));
+    public static final DeferredItem<ModifierItem> BLOODLETTING_TIP_MODIFIER = ITEMS.registerItem(
+            "bloodletting_tip_modifier", properties -> new ModifierItem(properties.stacksTo(1), new LeechModifier()));
     public static final DeferredItem<ModifierItem> HAIR_TRIGGER = ITEMS.registerItem(
             "hair_trigger_modifier", properties -> new ModifierItem(properties.stacksTo(1), new HairTriggerModifier()));
     public static final DeferredItem<ModifierItem> GAS_VENT = ITEMS.registerItem(
@@ -123,9 +130,8 @@ public final class ItemRegistry {
             "scope_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SpyglassAttachmentModifier()));
     public static final DeferredItem<ModifierItem> BAYONET_ATTACHMENT_MODIFIER = ITEMS.registerItem(
             "bayonet_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new BayonetAttachmentModifier()));
-
-    //    public static final DeferredItem<ModifierItem> FAIRY_DUST = ITEMS.registerItem(
-    //            "fairy_dust_modifier", properties -> new ModifierItem(properties.stacksTo(1), new FairyDustModifier()));
+    public static final DeferredItem<ModifierItem> SUPRESSOR_ATTACHMENT_MODIFIER = ITEMS.registerItem(
+            "suppressor_attachment_modifier", properties -> new ModifierItem(properties.stacksTo(1), new SuppressorAttachmentModifier()));
 
     public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
     public static final DeferredItem<Item> BLACKPOWDER = ITEMS.registerSimpleItem("blackpowder");

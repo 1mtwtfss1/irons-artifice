@@ -1,6 +1,5 @@
 package io.redspace.irons_artifice.entity.ai;
 
-import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.data.FireMode;
 import io.redspace.irons_artifice.entity.IGunslingerMob;
 import io.redspace.irons_artifice.gun.ShotProfile;
@@ -217,10 +216,10 @@ public class RangedGunAttackGoal<T extends Mob> extends Goal {
                     endVolley();
                     break;
                 }
-                if (shotsRemaining > 0 && !FireDelayState.isActive(gun) && !GunItem.isReloading(gun)
+                if (shotsRemaining > 0 && !FireDelayState.isActive(mob, gun) && !GunItem.isReloading(gun)
                         && !GunItem.getMagazine(gun).isEmpty()) {
                     Vec3 aim = target.getEyePosition().subtract(mob.getEyePosition());
-                    if (aim.lengthSqr() > 1.0E-6 && GunplayManager.tryFire(mob, aim.normalize())) {
+                    if (aim.lengthSqr() > 1.0E-6 && GunplayManager.tryFire(mob, aim.normalize()).fired()) {
                         shotsRemaining--;
                         mob.setNoActionTime(0);
                     }

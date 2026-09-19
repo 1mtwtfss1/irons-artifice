@@ -1,6 +1,7 @@
 package io.redspace.irons_artifice.network.packets;
 
 import io.redspace.irons_artifice.IronsArtifice;
+import io.redspace.irons_artifice.item.FireOutcome;
 import io.redspace.irons_artifice.item.GunplayManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -36,7 +37,11 @@ public record ServerboundFireGunPacket(Vec3 direction)
 
     public static void handle(ServerboundFireGunPacket payload, IPayloadContext context) {
         if (context.player() instanceof ServerPlayer serverPlayer) {
-            GunplayManager.tryFire(serverPlayer, payload.direction());
+            FireOutcome outcome = GunplayManager.tryFire(serverPlayer, payload.direction());
+            if (outcome == FireOutcome.FIRE_DELAY_ACTIVE) {
+                // a shot that missed the gate by a tick or less is held, not thrown away
+                GunplayManager.queueEarlyShot(serverPlayer, payload.direction());
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 package io.redspace.irons_artifice.data;
 
-import io.redspace.irons_artifice.IronsArtifice;
 import io.redspace.irons_artifice.registry.DataAttachmentRegistry;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -58,6 +57,5 @@ public record RecentShots(List<Long> ticks) {
                 ? entity.getData(DataAttachmentRegistry.RECENT_SHOTS)
                 : NONE;
         entity.setData(DataAttachmentRegistry.RECENT_SHOTS, current.withShot(entity.level().getGameTime()));
-        IronsArtifice.LOGGER.debug("{}", entity.getData(DataAttachmentRegistry.RECENT_SHOTS).size());
     }
 }

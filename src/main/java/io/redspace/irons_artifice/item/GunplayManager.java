@@ -1,15 +1,15 @@
 package io.redspace.irons_artifice.item;
 
 import com.geckolib.animatable.GeoItem;
-import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.api.AmmoEvent;
+import io.redspace.irons_artifice.api.ComposeShotEvent;
 import io.redspace.irons_artifice.api.GunAboutToShootEvent;
+import io.redspace.irons_artifice.api.GunAnimations;
 import io.redspace.irons_artifice.api.GunShootEvent;
 import io.redspace.irons_artifice.advancement.ShotRecord;
 import io.redspace.irons_artifice.client.ClientHelper;
 import io.redspace.irons_artifice.data.MuzzleFlashSettings;
 import io.redspace.irons_artifice.data.MuzzleFlashType;
-import io.redspace.irons_artifice.data.PlayableSound;
 import io.redspace.irons_artifice.data.RecoilState;
 import io.redspace.irons_artifice.data.ReloadResult;
 import io.redspace.irons_artifice.data.ShotComponentMap;
@@ -23,15 +23,13 @@ import io.redspace.irons_artifice.modifier.ModifierItem;
 import io.redspace.irons_artifice.network.packets.ClientboundCancelGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundGunAnimationPacket;
 import io.redspace.irons_artifice.network.packets.ClientboundMuzzleFlashPacket;
+import io.redspace.irons_artifice.network.packets.MuzzleFlashVisuals;
 import io.redspace.irons_artifice.registry.EntityRegistry;
-import io.redspace.irons_artifice.registry.ItemRegistry;
-import io.redspace.irons_artifice.registry.SoundRegistry;
+import io.redspace.irons_artifice.utils.IronsArtificeTags;
 import io.redspace.irons_artifice.utils.Utils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -47,20 +45,27 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.Optional;
 
 public final class GunplayManager {
 
-    public static boolean tryFire(LivingEntity shooter, Vec3 direction) {
+    public static final int EARLY_SHOT_TOLERANCE_TICKS = 1;
+
+    public static FireOutcome tryFire(LivingEntity shooter, Vec3 direction) {
         if (!shooter.isAlive() || shooter.isSpectator()) {
-            return false;
+            return FireOutcome.INVALID_SHOOTER;
         }
         InteractionHand hand = InteractionHand.MAIN_HAND;
         ItemStack stack = shooter.getItemInHand(hand);
         if (!(stack.getItem() instanceof GunItem gunItem)) {
-            return false;
+            return FireOutcome.NO_GUN;
         }
-        if (FireDelayState.isActive(stack) || GunItem.isReloading(stack)) {
-            return false;
+        if (FireDelayState.isActive(shooter, stack)) {
+            return FireOutcome.FIRE_DELAY_ACTIVE;
+        }
+        if (GunItem.isReloading(stack)) {
+            return FireOutcome.RELOADING;
         }
         MagazineContents magazine = GunItem.getMagazine(stack);
         GunProfile gunProfile = gunItem.getGun();
@@ -69,16 +74,16 @@ public final class GunplayManager {
         int ammoToConsume = NeoForge.EVENT_BUS.post(new AmmoEvent.Amount(shooter, profile, 1)).getAmmoToConsume();
         if (magazine.count() < ammoToConsume) {
             if (shooter instanceof Player player && player.level().isClientSide()) {
-                ClientHelper.handleLocalDryFire(player, profile.get(ShotComponents.GUNSHOT_SOUND).getDryFireSound());
+                ClientHelper.handleLocalDryFire(player, profile.peek(ShotComponents.GUNSHOT_SOUND).getDryFireSound());
             }
-            return false;
+            return FireOutcome.EMPTY_MAGAZINE;
         }
         if (NeoForge.EVENT_BUS.post(new GunAboutToShootEvent(shooter, profile)).isCanceled()) {
-            return false;
+            return FireOutcome.EVENT_CANCELLED;
         }
-        beginFireDelay(shooter, stack, (int) Math.round(profile.fireDelayTicks()), pitchMultiplierForFire(profile));
+        beginFireDelay(shooter, stack, profile.fireDelayTicks(), pitchMultiplierForFire(profile));
         if (!(shooter.level() instanceof ServerLevel level)) {
-            return true;
+            return FireOutcome.FIRED;
         }
 
         long now = level.getGameTime();
@@ -93,7 +98,7 @@ public final class GunplayManager {
         float pitch = rotation.x - offset.pitch();
         float yaw = rotation.y + offset.yaw();
         depleteMagazine(shooter, profile, stack, magazine, ammoToConsume);
-        profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, shooter.position());
+        profile.peek(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, shooter.position());
         RecoilState.addImpulse(shooter, now, profile);
         fireShot(level, shooter, shooter.getEyePosition(), Vec3.directionFromRotation(pitch, yaw), profile);
         applyCharacterBlowback(shooter, profile);
@@ -101,7 +106,36 @@ public final class GunplayManager {
         if (hand == InteractionHand.MAIN_HAND && shooter.isUsingItem() && shooter.getUseItem() != stack && GunItem.isOffhandItemUseBlocked(shooter)) {
             shooter.stopUsingItem();
         }
+        return FireOutcome.FIRED;
+    }
+
+    /**
+     * Holds a shot that missed the gate by no more than {@link #EARLY_SHOT_TOLERANCE_TICKS}.
+     *
+     * @return whether the shot was held rather than discarded
+     */
+    public static boolean queueEarlyShot(LivingEntity shooter, Vec3 direction) {
+        int remaining = FireDelayState.remaining(shooter);
+        if (remaining <= 0 || remaining > EARLY_SHOT_TOLERANCE_TICKS) {
+            return false;
+        }
+        PendingShot.set(shooter, new PendingShot(direction, shooter.level().getGameTime()));
         return true;
+    }
+
+    /**
+     * Fires a held shot, if there is a valid one
+     */
+    public static void flushPendingShot(LivingEntity shooter) {
+        PendingShot pending = PendingShot.get(shooter);
+        if (pending.isEmpty()) {
+            return;
+        }
+        PendingShot.clear(shooter);
+        if (pending.hasExpired(shooter.level().getGameTime())) {
+            return;
+        }
+        tryFire(shooter, pending.direction());
     }
 
     private static void depleteMagazine(LivingEntity shooter, ShotProfile profile, ItemStack stack, MagazineContents magazine, int ammoToConsume) {
@@ -109,7 +143,7 @@ public final class GunplayManager {
             return;
         }
         var event = new AmmoEvent.Consume(shooter, profile, ammoToConsume);
-        if (!NeoForge.EVENT_BUS.post(event).isCanceled()){
+        if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
             GunItem.setMagazine(stack, magazine.deplete(event.getAmmoToConsume()));
         }
     }
@@ -124,7 +158,7 @@ public final class GunplayManager {
         ShotProfile profile = compose(player, gunProfile, stack);
 
         fireShot(level, player, origin, direction, profile);
-        profile.get(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
+        profile.peek(ShotComponents.GUNSHOT_SOUND).playGunShotSound(level, origin);
         playFireAnimation(player, stack, gunItem, profile);
         return true;
     }
@@ -134,9 +168,7 @@ public final class GunplayManager {
     }
 
     private static void beginFireDelay(LivingEntity shooter, ItemStack stack, int ticks, float pitchMultiplier) {
-        if (ticks > 0) {
-            FireDelayState.start(stack, ticks, pitchMultiplier);
-        }
+        FireDelayState.start(shooter, stack, ticks, pitchMultiplier);
     }
 
     private static void applyCharacterBlowback(LivingEntity living, ShotProfile profile) {
@@ -155,9 +187,9 @@ public final class GunplayManager {
     }
 
     private static void playFireAnimation(LivingEntity living, ItemStack stack, GunItem gunItem, ShotProfile profile) {
-        double fireSpeedMultiplier = profile.get(ShotComponents.FIRE_DELAY).base() / profile.fireDelayTicks();
+        double fireSpeedMultiplier = profile.peek(ShotComponents.FIRE_DELAY).base() / profile.fireDelayTicks();
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                "fire", (fireSpeedMultiplier + 1) / 2, 0);
+                GunAnimations.FIRE, (fireSpeedMultiplier + 1) / 2, 0);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
@@ -167,7 +199,7 @@ public final class GunplayManager {
             return;
         }
         ClientboundGunAnimationPacket packet = new ClientboundGunAnimationPacket(living.getId(), GeoItem.getOrAssignId(stack, (ServerLevel) living.level()), stack == living.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
-                "reload", state.speed(), state.progress(), state.skipAt(), state.skipTo());
+                GunAnimations.RELOAD, state.speed(), state.progress(), state.skipAt(), state.skipTo());
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, packet);
     }
 
@@ -197,7 +229,7 @@ public final class GunplayManager {
             Bullet bullet = new Bullet(EntityRegistry.BULLET.get(), level);
             bullet.setOwner(shooter);
             bullet.applyProfile(profile.copy());
-            bullet.setShotRecord(ShotRecord.rootPellet(fireId, fullMagazine));
+            bullet.setShotRecord(ShotRecord.of(fireId, fullMagazine));
             bullet.setPos(origin);
             bullet.shoot(direction.x, direction.y, direction.z, speed, spread);
             level.addFreshEntity(bullet);
@@ -207,24 +239,26 @@ public final class GunplayManager {
     }
 
     private static void spawnMuzzleFlash(ServerLevel level, LivingEntity shooter, Vec3 direction, ShotProfile profile) {
-        MuzzleFlashSettings settings = profile.get(ShotComponents.MUZZLE_FLASH);
-        if (settings.types().isEmpty()) {
+        MuzzleFlashSettings settings = profile.peek(ShotComponents.MUZZLE_FLASH);
+        if (!settings.hasVisuals()) {
             return;
         }
-        MuzzleFlashType type = settings.pick(level.getRandom());
-        Vec3 position = shooter.getEyePosition();
-        Vec3 offset = direction.normalize();
-        double length = settings.muzzleDistanceScalar();
+        Optional<ParticleOptions> flash = Optional.empty();
+        if (!settings.types().isEmpty()) {
+            MuzzleFlashType type = settings.pick(level.getRandom());
+            flash = Optional.of(type.particle(settings.pickTint(level.getRandom())));
+        }
+        float muzzleOffset = (float) profile.value(ShotComponents.MUZZLE_OFFSET);
         float offsetDirection = shooter.getMainArm() == HumanoidArm.LEFT ? -1.0F : 1.0F;
-        offset = offset.scale(Math.max(1.25, 0.75 * length));
-        offset = offset.add(shooter.getForward().cross(new Vec3(0, 1, 0))
-                .scale(0.5 * offsetDirection));
+        Vec3 backupPos = shooter.getEyePosition()
+                .add(direction.normalize().scale(1.25 + muzzleOffset))
+                .add(shooter.getForward().cross(new Vec3(0, 1, 0)).scale(0.5 * offsetDirection));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(shooter, new ClientboundMuzzleFlashPacket(
-                type.particle(settings.pickTint(level.getRandom())),
+                new MuzzleFlashVisuals(flash, List.copyOf(settings.airBursts()), List.copyOf(settings.underwaterBursts())),
                 shooter.getId(),
                 shooter.getDeltaMovement(),
-                position,
-                offset
+                muzzleOffset,
+                backupPos
         ));
     }
 
@@ -265,7 +299,7 @@ public final class GunplayManager {
         ShotProfile profile = new ShotProfile(gunStack, gunProfile, MagazineContents.get(gunStack), components);
         if (living != null) {
             if (living instanceof Player player && GunItem.isScoping(player)) {
-                profile.components().getOrCreate(ShotComponents.CAMERA_RECOIL_MULTIPLIER).addModifier(new ValueModifier(-0.5, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.HARMFUL));
+                profile.modifyValue(ShotComponents.CAMERA_RECOIL_MULTIPLIER, new ValueModifier(-0.5, ValueModifier.Operation.MULTIPLY_TOTAL, ValueModifier.Type.HARMFUL));
             }
             NeoForge.EVENT_BUS.post(new ComposeShotEvent(living, profile));
         }
@@ -341,7 +375,7 @@ public final class GunplayManager {
         int total = 0;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
-            if (stack.is(ItemRegistry.BULLET.get())) {
+            if (stack.is(IronsArtificeTags.AMMO)) {
                 total += stack.getCount();
             }
         }
@@ -353,7 +387,7 @@ public final class GunplayManager {
         int remaining = amount;
         for (int i = 0; i < inventory.getContainerSize() && remaining > 0; i++) {
             ItemStack stack = inventory.getItem(i);
-            if (stack.is(ItemRegistry.BULLET.get())) {
+            if (stack.is(IronsArtificeTags.AMMO)) {
                 int take = Math.min(remaining, stack.getCount());
                 stack.shrink(take);
                 remaining -= take;

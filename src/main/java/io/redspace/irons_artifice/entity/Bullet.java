@@ -46,6 +46,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -334,22 +335,27 @@ public class Bullet extends Projectile {
         // setup default hit state
         hitState = HitState.DISCARD;
         brokeBlocksThisTick = false;
+        if (EventHooks.onProjectileImpact(this, hitResult)) {
+            // event contract states projectile continues flying if the event is cancelled
+            hitState = HitState.CONTINUE;
+            return;
+        }
         super.onHit(hitResult);
         if (level() instanceof ServerLevel serverLevel) {
             HitEntityAccumulator accumulator = new HitEntityAccumulator();
             if (hitResult instanceof EntityHitResult entityHit) {
                 accumulator.add(entityHit.getEntity());
             }
-            for (OnHitEffect effect : profile.get(ShotComponents.ON_HIT).all()) {
+            for (OnHitEffect effect : profile.peek(ShotComponents.ON_HIT).all()) {
                 effect.onHit(serverLevel, this, hitResult, accumulator);
             }
-            var postHitEffects = profile.get(ShotComponents.POST_HIT_EFFECTS).all();
+            var postHitEffects = profile.peek(ShotComponents.POST_HIT_EFFECTS).all();
             for (Entity entity : accumulator.all()) {
                 for (PostHitEffect effect : postHitEffects) {
                     effect.postHit(serverLevel, this, hitResult, entity);
                 }
             }
-            profile.get(ShotComponents.IMPACT_SOUND).playImpactSound(serverLevel, hitResult.getLocation(), hitResult.getType() == HitResult.Type.ENTITY);
+            profile.peek(ShotComponents.IMPACT_SOUND).playImpactSound(serverLevel, hitResult.getLocation(), hitResult.getType() == HitResult.Type.ENTITY);
         }
         if (brokeBlocksThisTick) {
             if (piercingRemaining > 0) {
@@ -445,7 +451,7 @@ public class Bullet extends Projectile {
         var state = level().getBlockState(pos);
         if (!(level() instanceof ServerLevel serverLevel)
                 || state.is(IronsArtificeTags.NEVER_BREAK)
-                || !profile.get(ShotComponents.BREAKS_BLOCKS) && !state.is(IronsArtificeTags.ALWAYS_BREAK)) {
+                || !profile.peek(ShotComponents.BREAKS_BLOCKS) && !state.is(IronsArtificeTags.ALWAYS_BREAK)) {
             return false;
         }
 
@@ -495,7 +501,7 @@ public class Bullet extends Projectile {
     }
 
     private void emitTrail(ServerLevel level, Vec3 from, Vec3 to) {
-        ParticleStack particles = profile.get(ShotComponents.PARTICLE_TRAIL);
+        ParticleStack particles = profile.peek(ShotComponents.PARTICLE_TRAIL);
         if (particles == null) {
             return;
         }

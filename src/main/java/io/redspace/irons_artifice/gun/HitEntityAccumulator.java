@@ -21,7 +21,7 @@ public final class HitEntityAccumulator {
     }
 
     public Set<Entity> all() {
-        return damaged;
+        return Set.copyOf(damaged);
     }
 
     public boolean isEmpty() {

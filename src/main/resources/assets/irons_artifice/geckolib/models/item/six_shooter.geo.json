@@ -170,6 +170,11 @@
 					]
 				},
 				{
+					"name": "attachment_muzzle",
+					"parent": "gun",
+					"pivot": [0, 4, -11.4]
+				},
+				{
 					"name": "attachment_optic",
 					"parent": "gun",
 					"pivot": [0, 5, -1.25]
