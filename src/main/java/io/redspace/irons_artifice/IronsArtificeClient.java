@@ -40,6 +40,7 @@ import com.geckolib.renderer.GeoItemRenderer;
 import com.google.common.base.Suppliers;
 import io.redspace.ironslib.kinetic_weapon.client.KineticAnimations;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.monster.illager.IllagerModel;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -144,6 +145,12 @@ public class IronsArtificeClient {
         event.registerEntityRenderer(EntityRegistry.SOUL.get(), SoulfireCoinRenderer::new);
         event.registerEntityRenderer(EntityRegistry.GUNSLINGER.get(), GunslingerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ILLIFICER.get(), IllificerRenderer::new);
+    }
+
+    @SubscribeEvent
+    static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(IllificerRenderer.LAYER, IllagerModel::createBodyLayer);
+        event.registerLayerDefinition(GunslingerRenderer.LAYER, IllagerModel::createBodyLayer);
     }
 
     @SubscribeEvent
