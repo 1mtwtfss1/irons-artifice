@@ -12,6 +12,7 @@ import io.redspace.irons_artifice.client.gui.GunPreviewRenderState;
 import io.redspace.irons_artifice.client.gui.GunPreviewRenderer;
 import io.redspace.irons_artifice.client.gun.AttachmentGeoRenderer;
 import io.redspace.irons_artifice.client.gun.AttachmentRenderableRegistry;
+import io.redspace.irons_artifice.client.gun.FirstPersonArmsModel;
 import io.redspace.irons_artifice.client.gun.GunInHandRenderer;
 import io.redspace.irons_artifice.client.gun.SimpleItemGeoModel;
 import io.redspace.irons_artifice.client.gui.AmmoCountHudOverlay;
@@ -149,8 +150,15 @@ public class IronsArtificeClient {
 
     @SubscribeEvent
     static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(FirstPersonArmsModel.WIDE_LAYER, () -> FirstPersonArmsModel.createLayer(false));
+        event.registerLayerDefinition(FirstPersonArmsModel.SLIM_LAYER, () -> FirstPersonArmsModel.createLayer(true));
         event.registerLayerDefinition(IllificerRenderer.LAYER, IllagerModel::createBodyLayer);
         event.registerLayerDefinition(GunslingerRenderer.LAYER, IllagerModel::createBodyLayer);
+    }
+
+    @SubscribeEvent
+    static void bakeFirstPersonArms(EntityRenderersEvent.AddLayers event) {
+        FirstPersonArmsModel.bake(event.getEntityModels());
     }
 
     @SubscribeEvent
